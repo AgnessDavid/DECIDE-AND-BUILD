@@ -1,28 +1,36 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CarteController;
+use App\Http\Controllers\ProfileController;
 
+// Page d'accueil avec les cartes
+Route::get('/', [TemplateController::class, 'index']);
 
- 
-Route::get('/',[TemplateController::class,'index']);
+// Tableau de bord (Breeze)
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
+// Routes profil (Breeze)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-use App\Http\Controllers\CartController; // Assurez-vous d'importer le contrôleur
+// Ajouter un produit au panier
+Route::get('/add-to-cart/{id}', [CarteController::class, 'addToCart'])->name('add.to.cart');
 
-// Route pour la page du panier
-Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
+// Afficher le panier
+Route::get('/panier', [CarteController::class, 'showCart'])->name('cart');
 
-// Route pour ajouter un article au panier
-// La variable {carte} correspondra à l'ID de la carte que vous passez dans la route
-Route::post('/panier/ajouter/{carte}', [CartController::class, 'add'])->name('cart.add');
+// Valider la commande (checkout)
+Route::post('/checkout', [CheckoutController::class, 'checkout'])
+     ->name('checkout')
+     ->middleware('auth'); // le client doit être connecté
 
-// Route pour mettre à jour un article (peut être une requête AJAX)
-Route::patch('/panier/mettre-a-jour', [CartController::class, 'update'])->name('cart.update');
-
-// Route pour supprimer un article (peut être une requête AJAX)
-Route::delete('/panier/supprimer', [CartController::class, 'remove'])->name('cart.remove');
-
-// Route pour vider le panier
-Route::post('/panier/vider', [CartController::class, 'destroy'])->name('cart.destroy');
+require __DIR__.'/auth.php';
