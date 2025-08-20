@@ -808,6 +808,8 @@
     </section>
 
 
+@yield('content')  
+
 @yield('footer')
 
 

@@ -1,5 +1,35 @@
 @extends('frontend.master')
 
+<!-- Carte -->
+
+@section('content')
+
+    <div class="container">
+        <div class="row">
+            @foreach ($cartes as $carte)
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card product-card">
+                    <img class="card-img-top" src="{{ asset('storage/' . $carte->image) }}" alt="{{ $carte->titre }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $carte->titre }}</h5>
+                        <p class="card-text">{{ $carte->description }}</p>
+                        <p class="product-price">{{ number_format($carte->prix, 2) }} €</p>
+                        <a href="#" class="btn btn-primary">Ajouter au panier</a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    
+    @endsection
+
+
+
+
+<!-- footer -->
+
+
 @section('footer')
    <footer id="footer" class="overflow-hidden">
       <div class="container">
