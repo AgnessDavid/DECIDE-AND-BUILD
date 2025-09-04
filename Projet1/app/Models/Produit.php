@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Produit extends Model
 {
+    use HasFactory;
+
     protected $table = 'produits';
 
     protected $fillable = [
@@ -18,6 +21,7 @@ class Produit extends Model
         'stock_minimum',
         'stock_maximum',
         'stock_actuel',
+        'prix_unitaire_ht',
         'photo',
     ];
 
@@ -25,19 +29,12 @@ class Produit extends Model
         'stock_minimum' => 'integer',
         'stock_maximum' => 'integer',
         'stock_actuel' => 'integer',
+        'prix_unitaire_ht' => 'decimal:2',
     ];
 
-    /**
-     * Accesseur pour obtenir l'URL complète de la photo.
-     */
-    public function getPhotoUrlAttribute(): ?string
-    {
-        return $this->photo ? Storage::url($this->photo) : null;
-    }
+    // ================== RELATIONS ==================
 
-    /**
-     * Relation many-to-many avec les commandes
-     */
+    /** Commandes liées via pivot */
     public function commandes(): BelongsToMany
     {
         return $this->belongsToMany(Commande::class, 'commande_produit')
@@ -46,39 +43,65 @@ class Produit extends Model
                     ->using(CommandeProduit::class);
     }
 
-    /**
-     * Relation avec les lignes de commande (pivot)
-     */
+    /** Lignes de commande pivot */
     public function lignesCommande(): HasMany
     {
         return $this->hasMany(CommandeProduit::class, 'produit_id');
     }
 
+    // ================== ACCESSEURS ==================
+
     /**
-     * Quantité totale commandée (pour commandes validées ou partiellement facturées)
+     * URL publique de la photo ou fichier
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo ? Storage::url($this->photo) : null;
+    }
+
+    /**
+     * Quantité totale commandée pour ce produit
      */
     public function getQuantiteTotaleCommandeeAttribute(): int
     {
         return (int) $this->lignesCommande()
-                    ->whereHas('commande', function ($query) {
-                        $query->whereIn('statut', ['validee', 'partiellement_facturee']);
-                    })
-                    ->sum('quantite');
+            ->whereHas('commande', function ($query) {
+                $query->whereIn('statut', ['validee', 'partiellement_facturee']);
+            })
+            ->sum('quantite');
     }
 
     /**
-     * Vérifie si le produit est en rupture de stock
-     */
-    public function isEnRuptureStock(): bool
-    {
-        return $this->stock_actuel <= ($this->stock_minimum ?? 0);
-    }
-
-    /**
-     * Stock disponible = stock actuel - quantité commandée
+     * Stock disponible après commandes
      */
     public function getStockDisponibleAttribute(): int
     {
         return max(0, $this->stock_actuel - $this->quantite_totale_commandee);
+    }
+
+    // ================== MÉTHODES ==================
+
+    /**
+     * Ajouter du stock
+     */
+    public function ajusterStock(int $quantite): void
+    {
+        $this->increment('stock_actuel', $quantite);
+    }
+
+    /**
+     * Retirer du stock
+     */
+    public function retirerStock(int $quantite): void
+    {
+        $this->decrement('stock_actuel', $quantite);
+    }
+
+    /**
+     * Vérifie si le produit est en rupture
+     */
+    public function isEnRuptureStock(): bool
+    {
+        return $this->stock_actuel <= ($this->stock_minimum ?? 0);
     }
 }

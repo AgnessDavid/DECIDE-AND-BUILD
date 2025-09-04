@@ -3,18 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DemandeImpression extends Model
 {
     protected $table = 'demandes_impression';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'demande_id',
+        'fiche_besoin_id', // renommé pour plus de clarté
+        'produit_id',
         'numero_ordre',
         'designation',
         'quantite_demandee',
@@ -38,13 +35,9 @@ class DemandeImpression extends Model
         'nom_signature_final',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
     protected $casts = [
-        'demande_id' => 'integer',
+        'fiche_besoin_id' => 'integer',
+        'produit_id' => 'integer',
         'quantite_demandee' => 'integer',
         'quantite_imprimee' => 'integer',
         'quantite_totale_imprimee' => 'integer',
@@ -56,4 +49,34 @@ class DemandeImpression extends Model
         'date_reception_stock' => 'date',
         'est_autorise_chef_informatique' => 'boolean',
     ];
+
+    /**
+     * Relation avec la fiche de besoin
+     */
+    public function ficheBesoin(): BelongsTo
+    {
+        return $this->belongsTo(FicheBesoin::class);
+    }
+
+    /**
+     * Relation avec le client via la fiche de besoin
+     */
+    public function client(): BelongsTo
+    {
+        return $this->ficheBesoin()->withDefault()->client();
+    }
+
+    /**
+     * Relation avec le produit (si applicable)
+     */
+    public function produit(): BelongsTo
+    {
+        return $this->belongsTo(Produit::class);
+    }
+
+    public function validation()
+{
+    return $this->belongsTo(Validation::class, 'demande_id');
+}
+
 }

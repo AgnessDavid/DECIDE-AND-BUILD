@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('stock_minimum')->nullable()->after('description');
             $table->integer('stock_maximum')->nullable()->after('stock_minimum');
             $table->integer('stock_actuel')->default(0)->after('stock_maximum');
-            $table->string('photo')->nullable()->after('stock_actuel');
+            $table->decimal('prix_unitaire_ht', 10, 2)->default(0)->after('stock_actuel');
+            $table->string('photo')->nullable()->after('prix_unitaire_ht');
         });
     }
 
@@ -35,6 +36,7 @@ return new class extends Migration
                 'stock_minimum',
                 'stock_maximum',
                 'stock_actuel',
+                'prix_unitaire_ht',
                 'photo',
             ]);
         });

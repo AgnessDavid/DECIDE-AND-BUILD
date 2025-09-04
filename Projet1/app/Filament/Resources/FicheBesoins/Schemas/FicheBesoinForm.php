@@ -40,7 +40,8 @@ class FicheBesoinForm
                     ->required(),
                 Toggle::make('demande_facture_proforma')
                     ->required(),
-                TextInput::make('delai_souhaite'),
+                DatePicker::make('delai_souhaite')
+                    ->required(),
                 DatePicker::make('date_livraison_prevue'),
                 DatePicker::make('date_livraison_reelle'),
                 TextInput::make('signature_client'),

@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CommandeProduit extends Pivot
+class CommandeProduit extends Model
 {
+    use HasFactory;
+
     protected $table = 'commande_produit';
 
     protected $fillable = [
@@ -15,24 +19,13 @@ class CommandeProduit extends Pivot
         'prix_unitaire_ht',
     ];
 
-    /**
-     * Indique que ce pivot doit avoir des timestamps
-     */
-    public $timestamps = true;
-
-    /**
-     * Relation avec la commande
-     */
-    public function commande()
+    public function commande(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Commande::class, 'commande_id');
+        return $this->belongsTo(Commande::class);
     }
 
-    /**
-     * Relation avec le produit
-     */
-    public function produit()
+    public function produit(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Produit::class, 'produit_id');
+        return $this->belongsTo(Produit::class);
     }
 }

@@ -61,6 +61,14 @@ class Client extends Model
         return $this->hasMany(FicheBesoin::class);
     }
 
+    public function paiements()
+{
+    return $this->hasManyThrough(Paiement::class, Facture::class, 'commande_id', 'facture_id');
+}
+
+
+
+
     /**
      * Scope pour filtrer par type de client
      */

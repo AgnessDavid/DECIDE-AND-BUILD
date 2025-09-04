@@ -37,7 +37,7 @@ return new class extends Migration
             $table->boolean('demande_facture_proforma')->default(false);
 
             // Livraison
-            $table->string('delai_souhaite')->nullable();
+            $table->date('delai_souhaite')->nullable();
             $table->date('date_livraison_prevue')->nullable();
             $table->date('date_livraison_reelle')->nullable();
 

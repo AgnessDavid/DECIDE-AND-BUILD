@@ -19,6 +19,8 @@ class CommandesTable
                     ->searchable(),
                 TextColumn::make('client.id')
                     ->searchable(),
+                TextColumn::make('produit.id')
+                    ->searchable(),
                 TextColumn::make('ficheBesoin.id')
                     ->searchable(),
                 TextColumn::make('numero_commande')

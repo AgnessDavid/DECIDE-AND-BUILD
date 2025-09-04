@@ -10,14 +10,8 @@ class MouvementStock extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     */
     protected $table = 'mouvements_stock';
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'produit_id',
         'date_mouvement',
@@ -28,9 +22,6 @@ class MouvementStock extends Model
         'en_commande',
     ];
 
-    /**
-     * The attributes that should be cast.
-     */
     protected $casts = [
         'date_mouvement' => 'date',
         'quantite' => 'integer',
@@ -39,7 +30,7 @@ class MouvementStock extends Model
     ];
 
     /**
-     * Relation avec le produit
+     * Relation avec le produit.
      */
     public function produit(): BelongsTo
     {
@@ -47,32 +38,27 @@ class MouvementStock extends Model
     }
 
     /**
-     * Scope pour filtrer les entrées
+     * Relation avec l'employé qui a enregistré le mouvement.
      */
+  
+
+    /** Scopes personnalisés */
     public function scopeEntrees($query)
     {
         return $query->where('type_mouvement', 'entree');
     }
 
-    /**
-     * Scope pour filtrer les sorties
-     */
     public function scopeSorties($query)
     {
         return $query->where('type_mouvement', 'sortie');
     }
 
-    /**
-     * Scope pour filtrer par produit
-     */
     public function scopePourProduit($query, $produitId)
     {
         return $query->where('produit_id', $produitId);
     }
 
-    /**
-     * Accessor pour afficher le type de mouvement de façon lisible
-     */
+    /** Accessor lisible */
     public function getTypeMouvementLabelAttribute(): string
     {
         return match($this->type_mouvement) {
@@ -82,9 +68,7 @@ class MouvementStock extends Model
         };
     }
 
-    /**
-     * Mutateur pour s'assurer que la quantité est positive
-     */
+    /** Mutateur */
     public function setQuantiteAttribute($value)
     {
         $this->attributes['quantite'] = abs($value);

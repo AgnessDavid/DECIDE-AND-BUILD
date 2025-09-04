@@ -28,7 +28,8 @@ class FicheBesoinInfolist
                     ->boolean(),
                 IconEntry::make('demande_facture_proforma')
                     ->boolean(),
-                TextEntry::make('delai_souhaite'),
+                TextEntry::make('delai_souhaite') 
+                   ->date(),
                 TextEntry::make('date_livraison_prevue')
                     ->date(),
                 TextEntry::make('date_livraison_reelle')
