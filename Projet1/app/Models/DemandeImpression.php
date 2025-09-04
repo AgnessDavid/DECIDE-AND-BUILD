@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\MouvementStock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class DemandeImpression extends Model
 {
@@ -32,6 +33,7 @@ class DemandeImpression extends Model
         'quantite_totale_receptionnee',
         'details_reception',
         'observations',
+        'statut',
         'nom_signature_final',
     ];
 
@@ -78,5 +80,45 @@ class DemandeImpression extends Model
 {
     return $this->belongsTo(Validation::class, 'demande_id');
 }
+
+    public function mouvementStock()
+{
+    return $this->hasMany(MouvementStock::class, 'demande_impression_id');
+}
+
+
+
+public function estEnAttente(): bool
+{
+    return $this->statut === 'en_attente';
+}
+
+public function estEnProduction(): bool
+{
+    return $this->statut === 'en_production';
+}
+
+public function estValidee(): bool
+{
+    return $this->statut === 'terminer';
+}
+
+protected static function booted()
+{
+    static::updated(function ($demande) {
+        if ($demande->isDirty('statut') && $demande->statut === 'terminer') {
+            MouvementStock::create([
+                'demande_impression_id' => $demande->id,
+                'designation' => $demande->designation ?? 'Sans désignation', // obligatoire
+                'quantite_entree' => $demande->quantite_totale_receptionnee ?? 0,
+                'quantite_sortie' => null,
+                'date_mouvement' => $demande->date_reception_stock ?? now(),
+                'type_mouvement' => 'entree', // obligatoire
+                'details' => $demande->details_reception ?? 'Impression terminée et stockée',
+            ]);
+        }
+    });
+}
+
 
 }

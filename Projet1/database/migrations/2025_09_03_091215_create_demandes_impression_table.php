@@ -43,7 +43,8 @@ return new class extends Migration
             $table->date('date_reception_stock')->nullable(); // Date de réception
             $table->integer('quantite_totale_receptionnee')->nullable(); // Quantité totale reçue
             $table->text('details_reception')->nullable(); // Détails de réception
-
+            
+            $table->enum('statut',['en_attente','en_production','terminer'])->default('en_attente');
             // Champs additionnels
             $table->text('observations')->nullable(); // Observations générales
             $table->string('nom_signature_final', 255)->nullable(); // Nom et signature finale

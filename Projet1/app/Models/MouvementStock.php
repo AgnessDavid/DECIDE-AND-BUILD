@@ -14,6 +14,7 @@ class MouvementStock extends Model
 
     protected $fillable = [
         'produit_id',
+        'demande_impression_id',
         'date_mouvement',
         'numero_bon',
         'type_mouvement',
@@ -35,6 +36,11 @@ class MouvementStock extends Model
     public function produit(): BelongsTo
     {
         return $this->belongsTo(Produit::class);
+    }
+
+      public function demandeImpression()
+    {
+        return $this->belongsTo(DemandeImpression::class);
     }
 
     /**

@@ -11,21 +11,55 @@ class MouvementStockInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('produit.id'),
+                // Produit associé
+                TextEntry::make('produit.nom_produit')
+                    ->label('Produit'),
+
+                // Date du mouvement
                 TextEntry::make('date_mouvement')
+                    ->label('Date du mouvement')
                     ->date(),
-                TextEntry::make('numero_bon'),
-                TextEntry::make('type_mouvement'),
+
+                // Numéro du bon
+                TextEntry::make('numero_bon')
+                    ->label('Numéro du bon'),
+
+                // Type de mouvement avec badge
+                TextEntry::make('type_mouvement')
+                    ->label('Type')
+                    ->badge()
+                    ->color(fn (string $state) => match($state) {
+                        'entree' => 'success',    // Vert
+                        'sortie' => 'danger',     // Rouge
+                        default => 'gray',
+                    }),
+
+                // Quantités
                 TextEntry::make('quantite')
-                    ->numeric(),
+                    ->numeric()
+                    ->label('Quantité'),
+
                 TextEntry::make('stock_resultant')
-                    ->numeric(),
+                    ->numeric()
+                    ->label('Stock restant'),
+
                 TextEntry::make('en_commande')
-                    ->numeric(),
+                    ->numeric()
+                    ->label('En commande'),
+
+                // Dates de création et de mise à jour
                 TextEntry::make('created_at')
+                    ->label('Créé le')
                     ->dateTime(),
+
                 TextEntry::make('updated_at')
+                    ->label('Mis à jour le')
                     ->dateTime(),
+
+                // Détails supplémentaires
+                TextEntry::make('details')
+                    ->label('Détails')
+                    ->wrap(),
             ]);
     }
 }

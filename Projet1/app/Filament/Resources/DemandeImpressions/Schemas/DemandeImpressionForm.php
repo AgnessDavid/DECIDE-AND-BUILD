@@ -7,6 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
 
 class DemandeImpressionForm
 {
@@ -48,6 +49,18 @@ class DemandeImpressionForm
                     ->numeric(),
                 TextInput::make('quantite_imprimee')
                     ->numeric(),
+
+                Select::make('statut')
+                ->label('Statut')
+                ->options([
+                   'en_attente' => 'En attente',
+                   'en_production' => 'En production',
+                   'terminer' => 'Terminer',
+                ])
+                ->default('en_attente')
+                ->required(),
+
+           
                 DatePicker::make('date_demande')
                     ->required(),
             ]);

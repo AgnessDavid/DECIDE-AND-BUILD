@@ -13,9 +13,9 @@ class MouvementStockForm
     {
         return $schema
             ->components([
-                Select::make('produit_id')
-                    ->relationship('produit', 'id')
-                    ->required(),
+               Select::make('produit_id')
+                  ->relationship('produit', 'nom_produit')
+                  ->required(),
                 DatePicker::make('date_mouvement')
                     ->required(),
                 TextInput::make('numero_bon'),
@@ -26,8 +26,9 @@ class MouvementStockForm
                     ->required()
                     ->numeric(),
                 TextInput::make('stock_resultant')
-                    ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->disabled() // l’utilisateur ne peut pas le modifier
+                    ->default(fn ($record) => $record->produit?->stock_actuel ?? 0),
                 TextInput::make('en_commande')
                     ->numeric(),
             ]);

@@ -11,34 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
-            $table->id();
+       Schema::create('mouvements_stock', function (Blueprint $table) {
+    $table->id();
 
-            // Nom de la structure ou du particulier
-            $table->string('nom');
+    $table->foreignId('demande_impression_id')
+        ->constrained('demandes_impression')
+        ->onDelete('cascade');
 
-            // Type de client
-            $table->enum('type', ['societe', 'organisme', 'particulier'])->default('societe');
 
-            // Personne de contact principale
-            $table->string('nom_interlocuteur')->nullable();
-            $table->string('fonction')->nullable();
+    $table->string('designation');
+    $table->integer('quantite_entree')->nullable();
+    $table->integer('quantite_sortie')->nullable();
+    $table->date('date_mouvement');
+    $table->string('type_mouvement'); // entrée ou sortie
+    $table->text('details')->nullable();
 
-            // Coordonnées
-            $table->string('telephone')->nullable();
-            $table->string('cellulaire')->nullable();
-            $table->string('fax')->nullable();
-            $table->string('email')->nullable();
+    $table->timestamps();
+});
 
-            // --- Nouveaux champs ajoutés ---
-            $table->string('ville')->nullable();
-            $table->string('quartier_de_residence')->nullable();
-            $table->enum('usage', ['personnel', 'professionnel'])->nullable();
-            $table->string('domaine_activite')->nullable(); // Ajout du domaine d'activité
-            // --------------------------------
-
-            $table->timestamps();
-        });
     }
 
     /**
@@ -46,7 +36,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('mouvements_stock');
     }
 };
 

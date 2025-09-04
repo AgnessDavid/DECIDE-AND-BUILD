@@ -40,9 +40,24 @@ class DemandeImpressionInfolist
                     ->date(),
                 TextEntry::make('quantite_totale_receptionnee')
                     ->numeric(),
+
+
                 TextEntry::make('nom_signature_final'),
                 TextEntry::make('created_at')
                     ->dateTime(),
+
+           
+                // ✅ Statut avec badge coloré
+                TextEntry::make('statut')
+                    ->label('Statut')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'en_attente' => 'warning',    // 🟡 Jaune
+                        'en_production' => 'info',    // 🔵 Bleu
+                        'terminer' => 'success',      // 🟢 Vert
+                        default => 'gray',
+                    }),
+
                 TextEntry::make('updated_at')
                     ->dateTime(),
             ]);
