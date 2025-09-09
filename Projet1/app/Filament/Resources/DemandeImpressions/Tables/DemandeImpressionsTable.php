@@ -16,9 +16,7 @@ class DemandeImpressionsTable
     {
         return $table
             ->columns([
-                TextColumn::make('demande_id')
-                    ->numeric()
-                    ->sortable(),
+               
                 TextColumn::make('numero_ordre')
                     ->searchable(),
                 TextColumn::make('quantite_demandee')

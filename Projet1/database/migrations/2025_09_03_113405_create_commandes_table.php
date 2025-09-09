@@ -24,6 +24,7 @@ return new class extends Migration
                 ->constrained('clients')
                 ->cascadeOnDelete();
 
+
             // Fiche de besoin optionnelle
         
 
@@ -41,7 +42,7 @@ return new class extends Migration
                 ->nullable()
                 ->comment('Moyen de paiement prévu');
 
-            // Statut de la commande
+            // Statut de la commandeChatGPT can make mistakes. Check important info.
             $table->enum('statut', ['payé'])
                 ->default('payé');
 

@@ -12,44 +12,45 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('demandes_impression', function (Blueprint $table) {
-            $table->id(); // INT PRIMARY KEY AUTO_INCREMENT
-            $table->unsignedBigInteger('demande_id')->nullable(); // Clé étrangère ou identifiant interne (laissé nullable pour clarification)
-            $table->string('numero_ordre', 50)->nullable(); // Numéro d'ordre de la ligne
-            $table->text('designation'); // Description de l'article à imprimer
-            $table->integer('quantite_demandee'); // Quantité souhaitée
-            $table->integer('quantite_imprimee')->nullable(); // Quantité réellement imprimée
+        $table->id();
+        $table->foreignId('fiche_besoin_id')->constrained('fiches_besoins')->onDelete('cascade');
+        $table->foreignId('produit_id')->nullable()->constrained('produits')->onDelete('set null');
 
-            // Informations générales
-            $table->date('date_demande'); // Date de création de la demande
-            $table->string('agent_commercial', 255)->nullable(); // Nom de l'agent commercial
-            $table->string('service', 255)->nullable(); // Service demandeur
-            $table->text('objet')->nullable(); // Objet de la demande
+        $table->enum('type_impression', ['simple', 'specifique'])->default('simple');
 
-            // Section: Visa Chef Service Commercial
-            $table->date('date_visa_chef_service')->nullable(); // Date du visa
-            $table->string('nom_visa_chef_service', 255)->nullable(); // Nom du chef de service
+    // Impression simple → produit existant
 
-            // Section: Autorisation des impressions
-            $table->date('date_autorisation')->nullable(); // Date d'autorisation
-            $table->boolean('est_autorise_chef_informatique')->default(false); // Case à cocher
-            $table->string('nom_visa_autorisateur', 255)->nullable(); // Nom de l'autorisateur
+    // Impression spécifique → produit libre
+        $table->string('produit_souhaite')->nullable();
 
-            // Section: Impressions
-            $table->date('date_impression')->nullable(); // Date d'impression
-            $table->integer('quantite_totale_imprimee')->nullable(); // Quantité totale imprimée
-            $table->string('nom_visa_agent_impression', 255)->nullable(); // Nom de l'agent impression
+        $table->string('produit_souhaite')->nullable;
 
-            // Section: Visa Gestionnaire de Stocks
-            $table->date('date_reception_stock')->nullable(); // Date de réception
-            $table->integer('quantite_totale_receptionnee')->nullable(); // Quantité totale reçue
-            $table->text('details_reception')->nullable(); // Détails de réception
-            
-            $table->enum('statut',['en_attente','en_production','terminer'])->default('en_attente');
-            // Champs additionnels
-            $table->text('observations')->nullable(); // Observations générales
-            $table->string('nom_signature_final', 255)->nullable(); // Nom et signature finale
+        $table->string('numero_ordre')->nullable();
+        $table->string('designation')->nullable();
+        $table->integer('quantite_demandee')->default(0);
+        $table->integer('quantite_imprimee')->default(0);
+        $table->date('date_demande')->nullable();
 
-            $table->timestamps(); // Champs created_at et updated_at
+        $table->string('agent_commercial')->nullable();
+        $table->string('service')->nullable();
+        $table->string('objet')->nullable();
+
+        $table->date('date_visa_chef_service')->nullable();
+        $table->string('nom_visa_chef_service')->nullable();
+        $table->date('date_autorisation')->nullable();
+        $table->boolean('est_autorise_chef_informatique')->default(false);
+        $table->string('nom_visa_autorisateur')->nullable();
+        $table->date('date_impression')->nullable();
+        $table->integer('quantite_totale_imprimee')->default(0);
+        $table->string('nom_visa_agent_impression')->nullable();
+        $table->date('date_reception_stock')->nullable();
+        $table->integer('quantite_totale_receptionnee')->default(0);
+        $table->text('details_reception')->nullable();
+        $table->text('observations')->nullable();
+        $table->enum('statut', ['en_attente', 'en_production', 'terminer'])->default('en_attente');
+        $table->string('nom_signature_final')->nullable();
+
+        $table->timestamps();
         });
     }
 

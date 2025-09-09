@@ -33,12 +33,13 @@ class CommandeForm
                     ->label('Numéro de commande')
                     ->required(),
 
-                Repeater::make('produits')
+
+            Repeater::make('produits')
     ->label('Produits commandés')
-    ->relationship('produits') // <-- ici on utilise la relation hasMany vers CommandeProduit
+    ->relationship('produits') // relation hasMany vers CommandeProduit
     ->schema([
         Select::make('produit_id')
-            ->relationship('produit', 'nom_produit') // relation du pivot vers Produit
+            ->relationship('produit', 'nom_produit')
             ->label('Produit')
             ->required()
             ->reactive()
@@ -87,10 +88,12 @@ class CommandeForm
     ])
     ->columns(5)
     ->createItemButtonLabel('Ajouter un produit'),
+
+
                 Textarea::make('notes_internes')
                     ->label('Notes internes'),
 
-                        Select::make('moyen_de_paiement')
+                Select::make('moyen_de_paiement')
                     ->label('Mode de paiement')
                     ->options([
                         'en_ligne' => 'En ligne',
@@ -104,10 +107,11 @@ class CommandeForm
                     ->label('Statut')
                     ->options([
                         'payé' => 'Payé',
-                        
                     ])
-                    ->default('en_attente')
+                    ->default('payé')
                     ->required(),
             ]);
     }
 }
+
+

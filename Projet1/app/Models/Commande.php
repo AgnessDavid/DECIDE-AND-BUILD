@@ -16,7 +16,6 @@ class Commande extends Model
     protected $fillable = [
         'user_id',
         'client_id',
-        'fiche_besoin_id',
         'numero_commande',
         'date_commande',
         'moyen_de_paiement',
@@ -29,7 +28,6 @@ class Commande extends Model
     ];
 
     // ================== RELATIONS ==================
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -40,18 +38,17 @@ class Commande extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function ficheBesoin(): BelongsTo
-    {
-        return $this->belongsTo(FicheBesoin::class);
-    }
-
     public function produits(): HasMany
     {
         return $this->hasMany(CommandeProduit::class);
     }
 
-    // ================== ACCESSORS ==================
+    public function facture()
+    {
+        return $this->hasOne(Facture::class);
+    }
 
+    // ================== ACCESSORS ==================
     public function getMontantHtAttribute(): float
     {
         return $this->produits->sum(fn($ligne) => $ligne->quantite * $ligne->prix_unitaire_ht);
@@ -60,5 +57,27 @@ class Commande extends Model
     public function getMontantTtcAttribute(): float
     {
         return round($this->montant_ht * 1.18, 2); // TVA 18%
+    }
+
+    public function getNomProduitsAttribute(): string
+    {
+        return $this->produits->pluck('produit.nom_produit')->implode(', ');
+    }
+
+    // ================== EVENTS ==================
+    protected static function booted()
+    {
+        static::created(function ($commande) {
+            Facture::create([
+                'commande_id' => $commande->id,
+                'client_id' => $commande->client_id,
+                'user_id' => $commande->user_id,
+                'date_facturation' => now(),
+                'montant_ht' => $commande->montant_ht,
+                'tva' => 18.00,
+                'montant_ttc' => $commande->montant_ttc,
+                'statut_paiement' => 'non_paye',
+            ]);
+        });
     }
 }

@@ -11,31 +11,38 @@ class DemandeImpression extends Model
     protected $table = 'demandes_impression';
 
     protected $fillable = [
-        'fiche_besoin_id', // renommé pour plus de clarté
-        'produit_id',
-        'numero_ordre',
-        'designation',
-        'quantite_demandee',
-        'quantite_imprimee',
-        'date_demande',
-        'agent_commercial',
-        'service',
-        'objet',
-        'date_visa_chef_service',
-        'nom_visa_chef_service',
-        'date_autorisation',
-        'est_autorise_chef_informatique',
-        'nom_visa_autorisateur',
-        'date_impression',
-        'quantite_totale_imprimee',
-        'nom_visa_agent_impression',
-        'date_reception_stock',
-        'quantite_totale_receptionnee',
-        'details_reception',
-        'observations',
-        'statut',
-        'nom_signature_final',
-    ];
+
+
+    'fiche_besoin_id',
+    'type_impression',
+    'produit_id',
+    'produit_souhaite',
+
+    'numero_ordre',
+    'designation',
+    'quantite_demandee',
+    'quantite_imprimee',
+    'date_demande',
+    'agent_commercial',
+    'service',
+    'objet',
+    'date_visa_chef_service',
+    'nom_visa_chef_service',
+    'date_autorisation',
+    'est_autorise_chef_informatique',
+    'nom_visa_autorisateur',
+    'date_impression',
+    'quantite_totale_imprimee',
+    'nom_visa_agent_impression',
+    'date_reception_stock',
+    'quantite_totale_receptionnee',
+    'details_reception',
+    'observations',
+    'statut',
+    'nom_signature_final',
+];
+
+   
 
     protected $casts = [
         'fiche_besoin_id' => 'integer',
@@ -86,6 +93,15 @@ class DemandeImpression extends Model
     return $this->hasMany(MouvementStock::class, 'demande_impression_id');
 }
 
+
+public function getNomProduitAttribute(): string
+{
+    if ($this->type_impression === 'simple') {
+        return $this->produit->nom_produit ?? 'Produit non défini';
+    }
+
+    return $this->produit_souhaite ?? 'Produit spécifique non précisé';
+}
 
 
 public function estEnAttente(): bool

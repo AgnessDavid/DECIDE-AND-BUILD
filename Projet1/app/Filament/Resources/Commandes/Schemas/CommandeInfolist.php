@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\Commandes\Schemas;
 
-use Filament\Forms\Components\Repeater;
 use Filament\Infolists\Components\TextEntry;
-
 use Filament\Schemas\Schema;
 
 class CommandeInfolist
@@ -15,29 +13,40 @@ class CommandeInfolist
             ->components([
                 TextEntry::make('user.name')->label('Agent'),
                 TextEntry::make('client.nom')->label('Client'),
-                TextEntry::make('ficheBesoin.nom_structure')->label('Fiche de besoin'),
+                TextEntry::make('nom_produits')->label('Produits'),
+
                 TextEntry::make('numero_commande')->label('Numéro de commande'),
                 TextEntry::make('date_commande')->label('Date de commande')->date(),
 
-                TextEntry::make('montant_ht')->label('Montant HT')->numeric(),
-                TextEntry::make('tva')->label('TVA')->numeric(),
-                TextEntry::make('montant_ttc')->label('Montant TTC')->numeric(),
+                TextEntry::make('montant_ht')
+                    ->label('Montant HT')
+                    ->getStateUsing(fn($record) => number_format(round($record->montant_ht), 0, ',', ' ') . ' FCFA'),
+
+                TextEntry::make('tva')->label('TVA (%)')->numeric(),
+
+
+                TextEntry::make('montant_ttc')
+                    ->label('Montant TTC')
+                    ->getStateUsing(fn($record) => number_format(round($record->montant_ttc), 0, ',', ' ') . ' FCFA'),
 
                 TextEntry::make('moyen_de_paiement')->label('Moyen de paiement'),
                 TextEntry::make('statut')->label('Statut'),
                 TextEntry::make('created_at')->label('Créé le')->dateTime(),
                 TextEntry::make('updated_at')->label('Mis à jour le')->dateTime(),
 
-                Repeater::make('produits')
-                    ->label('Produits commandés')
-                    ->relationship('produits') // relation hasMany vers CommandeProduit
-                    ->schema([
-                        TextEntry::make('produit.nom_produit')->label('Produit'),
-                        TextEntry::make('quantite')->label('Quantité')->numeric(),
-                        TextEntry::make('prix_unitaire_ht')->label('Prix unitaire HT')->numeric(),
-                        TextEntry::make('montant_ht')->label('Montant HT')->numeric(),
-                        TextEntry::make('montant_ttc')->label('Montant TTC')->numeric(),
-                    ]),
+                // Liste des produits commandés
+               TextEntry::make('produits_lignes')
+    ->label('Produits commandés')
+    ->getStateUsing(function ($record) {
+        return $record->produits->map(function ($ligne) {
+            return "Produit : {$ligne->produit->nom_produit}  
+Quantité : {$ligne->quantite}  
+Prix unitaire : " . number_format(round($ligne->prix_unitaire_ht), 0, ',', ' ') . " FCFA";
+        })->implode("|"); // double saut de ligne entre les produits
+    })
+     // permet l'affichage multi-lignes
+
+                   
             ]);
     }
 }

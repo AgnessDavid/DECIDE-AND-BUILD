@@ -14,36 +14,41 @@ class FactureForm
     {
         return $schema
             ->components([
+                // On choisit la commande source
                 Select::make('commande_id')
-                    ->relationship('commande', 'id')
-                    ->required(),
-                Select::make('client_id')
-                    ->relationship('client', 'id')
-                    ->required(),
+                    ->relationship('commande', 'numero_commande')
+                    ->label('Commande')
+                    ->required()
+                    ->reactive(),
+
+                // Agent qui génère la facture
                 Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->label('Agent')
                     ->required(),
+
+                // Numéro de facture unique
                 TextInput::make('numero_facture')
+                    ->label('Numéro de facture')
                     ->required(),
+
                 DatePicker::make('date_facturation')
+                    ->label('Date de facturation')
                     ->required(),
-                TextInput::make('montant_ht')
-                    ->required()
-                    ->numeric()
-                    ->default(0.0),
-                TextInput::make('tva')
-                    ->required()
-                    ->numeric()
-                    ->default(18.0),
-                TextInput::make('montant_ttc')
-                    ->required()
-                    ->numeric()
-                    ->default(0.0),
+
+                // Statut de paiement
                 Select::make('statut_paiement')
-                    ->options(['non_paye' => 'Non paye', 'partiellement_paye' => 'Partiellement paye', 'paye' => 'Paye'])
+                    ->options([
+                        'non_paye' => 'Non payé',
+                        'partiellement_paye' => 'Partiellement payé',
+                        'paye' => 'Payé',
+                    ])
                     ->default('non_paye')
                     ->required(),
+
+                // Notes facultatives
                 Textarea::make('notes')
+                    ->label('Notes')
                     ->columnSpanFull(),
             ]);
     }
