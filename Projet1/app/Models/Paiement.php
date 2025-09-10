@@ -13,6 +13,7 @@ class Paiement extends Model
     protected $fillable = [
         'facture_id',
         'user_id',
+        'client_id',
         'numero_recu',
         'date_paiement',
         'montant_paye',
@@ -31,6 +32,12 @@ class Paiement extends Model
     {
         return $this->belongsTo(Facture::class);
     }
+
+    public function client()
+{
+    return $this->belongsTo(Client::class);
+}
+
 
     public function user(): BelongsTo
     {

@@ -64,6 +64,9 @@ class Commande extends Model
         return $this->produits->pluck('produit.nom_produit')->implode(', ');
     }
 
+
+
+
     // ================== EVENTS ==================
     protected static function booted()
     {
@@ -92,4 +95,7 @@ class Commande extends Model
             ]);
         });
     }
+
+
+
 }

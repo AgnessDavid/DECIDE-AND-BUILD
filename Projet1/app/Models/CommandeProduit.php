@@ -30,4 +30,45 @@ class CommandeProduit extends Model
     {
         return $this->belongsTo(Produit::class);
     }
+
+
+
+
+    protected static function booted()
+{
+    // Quand une ligne de commande est créée
+    static::created(function ($ligne) {
+        $produit = $ligne->produit;
+        if ($produit) {
+            // Retirer la quantité commandée du stock actuel
+            $produit->retirerStock($ligne->quantite);
+
+            // Optionnel : créer un mouvement de stock pour historiser
+            $produit->mouvements()->create([
+                'date_mouvement' => now(),
+                'type_mouvement' => 'sortie',
+                'quantite' => $ligne->quantite,
+                'stock_resultant' => $produit->stock_actuel,
+                'details' => "Commande n°{$ligne->commande_id}",
+            ]);
+        }
+    });
+
+    // Si une ligne est supprimée, restaurer le stock
+    static::deleted(function ($ligne) {
+        $produit = $ligne->produit;
+        if ($produit) {
+            $produit->ajusterStock($ligne->quantite);
+
+            $produit->mouvements()->create([
+                'date_mouvement' => now(),
+                'type_mouvement' => 'entree',
+                'quantite' => $ligne->quantite,
+                'stock_resultant' => $produit->stock_actuel,
+                'details' => "Annulation commande n°{$ligne->commande_id}",
+            ]);
+        }
+    });
+}
+
 }

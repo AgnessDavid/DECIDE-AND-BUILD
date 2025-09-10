@@ -51,6 +51,9 @@ class Facture extends Model
         return $this->hasMany(Paiement::class);
     }
 
+
+
+
     // Accesseurs
     public function getFormattedMontantHtAttribute(): string
     {

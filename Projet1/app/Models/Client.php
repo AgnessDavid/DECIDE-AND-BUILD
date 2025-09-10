@@ -67,7 +67,7 @@ class Client extends Model
 }
 
 
-
+  
 
     /**
      * Scope pour filtrer par type de client

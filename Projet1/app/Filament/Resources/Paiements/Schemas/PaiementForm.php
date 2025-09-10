@@ -20,6 +20,12 @@ class PaiementForm
                 Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
+                Select::make('client_id')
+                    ->relationship('client', 'nom')
+
+                    ->label('Client')
+                    ->required(),
+
                 TextInput::make('numero_recu')
                     ->required(),
                 DatePicker::make('date_paiement')

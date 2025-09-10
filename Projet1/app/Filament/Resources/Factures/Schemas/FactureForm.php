@@ -9,6 +9,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Schema;
 use App\Models\Produit;
+use App\Models\Commande;
 
 class FactureForm
 {
@@ -21,7 +22,22 @@ class FactureForm
                     ->relationship('commande', 'numero_commande')
                     ->label('Commande')
                     ->required()
-                    ->reactive(),
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $commande = Commande::with('client')->find($state);
+                            if ($commande && $commande->client) {
+                                $set('client_id', $commande->client->id);
+                            }
+                        }
+                    }),
+
+                // Affichage automatique du client
+                Select::make('client_id')
+                    ->relationship('client', 'nom_client')
+                    ->label('Client')
+                    ->disabled()
+                    ->dehydrated(false), // n’enregistre pas car déjà lié via commande
 
                 // Agent responsable
                 Select::make('user_id')

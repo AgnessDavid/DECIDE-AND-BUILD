@@ -17,7 +17,7 @@ return new class extends Migration
             // Clés étrangères
             $table->foreignId('facture_id')->comment('La facture qui est payée')->constrained('factures')->cascadeOnDelete();
             $table->foreignId('user_id')->comment('L\'agent qui a reçu le paiement')->constrained('users')->cascadeOnDelete();
-
+            $table->foreignId('client_id')->constrained('clients')->cascadeOnDelete();
             // Informations du reçu
             $table->string('numero_recu')->unique();
             $table->date('date_paiement');
