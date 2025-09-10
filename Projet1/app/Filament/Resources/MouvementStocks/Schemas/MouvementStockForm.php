@@ -6,6 +6,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use App\Models\Produit;
 
 class MouvementStockForm
 {
@@ -13,24 +14,62 @@ class MouvementStockForm
     {
         return $schema
             ->components([
-               Select::make('produit_id')
-                  ->relationship('produit', 'nom_produit')
-                  ->required(),
+                // Produit sélectionné
+                Select::make('produit_id')
+                    ->relationship('produit', 'nom_produit')
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(fn ($state, callable $set) => 
+                        $set('stock_actuel', Produit::find($state)?->stock_actuel ?? 0)
+                    ),
+
                 DatePicker::make('date_mouvement')
                     ->required(),
-                TextInput::make('numero_bon'),
-                Select::make('type_mouvement')
-                    ->options(['entree' => 'Entree', 'sortie' => 'Sortie'])
+
+                TextInput::make('numero_bon')
                     ->required(),
-                TextInput::make('quantite')
+
+                Select::make('type_mouvement')
+                    ->options([
+                        'entree' => 'Entrée',
+                        'sortie' => 'Sortie'
+                    ])
                     ->required()
-                    ->numeric(),
+                    ->reactive(),
+
+                // Quantités séparées selon type
+                TextInput::make('quantite_entree')
+                    ->label('Quantité entrée')
+                    ->numeric()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        if ($get('type_mouvement') === 'entree') {
+                            $stockActuel = Produit::find($get('produit_id'))?->stock_actuel ?? 0;
+                            $set('stock_resultant', $stockActuel + (int) $state);
+                        }
+                    }),
+
+                TextInput::make('quantite_sortie')
+                    ->label('Quantité sortie')
+                    ->numeric()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        if ($get('type_mouvement') === 'sortie') {
+                            $stockActuel = Produit::find($get('produit_id'))?->stock_actuel ?? 0;
+                            $set('stock_resultant', $stockActuel - (int) $state);
+                        }
+                    }),
+
+                // Stock actuel (lecture seule)
+                TextInput::make('stock_actuel')
+                    ->numeric()
+                    ->disabled()
+                    ->dehydrated(false),
+
+                // Stock résultant après mouvement
                 TextInput::make('stock_resultant')
                     ->numeric()
-                    ->disabled() // l’utilisateur ne peut pas le modifier
-                    ->default(fn ($record) => $record->produit?->stock_actuel ?? 0),
-                TextInput::make('en_commande')
-                    ->numeric(),
+                    ->disabled(),
             ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Facture extends Model
 {
@@ -29,7 +30,7 @@ class Facture extends Model
         'montant_ttc' => 'decimal:2',
     ];
 
-    // ================== RELATIONS ==================
+    // Relations
     public function commande()
     {
         return $this->belongsTo(Commande::class);
@@ -50,13 +51,7 @@ class Facture extends Model
         return $this->hasMany(Paiement::class);
     }
 
-    // Accéder directement aux produits liés via la commande
-    public function produits()
-    {
-        return $this->hasManyThrough(CommandeProduit::class, Commande::class, 'id', 'commande_id', 'commande_id', 'id');
-    }
-
-    // ================== ACCESSORS ==================
+    // Accesseurs
     public function getFormattedMontantHtAttribute(): string
     {
         return number_format($this->montant_ht, 2, ',', ' ') . ' FCFA';
@@ -77,48 +72,29 @@ class Facture extends Model
         };
     }
 
-    // ================== MUTATEURS ==================
+public function calculerMontantTtc(): void
+{
+    $this->montant_ttc = $this->montant_ht + ($this->montant_ht * $this->tva / 100);
+}
+
+
+
+    // Mutateurs
     public function setNumeroFactureAttribute($value): void
     {
         $this->attributes['numero_facture'] = strtoupper($value);
     }
 
-    // ================== MÉTHODES UTILES ==================
-    public function calculerMontantTtc(): void
-    {
-        $this->montant_ttc = $this->montant_ht * (1 + ($this->tva / 100));
-    }
+    // Méthodes utilitaires
 
-//  A Changer 
+
     public function estPayee(): bool
     {
         return $this->statut_paiement === 'paye';
     }
 
-    public function estPartiel(): bool
-    {
-        return $this->statut_paiement === 'partiellement_paye';
-    }
 
-    public function estNonPayee(): bool
-    {
-        return $this->statut_paiement === 'non_paye';
-    }
-
-
-public function getProduitsLignesAttribute(): array
-{
-    return $this->commande->produits->map(function ($ligne) {
-        return [
-            'nom' => $ligne->produit->nom_produit,
-            'quantite' => $ligne->quantite,
-            'prix_unitaire_ht' => $ligne->prix_unitaire_ht,
-            'montant_ht' => $ligne->quantite * $ligne->prix_unitaire_ht,
-        ];
-    })->toArray();
-}
-
-    // ================== SCOPES ==================
+    // Scopes
     public function scopePayees($query)
     {
         return $query->where('statut_paiement', 'paye');
@@ -139,29 +115,41 @@ public function getProduitsLignesAttribute(): array
         return $query->whereBetween('date_facturation', [$dateDebut, $dateFin]);
     }
 
-    // ================== NUMÉRO AUTO ==================
-    public static function genererNumeroFacture(): string
-    {
-        return 'FAC-' . now()->year . '-' . str_pad(
-            static::whereYear('created_at', now()->year)->count() + 1,
-            4,
-            '0',
-            STR_PAD_LEFT
-        );
-    }
 
-    // ================== EVENTS ==================
+public static function genererNumeroFacture(): string
+{
+    return 'FAC-' . now()->year . '-' . str_pad(
+        static::whereYear('created_at', now()->year)->count() + 1,
+        4,
+        '0',
+        STR_PAD_LEFT
+    );
+}
+
+
+
+    // Événements du modèle
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($facture) {
+            // Générer automatiquement le numéro de facture si non fourni
             if (empty($facture->numero_facture)) {
-                $facture->numero_facture = static::genererNumeroFacture();
+                $facture->numero_facture = 'FAC-' . date('Y') . '-' . str_pad(
+                    static::whereYear('created_at', date('Y'))->count() + 1,
+                    4,
+                    '0',
+                    STR_PAD_LEFT
+                );
             }
         });
 
+
+
+        
         static::saving(function ($facture) {
+            // Recalculer automatiquement le montant TTC
             if ($facture->isDirty(['montant_ht', 'tva'])) {
                 $facture->calculerMontantTtc();
             }

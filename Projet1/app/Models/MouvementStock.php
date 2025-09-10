@@ -15,40 +15,37 @@ class MouvementStock extends Model
     protected $fillable = [
         'produit_id',
         'demande_impression_id',
+        'designation',
         'date_mouvement',
-        'numero_bon',
         'type_mouvement',
-        'quantite',
+        'quantite_entree',
+        'numero_bon',
+        'quantite_sortie',
         'stock_resultant',
-        'en_commande',
+        'details',
     ];
 
     protected $casts = [
         'date_mouvement' => 'date',
-        'quantite' => 'integer',
+        'quantite_entree' => 'integer',
+        'quantite_sortie' => 'integer',
         'stock_resultant' => 'integer',
-        'en_commande' => 'integer',
     ];
 
-    /**
-     * Relation avec le produit.
-     */
+    // ================== RELATIONS ==================
+
     public function produit(): BelongsTo
     {
         return $this->belongsTo(Produit::class);
     }
 
-      public function demandeImpression()
+    public function demandeImpression(): BelongsTo
     {
         return $this->belongsTo(DemandeImpression::class);
     }
 
-    /**
-     * Relation avec l'employé qui a enregistré le mouvement.
-     */
-  
+    // ================== SCOPES ==================
 
-    /** Scopes personnalisés */
     public function scopeEntrees($query)
     {
         return $query->where('type_mouvement', 'entree');
@@ -64,7 +61,8 @@ class MouvementStock extends Model
         return $query->where('produit_id', $produitId);
     }
 
-    /** Accessor lisible */
+    // ================== ACCESSORS ==================
+
     public function getTypeMouvementLabelAttribute(): string
     {
         return match($this->type_mouvement) {
@@ -74,9 +72,40 @@ class MouvementStock extends Model
         };
     }
 
-    /** Mutateur */
+    // ================== MÉTHODES ==================
+
+    /**
+     * Définit automatiquement la quantité entrée ou sortie
+     */
     public function setQuantiteAttribute($value)
     {
-        $this->attributes['quantite'] = abs($value);
+        $value = abs($value);
+        if ($this->type_mouvement === 'entree') {
+            $this->attributes['quantite_entree'] = $value;
+            $this->attributes['quantite_sortie'] = 0;
+        } elseif ($this->type_mouvement === 'sortie') {
+            $this->attributes['quantite_sortie'] = $value;
+            $this->attributes['quantite_entree'] = 0;
+        }
+    }
+
+    /**
+     * Calcul automatique du stock résultant avant sauvegarde
+     */
+    protected static function booted()
+    {
+        static::saving(function ($mouvement) {
+            if ($mouvement->produit) {
+                $stockActuel = $mouvement->produit->stock_actuel ?? 0;
+
+                $mouvement->stock_resultant = $stockActuel 
+                    + ($mouvement->quantite_entree ?? 0) 
+                    - ($mouvement->quantite_sortie ?? 0);
+
+                // Mettre à jour le stock actuel du produit
+                $mouvement->produit->stock_actuel = $mouvement->stock_resultant;
+                $mouvement->produit->save();
+            }
+        });
     }
 }

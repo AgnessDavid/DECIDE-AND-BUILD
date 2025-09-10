@@ -24,6 +24,8 @@ class CommandeProduit extends Model
         return $this->belongsTo(Commande::class);
     }
 
+
+    // relation avec factu
     public function produit(): BelongsTo
     {
         return $this->belongsTo(Produit::class);

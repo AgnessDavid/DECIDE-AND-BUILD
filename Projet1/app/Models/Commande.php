@@ -68,15 +68,27 @@ class Commande extends Model
     protected static function booted()
     {
         static::created(function ($commande) {
+            // Création automatique de la facture lors de la création de la commande
             Facture::create([
                 'commande_id' => $commande->id,
                 'client_id' => $commande->client_id,
                 'user_id' => $commande->user_id,
                 'date_facturation' => now(),
+                'moyen_de_paiement' => $commande->moyen_de_paiement,
+                'statut' => $commande->statut ?? 'non_paye',
                 'montant_ht' => $commande->montant_ht,
                 'tva' => 18.00,
                 'montant_ttc' => $commande->montant_ttc,
-                'statut_paiement' => 'non_paye',
+                'produits' => $commande->produits->map(function ($ligne) {
+                    return [
+                        'nom' => $ligne->produit->nom_produit,
+                        'quantite' => $ligne->quantite,
+                        'prix_unitaire_ht' => $ligne->prix_unitaire_ht,
+                        'montant_ht' => $ligne->quantite * $ligne->prix_unitaire_ht,
+                        'montant_ttc' => $ligne->quantite * $ligne->prix_unitaire_ht * 1.18,
+                    ];
+                }),
+                'notes' => $commande->notes_internes,
             ]);
         });
     }

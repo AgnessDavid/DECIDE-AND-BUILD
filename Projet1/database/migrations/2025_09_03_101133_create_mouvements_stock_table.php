@@ -11,23 +11,35 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('mouvements_stock', function (Blueprint $table) {
+Schema::create('mouvements_stock', function (Blueprint $table) {
     $table->id();
 
+    // Produit lié
+    $table->foreignId('produit_id')
+        ->constrained('produits')
+        ->cascadeOnDelete();
+
+    // Optionnel : lien avec demande d'impression
     $table->foreignId('demande_impression_id')
+        ->nullable()
         ->constrained('demandes_impression')
-        ->onDelete('cascade');
+        ->cascadeOnDelete();
 
-
-    $table->string('designation');
+    $table->string('designation')->nullable();
+    
     $table->integer('quantite_entree')->nullable();
     $table->integer('quantite_sortie')->nullable();
+    
     $table->date('date_mouvement');
-    $table->string('type_mouvement'); // entrée ou sortie
+    $table->string('type_mouvement'); // 'entree' ou 'sortie'
+ 
+    $table->integer('stock_resultant')->nullable(); // stock après mouvement
+
     $table->text('details')->nullable();
 
     $table->timestamps();
 });
+
 
     }
 

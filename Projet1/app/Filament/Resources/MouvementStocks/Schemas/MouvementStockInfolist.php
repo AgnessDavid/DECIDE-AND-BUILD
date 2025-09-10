@@ -34,18 +34,23 @@ class MouvementStockInfolist
                         default => 'gray',
                     }),
 
-                // Quantités
-                TextEntry::make('quantite')
+                // Quantités selon type
+                TextEntry::make('quantite_entree')
                     ->numeric()
-                    ->label('Quantité'),
+                    ->label('Quantité entrée'),
 
-                TextEntry::make('stock_resultant')
+                TextEntry::make('quantite_sortie')
                     ->numeric()
-                    ->label('Stock restant'),
+                    ->label('Quantité sortie'),
 
-                TextEntry::make('en_commande')
+                // Stock actuel et stock restant
+                TextEntry::make('produit.stock_actuel')
                     ->numeric()
-                    ->label('En commande'),
+                    ->label('Stock actuel'),
+
+             TextEntry::make('stock_resultant')
+                 ->numeric()
+                 ->label('Stock restant'),
 
                 // Dates de création et de mise à jour
                 TextEntry::make('created_at')

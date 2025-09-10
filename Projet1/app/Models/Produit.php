@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+
 class Produit extends Model
 {
     use HasFactory;
@@ -42,6 +43,14 @@ class Produit extends Model
                     ->withTimestamps()
                     ->using(CommandeProduit::class);
     }
+
+
+
+public function mouvements(): HasMany
+{
+    return $this->hasMany(MouvementStock::class, 'produit_id');
+}
+
 
     /** Lignes de commande pivot */
     public function lignesCommande(): HasMany
