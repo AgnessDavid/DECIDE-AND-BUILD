@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,71 +14,45 @@ class Validation extends Model
 
     protected $fillable = [
         'fiche_besoin_id',
+        'demande_id',
         'user_id',
         'statut',
+        'date_visa_chef_service',
+        'nom_visa_chef_service',
+        'date_autorisation',
+        'est_autorise_chef_informatique',
+        'nom_visa_autorisateur',
+        'date_impression',
         'notes',
     ];
 
-    // ================== RELATIONS ==================
-
-    /**
-     * La fiche de besoin associée à cette validation
-     */
+    // =============== RELATIONS ===============
     public function ficheBesoin(): BelongsTo
     {
         return $this->belongsTo(FicheBesoin::class);
     }
 
-    /**
-     * L'utilisateur qui a validé la fiche (optionnel)
-     */
+    public function demandeImpression(): BelongsTo
+    {
+        return $this->belongsTo(DemandeImpression::class, 'demande_id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * La demande d'impression associée
-     */
-    public function demandeImpression()
-    {
-        return $this->hasOne(DemandeImpression::class, 'demande_id');
-    }
-
-    // ================== ACCESSEURS ==================
-
+    // =============== ACCESSORS ===============
     public function getEstValideeAttribute(): bool
     {
-        return $this->statut === 'validée'; // attention à la valeur exacte
+        return $this->statut === 'validée';
     }
 
-    public function getEstRefuseeAttribute(): bool
+    public function getEstEnAttenteAttribute(): bool
     {
-        return $this->statut === 'refusee';
+        return $this->statut === 'en_attente';
     }
 
-    // ================== EVENTS ==================
+    // =============== EVENTS ===============
 
-    protected static function booted()
-    {
-        static::updated(function ($validation) {
-            if ($validation->statut === 'validée') {
-                $fiche = $validation->ficheBesoin;
-
-                // Vérifie si une demande d'impression n'existe pas déjà pour cette fiche
-                if (!\App\Models\DemandeImpression::where('demande_id', $fiche->id)->exists()) {
-                    \App\Models\DemandeImpression::create([
-                        'demande_id' => $fiche->id,
-                        'numero_ordre' => 'ORD-' . $fiche->id,
-                        'designation' => 'Fiche de besoin de ' . $fiche->nom_structure,
-                        'quantite_demandee' => 1,
-                        'date_demande' => now(),
-                        'agent_commercial' => $fiche->nom_agent_bnetd,
-                        'service' => 'Service concerné',
-                        'objet' => 'Impression de la fiche validée',
-                    ]);
-                }
-            }
-        });
-    }
 }

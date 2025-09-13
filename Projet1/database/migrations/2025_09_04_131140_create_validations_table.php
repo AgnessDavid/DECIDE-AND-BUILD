@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,22 +10,38 @@ return new class extends Migration {
         Schema::create('validations', function (Blueprint $table) {
             $table->id();
 
+            // Fiche de besoin optionnelle
             $table->foreignId('fiche_besoin_id')
-                ->constrained('fiches_besoin')
-                ->cascadeOnDelete()
-                ->comment('Fiche de besoin validée');
+                ->nullable()
+                ->constrained('fiches_besoins')
+                ->nullOnDelete();
 
+            // Demande d'impression optionnelle
+            $table->foreignId('demande_id')
+                ->nullable()
+                ->constrained('demandes_impression')
+                ->nullOnDelete();
+
+            // Utilisateur validateur
             $table->foreignId('user_id')
-                ->nullable() // permet de ne pas fournir de valeur immédiatement
+                ->nullable()
                 ->constrained('users')
-                ->nullOnDelete(); // si l’utilisateur est supprimé, la colonne devient NULL
+                ->nullOnDelete();
 
-
+            // Statut de la validation
             $table->enum('statut', ['en_attente', 'validée'])
-                ->default('en_attente')
-                ->comment('Statut de la validation');
+                ->default('en_attente');
 
-            $table->text('notes')->nullable()->comment('Notes éventuelles');
+            // Champs d'autorisation / visa
+            $table->date('date_visa_chef_service')->nullable();
+            $table->string('nom_visa_chef_service')->nullable();
+            $table->date('date_autorisation')->nullable();
+            $table->boolean('est_autorise_chef_informatique')->default(false);
+            $table->string('nom_visa_autorisateur')->nullable();
+            $table->date('date_impression')->nullable();
+
+            // Notes facultatives
+            $table->text('notes')->nullable();
 
             $table->timestamps();
         });

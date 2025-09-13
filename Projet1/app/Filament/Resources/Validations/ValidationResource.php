@@ -14,6 +14,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ValidationResource extends Resource
@@ -36,6 +37,8 @@ class ValidationResource extends Resource
 
     public static function table(Table $table): Table
     {
+
+      
         return ValidationsTable::configure($table);
     }
 

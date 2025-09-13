@@ -15,15 +15,29 @@ class ValidationsTable
     {
         return $table
             ->columns([
-                TextColumn::make('ficheBesoin.id')
+                TextColumn::make('source')
+                    ->label('Source')
+                    ->getStateUsing(function ($record) {
+                        if ($record->demande_id) {
+                            return $record->demandeImpression->designation ?? 'N/A';
+                        } elseif ($record->fiche_besoin_id) {
+                            return $record->ficheBesoin->nom_structure ?? 'RAS';
+                        }
+                        return '-';
+                    })
                     ->searchable(),
+
                 TextColumn::make('user.name')
+                    ->label('Validé par')
                     ->searchable(),
+
                 TextColumn::make('statut'),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
