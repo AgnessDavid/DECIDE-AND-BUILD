@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\DemandeImpressions\Pages;
+namespace App\Filament\Resources\DemandeProductions\Pages;
 
-use App\Filament\Resources\DemandeImpressions\DemandeImpressionResource;
+use App\Filament\Resources\DemandeProductions\DemandeProductionResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditDemandeImpression extends EditRecord
+class EditDemandeProduction extends EditRecord
 {
-    protected static string $resource = DemandeImpressionResource::class;
+    protected static string $resource = DemandeProductionResource::class;
 
     protected function getHeaderActions(): array
     {
