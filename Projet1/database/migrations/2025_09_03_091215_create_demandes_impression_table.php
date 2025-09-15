@@ -10,10 +10,7 @@ return new class extends Migration {
             $table->id();
 
             // Relations
-            $table->foreignId('fiche_besoin_id')
-                ->nullable()
-                ->constrained('fiches_besoins')
-                ->nullOnDelete();
+         
 
             $table->foreignId('produit_id')
                 ->nullable()

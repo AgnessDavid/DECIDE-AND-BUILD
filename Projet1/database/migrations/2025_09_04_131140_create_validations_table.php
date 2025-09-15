@@ -7,44 +7,29 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('validations', function (Blueprint $table) {
-            $table->id();
+     Schema::create('validations', function (Blueprint $table) {
+    $table->id();
+    
+    // Relation polymorphe
+    $table->unsignedBigInteger('document_id')->nullable();
+    $table->enum('type', ['fiche_besoin', 'demande_impression']);
 
-            // Fiche de besoin optionnelle
-            $table->foreignId('fiche_besoin_id')
-                ->nullable()
-                ->constrained('fiches_besoins')
-                ->nullOnDelete();
+    $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+    $table->enum('statut', ['en_attente', 'validée'])->default('en_attente');
 
-            // Demande d'impression optionnelle
-            $table->foreignId('demande_id')
-                ->nullable()
-                ->constrained('demandes_impression')
-                ->nullOnDelete();
+    $table->date('date_visa_chef_service')->nullable();
+    $table->string('nom_visa_chef_service')->nullable();
+    $table->date('date_autorisation')->nullable();
+    $table->boolean('est_autorise_chef_informatique')->default(false);
+    $table->string('nom_visa_autorisateur')->nullable();
+    $table->date('date_impression')->nullable();
+    $table->text('notes')->nullable();
 
-            // Utilisateur validateur
-            $table->foreignId('user_id')
-                ->nullable()
-                ->constrained('users')
-                ->nullOnDelete();
+    $table->timestamps();
 
-            // Statut de la validation
-            $table->enum('statut', ['en_attente', 'validée'])
-                ->default('en_attente');
+    $table->index(['type', 'document_id']); // pour filtrer facilement
+});
 
-            // Champs d'autorisation / visa
-            $table->date('date_visa_chef_service')->nullable();
-            $table->string('nom_visa_chef_service')->nullable();
-            $table->date('date_autorisation')->nullable();
-            $table->boolean('est_autorise_chef_informatique')->default(false);
-            $table->string('nom_visa_autorisateur')->nullable();
-            $table->date('date_impression')->nullable();
-
-            // Notes facultatives
-            $table->text('notes')->nullable();
-
-            $table->timestamps();
-        });
     }
 
     public function down(): void

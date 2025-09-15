@@ -2,21 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Validation extends Model
 {
-    use HasFactory;
-
-    protected $table = 'validations';
-
     protected $fillable = [
-        'fiche_besoin_id',
-        'demande_id',
-        'user_id',
-        'statut',
+        'document_id',               // L'id du document (fiche_besoin ou demande_impression)
+        'type',                      // Le type de document : 'fiche_besoin' ou 'demande_impression'
+        'user_id',                   // L'utilisateur qui valide
+        'statut',                    // 'en_attente' ou 'validée'
         'date_visa_chef_service',
         'nom_visa_chef_service',
         'date_autorisation',
@@ -26,33 +22,41 @@ class Validation extends Model
         'notes',
     ];
 
-    // =============== RELATIONS ===============
-    public function ficheBesoin(): BelongsTo
+    protected $casts = [
+        'date_visa_chef_service' => 'date',
+        'date_autorisation' => 'date',
+        'date_impression' => 'date',
+        'est_autorise_chef_informatique' => 'boolean',
+    ];
+
+    // Relation polymorphe avec le document validé
+    public function document(): MorphTo
     {
-        return $this->belongsTo(FicheBesoin::class);
+        return $this->morphTo(null, 'type', 'document_id');
     }
 
-    public function demandeImpression(): BelongsTo
-    {
-        return $this->belongsTo(DemandeImpression::class, 'demande_id');
-    }
+    public function imprimeries()
+{
+    return $this->hasMany(Imprimerie::class, 'validation_id');
+}
 
+    // Relation avec l'utilisateur qui valide
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // =============== ACCESSORS ===============
-    public function getEstValideeAttribute(): bool
+    // Relation directe avec la fiche de besoin (pratique pour filtrer)
+    public function ficheBesoin(): BelongsTo
     {
-        return $this->statut === 'validée';
+        return $this->belongsTo(FicheBesoin::class, 'document_id')
+                    ->where('type', 'fiche_besoin');
     }
 
-    public function getEstEnAttenteAttribute(): bool
+    // Relation directe avec la demande d'impression (pratique pour filtrer)
+    public function demandeImpression(): BelongsTo
     {
-        return $this->statut === 'en_attente';
+        return $this->belongsTo(DemandeImpression::class, 'document_id')
+                    ->where('type', 'demande_impression');
     }
-
-    // =============== EVENTS ===============
-
 }

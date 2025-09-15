@@ -25,10 +25,7 @@ class DemandeProductionForm
                 ->relationship('produit', 'nom_produit')
                 ->required(fn ($get) => $get('type_impression') === 'simple'),
 
-            Select::make('fiche_besoin_id')
-                ->label('Fiche de besoin')
-                ->relationship('ficheBesoin', 'nom_structure')
-                ->required(fn ($get) => $get('type_impression') === 'specifique'),
+  
 
             TextInput::make('numero_ordre')->label('Numéro d\'ordre')->required(),
             TextInput::make('designation')->label('Désignation')->required(),

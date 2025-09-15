@@ -4,7 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-// Ce fichier est basé sur votre code.
 return new class extends Migration
 {
     /**
@@ -15,6 +14,8 @@ return new class extends Migration
         Schema::create('fiches_besoin', function (Blueprint $table) {
             $table->id();
 
+            // Lien produit
+            $table->string('produit_souhaite');
             // Infos structure
             $table->string('nom_structure');
             $table->enum('type_structure', ['societe', 'organisme', 'particulier']);
@@ -30,7 +31,7 @@ return new class extends Migration
             // Entretien
             $table->string('nom_agent_bnetd');
             $table->date('date_entretien');
-            $table->text('objectifs_vises')->nullable(); // Ajouté depuis le formulaire
+            $table->text('objectifs_vises')->nullable();
 
             // Options
             $table->boolean('commande_ferme')->default(false);
@@ -41,11 +42,16 @@ return new class extends Migration
             $table->date('date_livraison_prevue')->nullable();
             $table->date('date_livraison_reelle')->nullable();
 
-            // Signatures (vos ajouts)
+            // Signatures
             $table->string('signature_client')->nullable();
             $table->string('signature_agent_bnetd')->nullable();
 
             $table->timestamps();
+
+            // Contrainte de clé étrangère
+            $table->foreign('produit_id')
+                  ->references('id')->on('produits')
+                  ->onDelete('set null');
         });
     }
 

@@ -33,6 +33,9 @@ class FicheExpressionBesoinInfolist
 
             TextEntry::make('signature_client')->label('Signature client'),
             TextEntry::make('signature_agent_bnetd')->label('Signature agent BNETD'),
+
+           TextEntry::make('produit_souhaite')->label('Produit souhaité'),
+       
         ]);
     }
 }

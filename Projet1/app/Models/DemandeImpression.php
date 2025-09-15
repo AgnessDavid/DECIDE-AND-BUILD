@@ -14,7 +14,7 @@ class DemandeImpression extends Model
     protected $table = 'demandes_impression';
 
     protected $fillable = [
-        'fiche_besoin_id',
+  
         'produit_id',
         'type_impression',
         'numero_ordre',
@@ -27,37 +27,48 @@ class DemandeImpression extends Model
         'objet',
     ];
 
-
-
 protected static function booted()
-    {
-        static::created(function ($demande) {
-            // Création automatique d'une validation associée
-            \App\Models\Validation::create([
-                'demande_id' => $demande->id,
-                'fiche_besoin_id' => $demande->fiche_besoin_id,
-                'statut' => 'en_attente',
-                // 'user_id' peut rester null jusqu'à ce que quelqu'un valide
-            ]);
-        });
-    }
+{
+    static::created(function ($demande) {
+        \App\Models\Validation::create([
+            'document_id' => $demande->id,
+            'type' => 'demande_impression',
+            'statut' => 'en_attente',
+        ]);
+    });
+}
 
+    // ================== RELATIONS ==================
 
-
-    // =============== RELATIONS ===============
-
+    /**
+     * La demande appartient à une fiche de besoin
+     */
     public function ficheBesoin(): BelongsTo
     {
         return $this->belongsTo(FicheBesoin::class);
     }
 
+
+public function imprimeries()
+{
+    return $this->hasMany(Imprimerie::class, 'demande_id');
+}
+
+
+    /**
+     * La demande est liée à un produit
+     */
     public function produit(): BelongsTo
     {
         return $this->belongsTo(Produit::class);
     }
 
+    /**
+     * Toutes les validations liées à cette demande d'impression
+     */
     public function validations(): HasMany
     {
-        return $this->hasMany(Validation::class, 'demande_id');
+        return $this->hasMany(Validation::class, 'document_id')
+                    ->where('type', 'demande_impression');
     }
 }

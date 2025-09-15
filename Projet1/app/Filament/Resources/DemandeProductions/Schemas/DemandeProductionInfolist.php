@@ -12,7 +12,7 @@ class DemandeProductionInfolist
         return $schema->components([
             TextEntry::make('type_impression')->label('Type de production'),
             TextEntry::make('produit.nom_produit')->label('Produit')->default('-'),
-            TextEntry::make('ficheBesoin.nom_structure')->label('Fiche de besoin')->default('-'),
+           
             TextEntry::make('numero_ordre')->label('Numéro d\'ordre'),
             TextEntry::make('designation')->label('Désignation'),
             TextEntry::make('quantite_demandee')->label('Quantité demandée'),
