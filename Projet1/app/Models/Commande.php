@@ -28,6 +28,15 @@ class Commande extends Model
     ];
 
     // ================== RELATIONS ==================
+
+
+
+ public function ventes(): HasMany
+    {
+        return $this->hasMany(Vente::class);
+    }
+
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

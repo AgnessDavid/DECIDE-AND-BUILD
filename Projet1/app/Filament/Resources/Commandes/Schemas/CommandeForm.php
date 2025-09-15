@@ -106,9 +106,11 @@ class CommandeForm
                 Select::make('statut')
                     ->label('Statut')
                     ->options([
+                        'non_payé' => 'Non Payé',
                         'payé' => 'Payé',
+                        
                     ])
-                    ->default('payé')
+                    ->default('non_payé')
                     ->required(),
             ]);
     }
