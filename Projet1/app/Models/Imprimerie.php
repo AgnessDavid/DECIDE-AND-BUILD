@@ -8,59 +8,61 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Imprimerie extends Model
 {
     protected $fillable = [
-        'validation_id',
-        'demande_id',
+        'validation_id',      // pour relier à la validation
+        'demande_id',         // référence à la demande
         'produit_id',
         'nom_produit',
+        'type_impression',
         'quantite_demandee',
         'quantite_imprimee',
-        'valide_par',
-        'operateur',
+        'agent_commercial',
+        'service',
+        'objet',
+        'date_demande',
         'date_impression',
+        'statut',             // en_cours / terminée
+        'valide_par',         // nom de l'utilisateur qui a validé
     ];
 
     // ================== RELATIONS ==================
 
-    /**
-     * L'imprimerie appartient à une validation
-     */
-    public function validation(): BelongsTo
-    {
-        return $this->belongsTo(Validation::class, 'validation_id');
-    }
-
-    /**
-     * L'imprimerie appartient à une demande d'impression
-     */
-    public function demandeImpression(): BelongsTo
+    public function demande(): BelongsTo
     {
         return $this->belongsTo(DemandeImpression::class, 'demande_id');
     }
 
-    /**
-     * L'imprimerie est liée à un produit
-     */
     public function produit(): BelongsTo
     {
         return $this->belongsTo(Produit::class, 'produit_id');
     }
 
-    // ================== HOOK DE CRÉATION ==================
-    protected static function booted()
+    public function validation(): BelongsTo
     {
-        static::creating(function ($imprimerie) {
-            if ($imprimerie->demande_id) {
-                $demande = \App\Models\DemandeImpression::find($imprimerie->demande_id);
-                if ($demande) {
-                    $imprimerie->produit_id = $demande->produit_id;
-                    $imprimerie->nom_produit = $demande->designation;
-                    $imprimerie->quantite_demandee = $demande->quantite_demandee;
-                    $imprimerie->quantite_imprimee = $demande->quantite_imprimee;
-                    $imprimerie->valide_par = $demande->agent_commercial;
-                    $imprimerie->operateur = $demande->service;
-                    $imprimerie->date_impression = now();
-                }
-            }
-        });
+        return $this->belongsTo(Validation::class, 'validation_id');
     }
+
+    // ================== HOOK DE CRÉATION ==================
+protected static function booted()
+{
+    static::creating(function ($imprimerie) {
+        if ($imprimerie->demande_id) {
+            $demande = DemandeImpression::find($imprimerie->demande_id);
+            if ($demande) {
+                $imprimerie->produit_id = $demande->produit_id;
+                $imprimerie->nom_produit = $demande->designation;
+                $imprimerie->type_impression = $demande->type_impression;
+                $imprimerie->quantite_demandee = $demande->quantite_demandee;
+                $imprimerie->quantite_imprimee = $demande->quantite_imprimee ?? 0;
+                $imprimerie->agent_commercial = $demande->agent_commercial;
+                $imprimerie->service = $demande->service;
+                $imprimerie->objet = $demande->objet;
+                $imprimerie->date_demande = $demande->date_demande;
+                $imprimerie->date_impression = now();
+                $imprimerie->statut = 'en_cours';
+                // valide_par doit être assigné **avant de créer l'imprimerie** depuis Validation
+            }
+        }
+    });
+}
+
 }

@@ -23,9 +23,17 @@ return new class extends Migration
             $table->string('valide_par')->nullable();               // Nom de la personne qui a validé
             $table->string('operateur')->nullable();                // Personne qui fera l'impression
             $table->date('date_impression')->nullable();            // Date de l'impression
-
-            $table->timestamps();
-
+            $table->enum('type_impression', ['simple', 'specifique'])
+            ->after('nom_produit');
+             $table->enum('statut', ['en_cours', 'terminee'])->default('en_cours');
+           
+  $table->string('agent_commercial')->after('quantite_demandee')->nullable();
+            $table->string('service')->after('agent_commercial')->nullable();
+            $table->string('objet')->after('service')->nullable();
+               $table->date('date_demande')->nullable();
+             $table->timestamps();
+            
+            
             // Clés étrangères
             $table->foreign('validation_id')->references('id')->on('validations')->onDelete('cascade');
             $table->foreign('demande_id')->references('id')->on('demandes_impression')->onDelete('cascade');
