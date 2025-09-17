@@ -20,14 +20,18 @@ class CommandesTable
         return $table
             ->columns([
                 TextColumn::make('user.name')->searchable(),
-                TextColumn::make('client.id')->searchable(),
-                TextColumn::make('produit.id')->searchable(),
-                TextColumn::make('ficheBesoin.id')->searchable(),
+                TextColumn::make('client.nom')->searchable(),
                 TextColumn::make('numero_commande')->searchable(),
                 TextColumn::make('date_commande')->date()->sortable(),
-                TextColumn::make('montant_ht')->numeric()->sortable(),
+                TextColumn::make('montant_ht')
+                    ->numeric()
+                    ->sortable()
+                    ->formatStateUsing(fn($state) => number_format($state, 0, ',', ' ') . ' FCFA'),
                 TextColumn::make('tva')->numeric()->sortable(),
-                TextColumn::make('montant_ttc')->numeric()->sortable(),
+                TextColumn::make('montant_ttc')
+                    ->numeric()
+                    ->sortable()
+                    ->formatStateUsing(fn($state) => number_format($state, 0, ',', ' ') . ' FCFA'),
                 TextColumn::make('moyen_de_paiement'),
                 TextColumn::make('statut'),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
@@ -40,7 +44,7 @@ class CommandesTable
                 ViewAction::make(),
                 EditAction::make(),
 
-                // ✅ Bouton PDF
+                // PDF
                 Action::make('downloadPdf')
                     ->label('PDF')
                     ->icon('heroicon-o-document')
@@ -55,7 +59,7 @@ class CommandesTable
                         );
                     }),
 
-                // ✅ Bouton Excel
+                // Excel
                 Action::make('downloadExcel')
                     ->label('Excel')
                     ->icon('heroicon-o-document')
