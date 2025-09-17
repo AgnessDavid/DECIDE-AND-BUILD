@@ -93,7 +93,9 @@ protected static function booted()
             'quantite' => $ligne->quantite,
             'prix_unitaire_ht' => $ligne->prix_unitaire_ht,
             'montant_ht' => $ligne->quantite * $ligne->prix_unitaire_ht,
-            'montant_ttc' => $ligne->quantite * $ligne->prix_unitaire_ht * 1.18, // juste pour affichage
+            'montant_ttc' => $ligne->quantite * $ligne->prix_unitaire_ht * 1.18, 
+             'statut_paiement_commande' => $this->commande->statut ?? 'non_paye',
+            // juste pour affichage
         ])->toArray();
     }
 }

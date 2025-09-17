@@ -29,7 +29,7 @@ return new class extends Migration
             $table->decimal('montant_ttc', 10, 2)->default(0);
 
             // Statut du paiement de la facture
-            $table->enum('statut_paiement', ['non_paye', 'partiellement_paye', 'paye'])->default('non_paye');
+            $table->enum('statut_paiement', ['non_paye', 'paye'])->default('non_paye');
             
             $table->text('notes')->nullable();
 
