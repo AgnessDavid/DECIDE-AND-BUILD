@@ -13,16 +13,13 @@ class FactureInfolist
 
             TextEntry::make('numero_facture')->label('Numéro de facture'),
 
-            TextEntry::make('date_facturation')
-                ->label('Date de facturation')
-                ->date(),
+            TextEntry::make('date_facturation')->label('Date de facturation')->date(),
 
             TextEntry::make('statut_paiement')
                 ->label('Statut')
                 ->badge()
                 ->color(fn ($state) => match ($state) {
                     'paye' => 'success',
-                    'partiellement_paye' => 'warning',
                     'non_paye' => 'danger',
                     default => 'gray',
                 }),
@@ -31,7 +28,7 @@ class FactureInfolist
             TextEntry::make('client.nom')->label('Client'),
             TextEntry::make('user.name')->label('Agent'),
 
-            // Produits commandés affichés en HTML
+            // Produits commandés affichés en multi-lignes
             TextEntry::make('produits_lignes')
                 ->label('Produits commandés')
                 ->getStateUsing(fn($record) => collect($record->produits_lignes)
@@ -39,11 +36,24 @@ class FactureInfolist
                     ->implode("\n")
                 )
                 ->formatStateUsing(fn($state) => nl2br(e($state)))
-                ->html(), // rend le HTML dans l'infolist
+                ->html(),
 
-            TextEntry::make('montant_ht')->label('Montant HT')->money('XOF'),
+         
             TextEntry::make('tva')->label('TVA (%)'),
-            TextEntry::make('montant_ttc')->label('Montant TTC')->money('XOF'),
+           
+
+            TextEntry::make('montant_ht')
+                ->label('Montant HT')
+                ->getStateUsing(fn($record) => number_format($record->montant_ht, 0, ',', ' ') . ' FCFA'),
+
+            TextEntry::make('montant_ttc')
+                ->label('Montant TTC')
+                ->getStateUsing(fn($record) => number_format($record->montant_ttc, 0, ',', ' ') . ' FCFA'),
+
+
+
+
+            TextEntry::make('notes')->label('Notes'),
 
             TextEntry::make('created_at')->label('Créé le')->dateTime(),
             TextEntry::make('updated_at')->label('Mis à jour le')->dateTime(),

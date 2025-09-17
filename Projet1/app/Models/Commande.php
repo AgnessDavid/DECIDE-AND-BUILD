@@ -77,6 +77,10 @@ class Commande extends Model
 
 
     // ================== EVENTS ==================
+
+
+
+
     protected static function booted()
     {
         static::created(function ($commande) {
@@ -103,6 +107,21 @@ class Commande extends Model
                 'notes' => $commande->notes_internes,
             ]);
         });
+
+static::creating(function ($commande) {
+        if (empty($commande->numero_commande)) {
+            // Préfixe fixe CMD-BNET-
+            $prefix = 'CMD-BNET-';
+
+            // Compter le nombre de commandes déjà créées pour incrémenter
+            $count = static::count() + 1;
+
+            // Formater avec 2 chiffres par exemple
+            $commande->numero_commande = $prefix . str_pad($count, 2, '0', STR_PAD_LEFT);
+        }
+    });
+
+
     }
 
 

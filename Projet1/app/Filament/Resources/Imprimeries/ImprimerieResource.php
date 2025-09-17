@@ -22,7 +22,7 @@ class ImprimerieResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Imprimerie ';
+    protected static ?string $recordTitleAttribute = 'Imprimerie';
 
     public static function form(Schema $schema): Schema
     {

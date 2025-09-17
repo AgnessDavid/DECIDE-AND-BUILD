@@ -8,8 +8,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Schema;
-use App\Models\Produit;
 use App\Models\Commande;
+use App\Models\Produit;
 
 class FactureForm
 {
@@ -17,7 +17,7 @@ class FactureForm
     {
         return $schema
             ->components([
-                // Choix de la commande source
+                // Sélection de la commande
                 Select::make('commande_id')
                     ->relationship('commande', 'numero_commande')
                     ->label('Commande')
@@ -25,25 +25,31 @@ class FactureForm
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
-                            $commande = Commande::with('client')->find($state);
-                            if ($commande && $commande->client) {
-                                $set('client_id', $commande->client->id);
+                            $commande = Commande::with('client', 'user', 'produits.produit')->find($state);
+                            if ($commande) {
+                                $set('client_id', $commande->client_id);
+                                $set('user_id', $commande->user_id);
+                                $set('montant_ht', $commande->montant_ht);
+                                $set('tva', 18.0);
+                                $set('montant_ttc', $commande->montant_ttc);
+                                $set('notes', $commande->notes_internes);
                             }
                         }
                     }),
 
-                // Affichage automatique du client
+                // Client (affichage seulement)
                 Select::make('client_id')
-                    ->relationship('client', 'nom_client')
+                    ->relationship('client', 'nom')
                     ->label('Client')
                     ->disabled()
-                    ->dehydrated(false), // n’enregistre pas car déjà lié via commande
+                    ->dehydrated(false),
 
-                // Agent responsable
+                // Agent
                 Select::make('user_id')
                     ->relationship('user', 'name')
                     ->label('Agent')
-                    ->required(),
+                    ->disabled()
+                    ->dehydrated(false),
 
                 // Numéro de facture
                 TextInput::make('numero_facture')
@@ -55,78 +61,62 @@ class FactureForm
                     ->label('Date de facturation')
                     ->required(),
 
-                // Statut de paiement
+                // Statut paiement
                 Select::make('statut_paiement')
+                    ->label('Statut paiement')
                     ->options([
                         'non_paye' => 'Non payé',
-                        'partiellement_paye' => 'Partiellement payé',
                         'paye' => 'Payé',
                     ])
                     ->default('non_paye')
                     ->required(),
 
                 // Montants
-                TextInput::make('montant_ht')
-                    ->label('Montant HT')
-                    ->numeric()
-                    ->required(),
+               
+            TextInput::make('montant_ht')
+                ->label('Montant HT')
+                ->disabled()
+                ->default(fn ($record) => $record->montant_ht)
+                ->required(),
+
 
                 TextInput::make('tva')
                     ->label('TVA (%)')
                     ->numeric()
-                    ->default(18.0)
+                    ->disabled()
                     ->required(),
 
-                TextInput::make('montant_ttc')
-                    ->label('Montant TTC')
-                    ->numeric()
-                    ->required(),
+               
+            TextInput::make('montant_ttc')
+                ->label('Montant TTC')
+                ->disabled()
+                ->default(fn ($record) => $record->montant_ttc)
+                ->required(),
 
-                // Produits liés à la facture
-                Repeater::make('produits')
+
+
+
+
+
+                // Produits de la commande (affichage seulement)
+                Repeater::make('produits_lignes')
                     ->label('Produits commandés')
                     ->schema([
-                        Select::make('produit_id')
-                            ->relationship('produit', 'nom_produit')
-                            ->label('Produit')
-                            ->required()
-                            ->reactive(),
+                        TextInput::make('nom')->label('Produit')->disabled(),
+                        TextInput::make('quantite')->label('Quantité')->disabled(),
+                        TextInput::make('prix_unitaire_ht')->label('Prix unitaire HT')->disabled(),
+                        TextInput::make('montant_ht')->label('Montant HT')->disabled(),
+                        TextInput::make('montant_ttc')->label('Montant TTC')->disabled(),
+                    ])
+                    ->columns(5)
+                    ->disabled()
+                    ->dehydrated(false),
 
-                        TextInput::make('quantite')
-                            ->label('Quantité')
-                            ->numeric()
-                            ->required()
-                            ->reactive(),
-
-                        TextInput::make('prix_unitaire_ht')
-                            ->label('Prix unitaire HT')
-                            ->numeric()
-                            ->required()
-                            ->reactive(),
-
-                        TextInput::make('montant_ht')
-                            ->label('Montant HT')
-                            ->numeric()
-                            ->disabled()
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set, $get) {
-                                $set('montant_ht', $get('quantite') * $get('prix_unitaire_ht'));
-                            }),
-
-                        TextInput::make('montant_ttc')
-                            ->label('Montant TTC')
-                            ->numeric()
-                            ->disabled()
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set, $get) {
-                                $set('montant_ttc', $get('quantite') * $get('prix_unitaire_ht') * 1.18);
-                            }),
-                    ]),
-
-                // Notes facultatives
+                // Notes
                 Textarea::make('notes')
                     ->label('Notes')
-                    ->columnSpanFull(),
+                    ->disabled()
+                    ->dehydrated(false),
             ]);
     }
 }

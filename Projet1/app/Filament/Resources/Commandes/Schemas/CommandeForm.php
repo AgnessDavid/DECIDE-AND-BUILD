@@ -28,10 +28,11 @@ class CommandeForm
                 DatePicker::make('date_commande')
                     ->label('Date de commande')
                     ->required(),
-
-                TextInput::make('numero_commande')
-                    ->label('Numéro de commande')
-                    ->required(),
+TextInput::make('numero_commande')
+    ->label('Numéro de commande')
+    ->disabled() // utilisateur ne peut pas modifier
+    ->default(fn () => 'CMD-BNET-XX') // facultatif, juste pour montrer un placeholder
+    ->required(),
 
 
             Repeater::make('produits')

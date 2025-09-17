@@ -29,6 +29,7 @@ class Validation extends Model
         'est_autorise_chef_informatique' => 'boolean',
     ];
 
+    
     // Relation polymorphe avec le document validé
     public function document(): MorphTo
     {
@@ -59,4 +60,35 @@ class Validation extends Model
         return $this->belongsTo(DemandeImpression::class, 'document_id')
                     ->where('type', 'demande_impression');
     }
+
+    protected static function booted()
+{
+    static::updated(function ($validation) {
+        // Vérifie si la validation concerne une demande d'impression
+        // et si elle vient d'être validée
+        if ($validation->document_type === \App\Models\DemandeImpression::class 
+            && $validation->statut === 'validée') 
+        {
+            $demande = $validation->document;
+
+            if ($demande) {
+                // Crée automatiquement l'enregistrement Imprimerie
+                \App\Models\Imprimerie::create([
+                    'validation_id' => $validation->id,
+                    'demande_id' => $demande->id,
+                    'produit_id' => $demande->produit_id,
+                    'nom_produit' => $demande->designation,
+                    'quantite_demandee' => $demande->quantite_demandee,
+                    'quantite_imprimee' => $demande->quantite_imprimee,
+                    'valide_par' => $demande->agent_commercial,
+                    'operateur' => $demande->service,
+                    'date_impression' => now(),
+                ]);
+            }
+        }
+    });
 }
+
+}
+
+

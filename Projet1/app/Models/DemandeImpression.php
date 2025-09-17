@@ -63,6 +63,9 @@ public function imprimeries()
         return $this->belongsTo(Produit::class);
     }
 
+
+      // Une demande peut générer plusieurs enregistrements d'imprimerie
+
     /**
      * Toutes les validations liées à cette demande d'impression
      */
