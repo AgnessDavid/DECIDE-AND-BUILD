@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Commande extends Model
 {
@@ -36,7 +37,12 @@ class Commande extends Model
         return $this->hasMany(Vente::class);
     }
 
-    
+      public function caisse(): HasOne
+    {
+        return $this->hasOne(Caisse::class);
+    }
+
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

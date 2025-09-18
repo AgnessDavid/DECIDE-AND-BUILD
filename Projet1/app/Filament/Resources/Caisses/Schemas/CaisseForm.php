@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Caisses\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use App\Models\Commande;
 
 class CaisseForm
 {
@@ -14,21 +13,68 @@ class CaisseForm
     {
         return $schema
             ->components([
-                TextInput::make('user_id')
+                // Choix de la commande
+                Select::make('commande_id')
+                    ->relationship('commande', 'id')
                     ->required()
-                    ->numeric(),
-                TextInput::make('paiement_id')
-                    ->numeric(),
-                Select::make('type')
-                    ->options(['entree' => 'Entree', 'sortie' => 'Sortie'])
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $commande = Commande::with('client')->find($state);
+
+                            if ($commande) {
+                                $set('client_id', $commande->client_id);
+                                $set('user_id', $commande->user_id);
+                                $set('montant_ht', $commande->montant_ht);
+                                $set('montant_ttc', $commande->montant_ttc);
+                                $set('tva', 18.0);
+                            }
+                        }
+                    }),
+
+                // Ces champs vont se remplir automatiquement
+                Select::make('user_id')
+                    ->relationship('user', 'name')
                     ->required(),
-                TextInput::make('montant')
+
+                Select::make('client_id')
+                    ->relationship('client', 'id')
+                    ->required(),
+
+                TextInput::make('montant_ht')
                     ->required()
                     ->numeric(),
-                Textarea::make('motif')
+
+                TextInput::make('tva')
                     ->required()
-                    ->columnSpanFull(),
-                DateTimePicker::make('date_mouvement')
+                    ->numeric()
+                    ->default(18.0),
+
+                TextInput::make('montant_ttc')
+                    ->required()
+                    ->numeric(),
+
+                    
+TextInput::make('entree')
+    ->label('Montant Entré')
+    ->numeric()
+    ->reactive()
+    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+        $set('sortie', $state - ($get('montant_ttc') ?? 0));
+    }),
+
+TextInput::make('sortie')
+    ->label('Monnaie à rendre')
+    ->numeric()
+    ->disabled(), // on empêche la saisie manuelle
+
+
+                Select::make('statut')
+                    ->options([
+                        'payé' => 'Payé',
+                        'impayé' => 'Impayé',
+                    ])
+                    ->default('impayé')
                     ->required(),
             ]);
     }

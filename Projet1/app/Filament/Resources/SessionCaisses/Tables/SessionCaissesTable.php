@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Caisses\Tables;
+namespace App\Filament\Resources\SessionCaisses\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,7 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class CaissesTable
+class SessionCaissesTable
 {
     public static function configure(Table $table): Table
     {
@@ -17,6 +17,25 @@ class CaissesTable
             ->columns([
                 TextColumn::make('user.name')
                     ->searchable(),
+                TextColumn::make('solde_initial')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('entrees')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('sorties')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('solde_final')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('statut'),
+                TextColumn::make('ouvert_le')
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('ferme_le')
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -25,26 +44,6 @@ class CaissesTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('commande.id')
-                    ->searchable(),
-                TextColumn::make('client.id')
-                    ->searchable(),
-                TextColumn::make('montant_ht')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('tva')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('montant_ttc')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('entree')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('sortie')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('statut'),
             ])
             ->filters([
                 //

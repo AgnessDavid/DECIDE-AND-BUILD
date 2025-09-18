@@ -11,19 +11,54 @@ class CaisseInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('user_id')
+                // Utilisateur ayant créé/enregistré
+                TextEntry::make('user.name')
+                    ->label('Utilisateur'),
+
+                // Commande liée
+                TextEntry::make('commande.numero_commande')
+                    ->label('Commande'),
+
+                // Client lié
+                TextEntry::make('client.nom')
+                    ->label('Client'),
+
+                // Montants
+                TextEntry::make('montant_ht')
+                    ->label('Montant HT')
+                    ->numeric()
+                    ->money('XOF', true),
+
+                TextEntry::make('tva')
+                    ->label('TVA (%)')
                     ->numeric(),
-                TextEntry::make('paiement_id')
-                    ->numeric(),
-                TextEntry::make('type'),
-                TextEntry::make('montant')
-                    ->numeric(),
-                TextEntry::make('date_mouvement')
-                    ->dateTime(),
+
+                TextEntry::make('montant_ttc')
+                    ->label('Montant TTC')
+                    ->numeric()
+                    ->money('XOF', true),
+
+                TextEntry::make('entree')
+                    ->label('Entrée')
+                    ->numeric()
+                    ->money('XOF', true),
+
+                TextEntry::make('sortie')
+                    ->label('Sortie')
+                    ->numeric()
+                    ->money('XOF', true),
+
+                TextEntry::make('statut')
+                    ->label('Statut'),
+
+                // Dates
                 TextEntry::make('created_at')
-                    ->dateTime(),
+                    ->label('Créé le')
+                    ->dateTime('d/m/Y H:i'),
+
                 TextEntry::make('updated_at')
-                    ->dateTime(),
+                    ->label('Modifié le')
+                    ->dateTime('d/m/Y H:i'),
             ]);
     }
 }

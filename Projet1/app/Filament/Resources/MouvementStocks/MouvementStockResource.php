@@ -53,6 +53,9 @@ class MouvementStockResource extends Resource
             'create' => CreateMouvementStock::route('/create'),
             'view' => ViewMouvementStock::route('/{record}'),
             'edit' => EditMouvementStock::route('/{record}/edit'),
+
+             'imprimeries' => Pages\ImprimeriesMouvements::route('/imprimeries'),
+           
         ];
     }
 }
