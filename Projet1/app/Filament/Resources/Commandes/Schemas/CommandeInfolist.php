@@ -30,7 +30,7 @@ class CommandeInfolist
                     ->getStateUsing(fn($record) => number_format(round($record->montant_ttc), 0, ',', ' ') . ' FCFA'),
 
                 TextEntry::make('moyen_de_paiement')->label('Moyen de paiement'),
-                TextEntry::make('statut')->label('Statut'),
+                TextEntry::make('statut_paiement')->label('Statut paiement'),
                 TextEntry::make('created_at')->label('Créé le')->dateTime(),
                 TextEntry::make('updated_at')->label('Mis à jour le')->dateTime(),
 

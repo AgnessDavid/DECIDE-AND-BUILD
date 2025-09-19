@@ -14,6 +14,13 @@ return new class extends Migration
         Schema::create('session_caisses', function (Blueprint $table) {
             $table->id();
             
+            $table->unsignedBigInteger('caisse_id')->nullable()->after('user_id');
+            $table->foreign('caisse_id')
+                  ->references('id')
+                  ->on('caisse')
+                  ->onDelete('set null');
+
+
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // Caissier
             $table->double('solde_initial')->default(0);
             $table->double('entrees')->default(0);

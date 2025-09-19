@@ -16,7 +16,7 @@ class FactureInfolist
             TextEntry::make('date_facturation')->label('Date de facturation')->date(),
 
             TextEntry::make('statut_paiement')
-                ->label('Statut')
+                ->label('Statut paiement')
                 ->badge()
                 ->color(fn ($state) => match ($state) {
                     'paye' => 'success',

@@ -69,7 +69,7 @@ TextInput::make('sortie')
     ->disabled(), // on empêche la saisie manuelle
 
 
-                Select::make('statut')
+                Select::make('statut_paiement')
                     ->options([
                         'payé' => 'Payé',
                         'impayé' => 'Impayé',

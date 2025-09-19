@@ -43,8 +43,7 @@ return new class extends Migration
                 ->comment('Moyen de paiement prévu');
 
             // Statut de la commandeChatGPT can make mistakes. Check important info.
-            $table->enum('statut', ['payé'])
-                ->default('payé');
+            $table->enum('statut', ['payé', 'impayé'])->default('impayé');
 
             $table->text('notes_internes')->nullable();
 

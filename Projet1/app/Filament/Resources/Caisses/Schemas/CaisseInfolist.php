@@ -48,8 +48,8 @@ class CaisseInfolist
                     ->numeric()
                     ->money('XOF', true),
 
-                TextEntry::make('statut')
-                    ->label('Statut'),
+                TextEntry::make('statut_paiement')
+                    ->label('Statut paiement'),
 
                 // Dates
                 TextEntry::make('created_at')

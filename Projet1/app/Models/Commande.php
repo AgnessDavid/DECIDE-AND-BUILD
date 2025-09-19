@@ -20,7 +20,7 @@ class Commande extends Model
         'numero_commande',
         'date_commande',
         'moyen_de_paiement',
-        'statut',
+        'statut_paiement',
         'notes_internes',
     ];
 
@@ -97,7 +97,7 @@ class Commande extends Model
                 'user_id' => $commande->user_id,
                 'date_facturation' => now(),
                 'moyen_de_paiement' => $commande->moyen_de_paiement,
-                'statut' => $commande->statut ?? 'non_paye',
+                'statut_paiement' => $commande->statut_paiement ?? 'non_paye',
                 'montant_ht' => $commande->montant_ht,
                 'tva' => 18.00,
                 'montant_ttc' => $commande->montant_ttc,

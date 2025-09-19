@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,7 @@ class Caisse extends Model
 
     protected $fillable = [
         'commande_id',
+        'session_caisse_id',
         'client_id',
         'user_id',
         'montant_ht',
@@ -17,13 +19,14 @@ class Caisse extends Model
         'montant_ttc',
         'entree',
         'sortie',
-        'statut',
+        'statut_paiement',
+        'nombre_total_entree',
+        'nombre_total_sortie',
     ];
 
     // ================== RELATIONS ==================
 
-
-     public function sessionCaisse(): BelongsTo
+    public function sessionCaisse(): BelongsTo
     {
         return $this->belongsTo(SessionCaisse::class, 'session_caisse_id');
     }
@@ -44,6 +47,7 @@ class Caisse extends Model
     }
 
     // ================== ACCESSORS ==================
+
     public function getNumeroCommandeAttribute(): ?string
     {
         return $this->commande?->numero_commande;
@@ -64,9 +68,6 @@ class Caisse extends Model
         return $this->commande?->montant_ttc;
     }
 
-
-
-
     public function getProduitsCommandeAttribute(): array
     {
         if ($this->commande) {
@@ -85,26 +86,56 @@ class Caisse extends Model
     }
 
     // ================== HOOKS ==================
-    protected static function booted()
-    {
-        static::creating(function ($caisse) {
-            if ($caisse->commande_id) {
-                $commande = Commande::with('client')->find($caisse->commande_id);
-                if ($commande) {
-                    $caisse->client_id = $commande->client_id;
-                    $caisse->user_id   = $commande->user_id;
-                    $caisse->montant_ht   = $commande->montant_ht;
-                    $caisse->tva          = 18.00;
-                    $caisse->montant_ttc  = $commande->montant_ttc;
-                }
-            }
 
- static::saving(function ($caisse) {
-        if (!empty($caisse->entree) && !empty($caisse->montant_ttc)) {
-            $caisse->sortie = $caisse->entree - $caisse->montant_ttc;
+protected static function booted()
+{
+    // Avant la création
+    static::creating(function ($caisse) {
+        if ($caisse->commande_id) {
+            $commande = Commande::with('client')->find($caisse->commande_id);
+            if ($commande) {
+                $caisse->client_id = $commande->client_id;
+                $caisse->user_id   = $commande->user_id;
+                $caisse->montant_ht = $commande->montant_ht;
+                $caisse->tva = 18.00;
+                $caisse->montant_ttc = $commande->montant_ttc;
+            }
         }
+
+        // Initialiser les totaux à zéro si null
+        $caisse->nombre_total_entree ??= 0;
+        $caisse->nombre_total_sortie ??= 0;
     });
 
-        });
-    }
+    // Avant sauvegarde (création ou mise à jour)
+    static::saving(function ($caisse) {
+        // Calcul automatique de la sortie si entrée et montant_ttc présents
+        if (!is_null($caisse->entree) && !is_null($caisse->montant_ttc)) {
+            $caisse->sortie = $caisse->entree - $caisse->montant_ttc;
+        }
+
+        // Stocker directement les montants dans les totaux
+        $caisse->nombre_total_entree = $caisse->entree ?? 0;
+        $caisse->nombre_total_sortie = $caisse->sortie ?? 0;
+    });
+
+    // Après sauvegarde
+    static::saved(function ($caisse) {
+        // Vérifier si le statut de paiement est "payé"
+        if ($caisse->statut === 'payé') {
+            // Mettre à jour la commande associée
+            if ($caisse->commande) {
+                $caisse->commande->update([
+                    'statut_paiement' => 'payé',
+                ]);
+            }
+
+        
+        }
+    });
 }
+
+}
+
+
+

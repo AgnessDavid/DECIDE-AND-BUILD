@@ -21,7 +21,7 @@ return new class extends Migration
                   ->constrained('clients')
                   ->onDelete('cascade');
 
-            // Montants
+            
             $table->decimal('montant_ht', 15, 2);
             $table->decimal('tva', 5, 2)->default(18.00);
             $table->decimal('montant_ttc', 15, 2);

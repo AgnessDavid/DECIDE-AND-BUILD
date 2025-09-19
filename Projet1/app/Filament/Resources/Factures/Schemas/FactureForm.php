@@ -65,10 +65,10 @@ class FactureForm
                 Select::make('statut_paiement')
                     ->label('Statut paiement')
                     ->options([
-                        'non_paye' => 'Non payé',
+                        'Impayé' => 'Impayé',
                         'paye' => 'Payé',
                     ])
-                    ->default('non_paye')
+                    ->default('Impayé')
                     ->required(),
 
                 // Montants

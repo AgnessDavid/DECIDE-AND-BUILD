@@ -11,24 +11,39 @@ class SessionCaisseInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('user.name'),
+                TextEntry::make('user.name')
+                    ->label('Caissier'),
+
                 TextEntry::make('solde_initial')
-                    ->numeric(),
+                    ->numeric()
+                    ->formatStateUsing(fn ($state) => number_format($state ?? 0, 0, ',', '.') . ' FCFA')
+                    ->label('Solde Initial'),
+
                 TextEntry::make('entrees')
-                    ->numeric(),
+                    ->numeric()
+                    ->formatStateUsing(fn ($state) => number_format($state ?? 0, 0, ',', '.') . ' FCFA')
+                    ->label('Total Entrées'),
+
                 TextEntry::make('sorties')
-                    ->numeric(),
+                    ->numeric()
+                    ->formatStateUsing(fn ($state) => number_format($state ?? 0, 0, ',', '.') . ' FCFA')
+                    ->label('Total Sorties'),
+
                 TextEntry::make('solde_final')
-                    ->numeric(),
-                TextEntry::make('statut'),
+                    ->numeric()
+                    ->formatStateUsing(fn ($state) => number_format($state ?? 0, 0, ',', '.') . ' FCFA')
+                    ->label('Solde Final'),
+
+                TextEntry::make('statut')
+                    ->label('Statut'),
+
                 TextEntry::make('ouvert_le')
-                    ->dateTime(),
+                    ->dateTime()
+                    ->label('Ouvert le'),
+
                 TextEntry::make('ferme_le')
-                    ->dateTime(),
-                TextEntry::make('created_at')
-                    ->dateTime(),
-                TextEntry::make('updated_at')
-                    ->dateTime(),
+                    ->dateTime()
+                    ->label('Fermé le'),
             ]);
     }
 }

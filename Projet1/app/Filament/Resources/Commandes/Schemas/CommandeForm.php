@@ -104,14 +104,14 @@ TextInput::make('numero_commande')
                     ])
                     ->required(),
 
-                Select::make('statut')
-                    ->label('Statut')
+                Select::make('statut_paiement')
+                    ->label('Statut paiement')
                     ->options([
-                        'non_payé' => 'Non Payé',
+                        'Impayé' => 'Impayé',
                         'payé' => 'Payé',
                         
                     ])
-                    ->default('non_payé')
+                    ->default('Impayé')
                     ->required(),
             ]);
     }
