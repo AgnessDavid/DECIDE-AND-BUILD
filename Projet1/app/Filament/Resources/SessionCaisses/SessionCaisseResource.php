@@ -10,6 +10,7 @@ use App\Filament\Resources\SessionCaisses\Schemas\SessionCaisseForm;
 use App\Filament\Resources\SessionCaisses\Schemas\SessionCaisseInfolist;
 use App\Filament\Resources\SessionCaisses\Tables\SessionCaissesTable;
 use App\Models\SessionCaisse;
+use  UnitEnum;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -19,8 +20,8 @@ use Filament\Tables\Table;
 class SessionCaisseResource extends Resource
 {
     protected static ?string $model = SessionCaisse::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Banknotes;
 
     protected static ?string $recordTitleAttribute = 'SessionCaisse';
 

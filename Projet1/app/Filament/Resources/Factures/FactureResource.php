@@ -11,6 +11,7 @@ use App\Filament\Resources\Factures\Schemas\FactureInfolist;
 use App\Filament\Resources\Factures\Tables\FacturesTable;
 use App\Models\Facture;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,7 +22,7 @@ class FactureResource extends Resource
     protected static ?string $model = Facture::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ventes';
     protected static ?string $recordTitleAttribute = 'Facture';
 
     public static function form(Schema $schema): Schema

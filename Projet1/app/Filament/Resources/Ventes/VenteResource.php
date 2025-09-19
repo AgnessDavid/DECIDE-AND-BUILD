@@ -11,6 +11,7 @@ use App\Filament\Resources\Ventes\Schemas\VenteInfolist;
 use App\Filament\Resources\Ventes\Tables\VentesTable;
 use App\Models\Vente;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -24,6 +25,7 @@ class VenteResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Vente';
 
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ventes';
     public static function form(Schema $schema): Schema
     {
         return VenteForm::configure($schema);

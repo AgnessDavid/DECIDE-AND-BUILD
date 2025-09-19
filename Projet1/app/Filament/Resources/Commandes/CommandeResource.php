@@ -11,6 +11,7 @@ use App\Filament\Resources\Commandes\Schemas\CommandeInfolist;
 use App\Filament\Resources\Commandes\Tables\CommandesTable;
 use App\Models\Commande;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,7 +21,10 @@ class CommandeResource extends Resource
 {
     protected static ?string $model = Commande::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ShoppingCart;
+
+
+protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ventes';
 
     protected static ?string $recordTitleAttribute = 'Commande';
 

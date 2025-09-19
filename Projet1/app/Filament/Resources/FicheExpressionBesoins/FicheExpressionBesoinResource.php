@@ -9,6 +9,7 @@ use App\Filament\Resources\FicheExpressionBesoins\Pages\ViewFicheExpressionBesoi
 use App\Filament\Resources\FicheExpressionBesoins\Schemas\FicheExpressionBesoinForm;
 use App\Filament\Resources\FicheExpressionBesoins\Schemas\FicheExpressionBesoinInfolist;
 use App\Filament\Resources\FicheExpressionBesoins\Tables\FicheExpressionBesoinsTable;
+use UnitEnum;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -21,6 +22,7 @@ class FicheExpressionBesoinResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
 protected static ?string $navigationLabel = 'Expression de besoin';
 
     public static function form(Schema $schema): Schema

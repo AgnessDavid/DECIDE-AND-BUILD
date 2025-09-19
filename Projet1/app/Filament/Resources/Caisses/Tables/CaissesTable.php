@@ -8,6 +8,8 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CaissesTable
 {
@@ -16,46 +18,74 @@ class CaissesTable
         return $table
             ->columns([
                 TextColumn::make('user.name')
+                    ->label('Utilisateur')
                     ->searchable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Créé le')
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Mis à jour le')
+                    ->dateTime('d-m-Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('commande.id')
+                TextColumn::make('numero_commande')
+                    ->label('N° Commande')
                     ->searchable(),
-                TextColumn::make('client.id')
+                TextColumn::make('nom_client')
+                    ->label('Client')
                     ->searchable(),
                 TextColumn::make('montant_ht')
+                    ->label('Montant HT')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => number_format($state, 2, ',', ' ') . ' FCFA'),
                 TextColumn::make('tva')
+                    ->label('TVA')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => number_format($state, 2, ',', ' ') . ' %'),
                 TextColumn::make('montant_ttc')
+                    ->label('Montant TTC')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => number_format($state, 2, ',', ' ') . ' FCFA'),
                 TextColumn::make('entree')
+                    ->label('Entrée')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => number_format($state, 2, ',', ' ') . ' FCFA'),
                 TextColumn::make('sortie')
+                    ->label('Sortie')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('statut'),
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => number_format($state, 2, ',', ' ') . ' FCFA'),
+                TextColumn::make('statut_paiement')
+                    ->label('Statut Paiement'),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()->label('Voir'),
+                EditAction::make()->label('Modifier'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()->label('Supprimer'),
+                    Action::make('export_pdf')
+                        ->label('Exporter en PDF')
+                        ->icon('heroicon-o-printer')
+                        ->action(function ($records) {
+                            $records->load(['user', 'commande.produits.produit', 'client']);
+                            $pdf = Pdf::loadView('caisses.pdf', ['records' => $records]);
+                            return response()->streamDownload(function () use ($pdf) {
+                                echo $pdf->output();
+                            }, 'caisses_export_' . now()->format('Ymd_His') . '.pdf');
+                        })
+                        ->requiresConfirmation()
+                        ->color('success'),
                 ]),
             ]);
     }

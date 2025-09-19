@@ -11,6 +11,7 @@ use App\Filament\Resources\MouvementStocks\Schemas\MouvementStockInfolist;
 use App\Filament\Resources\MouvementStocks\Tables\MouvementStocksTable;
 use App\Models\MouvementStock;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,8 +21,10 @@ class MouvementStockResource extends Resource
 {
     protected static ?string $model = MouvementStock::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ArrowPath;
 
+
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion Produits et Stock';
     protected static ?string $recordTitleAttribute = 'Mouvement Stocks';
 
     public static function form(Schema $schema): Schema

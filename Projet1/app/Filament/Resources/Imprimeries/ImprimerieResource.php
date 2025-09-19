@@ -11,6 +11,7 @@ use App\Filament\Resources\Imprimeries\Schemas\ImprimerieInfolist;
 use App\Filament\Resources\Imprimeries\Tables\ImprimeriesTable;
 use App\Models\Imprimerie;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,7 +22,8 @@ class ImprimerieResource extends Resource
     protected static ?string $model = Imprimerie::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
+  
     protected static ?string $recordTitleAttribute = 'Imprimerie';
 
     public static function form(Schema $schema): Schema

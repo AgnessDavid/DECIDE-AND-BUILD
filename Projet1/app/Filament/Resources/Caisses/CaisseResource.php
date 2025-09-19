@@ -11,6 +11,7 @@ use App\Filament\Resources\Caisses\Schemas\CaisseInfolist;
 use App\Filament\Resources\Caisses\Tables\CaissesTable;
 use App\Models\Caisse;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,8 +21,11 @@ class CaisseResource extends Resource
 {
     protected static ?string $model = Caisse::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+   // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+protected static string|BackedEnum|null $navigationIcon = Heroicon::Banknotes;
+
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
     protected static ?string $recordTitleAttribute = 'Caisse';
 
     public static function form(Schema $schema): Schema

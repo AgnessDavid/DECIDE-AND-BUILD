@@ -10,6 +10,7 @@ use App\Filament\Resources\Clients\Schemas\ClientForm;
 use App\Filament\Resources\Clients\Schemas\ClientInfolist;
 use App\Filament\Resources\Clients\Tables\ClientsTable;
 use App\Models\Client;
+use UnitEnum;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,8 +21,10 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::User;
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ventes';
+    protected static ?string $navigationLabel = 'Clients';
+  
     protected static ?string $recordTitleAttribute = 'Clients';
 
     public static function form(Schema $schema): Schema

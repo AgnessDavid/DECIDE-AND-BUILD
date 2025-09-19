@@ -11,6 +11,7 @@ use App\Filament\Resources\DemandeProductions\Schemas\DemandeProductionInfolist;
 use App\Filament\Resources\DemandeProductions\Tables\DemandeProductionsTable;
 use App\Models\DemandeProduction;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -20,8 +21,10 @@ class DemandeProductionResource extends Resource
 {
 protected static ?string $model = DemandeImpression::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentText;
 
+    protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
+  
     protected static ?string $recordTitleAttribute = 'Demande Production';
 
     public static function form(Schema $schema): Schema
