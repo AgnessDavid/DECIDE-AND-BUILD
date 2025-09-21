@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-
 class Produit extends Model
 {
     use HasFactory;
@@ -24,6 +23,19 @@ class Produit extends Model
         'stock_actuel',
         'prix_unitaire_ht',
         'photo',
+        // Colonnes liées à la carte géographique
+  
+        'type',
+        'echelle',
+        'orientation',
+        'date_creation',
+        'auteur',
+        'symbole',
+        'type_element',
+        'latitude',
+        'longitude',
+        'nom_zone',
+        'type_zone',
     ];
 
     protected $casts = [
@@ -31,6 +43,9 @@ class Produit extends Model
         'stock_maximum' => 'integer',
         'stock_actuel' => 'integer',
         'prix_unitaire_ht' => 'decimal:2',
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
+        'date_creation' => 'date',
     ];
 
     // ================== RELATIONS ==================
@@ -44,13 +59,10 @@ class Produit extends Model
                     ->using(CommandeProduit::class);
     }
 
-
-
-public function mouvements(): HasMany
-{
-    return $this->hasMany(MouvementStock::class, 'produit_id');
-}
-
+    public function mouvements(): HasMany
+    {
+        return $this->hasMany(MouvementStock::class, 'produit_id');
+    }
 
     /** Lignes de commande pivot */
     public function lignesCommande(): HasMany
@@ -113,4 +125,38 @@ public function mouvements(): HasMany
     {
         return $this->stock_actuel <= ($this->stock_minimum ?? 0);
     }
+
+    // ================== ACCESSEURS CARTOGRAPHIQUES ==================
+
+    public function getCoordonneesAttribute(): ?string
+    {
+        if ($this->latitude && $this->longitude) {
+            return "{$this->latitude}, {$this->longitude}";
+        }
+        return null;
+    }
+
+    public function getCarteCompleteAttribute(): string
+    {
+        return implode(' | ', array_filter([
+            $this->titre,
+            $this->type,
+            $this->echelle,
+            $this->orientation,
+            $this->nom_zone,
+            $this->type_zone,
+            $this->symbole,
+            $this->type_element,
+        ]));
+    }
+
+
+
+// ================== ALERTES DE STOCK ==================
+
+
+
+
+
+
 }

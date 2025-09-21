@@ -117,21 +117,24 @@ class Commande extends Model
         });
 
 static::creating(function ($commande) {
-        if (empty($commande->numero_commande)) {
-            // Préfixe fixe CMD-BNET-
-            $prefix = 'CMD-BNET-';
-
-            // Compter le nombre de commandes déjà créées pour incrémenter
-            $count = static::count() + 1;
-
-            // Formater avec 2 chiffres par exemple
-            $commande->numero_commande = $prefix . str_pad($count, 2, '0', STR_PAD_LEFT);
-        }
-    });
+    if (empty($commande->numero_commande)) {
+        $prefix = 'CMD-BNET-';
+        $last = static::latest('id')->first();
+        $count = $last ? $last->id + 1 : 1;
+        $commande->numero_commande = $prefix . str_pad($count, 2, '0', STR_PAD_LEFT);
+    }
+});
 
 
     }
 
 
 
+
+
+
+    
+
 }
+
+

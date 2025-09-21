@@ -26,8 +26,11 @@ class MouvementStockForm
                 DatePicker::make('date_mouvement')
                     ->required(),
 
-                TextInput::make('numero_bon')
-                    ->required(),
+              TextInput::make('numero_bon')
+               ->disabled() // désactivé car généré automatiquement
+               ->default(fn () => \App\Models\MouvementStock::genererNumero())
+               ->required(),
+
 
                 Select::make('type_mouvement')
                     ->options([

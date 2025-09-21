@@ -66,9 +66,23 @@ public function getMontantTtcAttribute(): float
 public static function genererNumeroFacture(): string
 {
     $prefix = 'FAC-';
-    $count = static::count() + 1; // compteur simple
-    return $prefix . str_pad($count, 2, '0', STR_PAD_LEFT);
+
+    // Récupérer le dernier numéro
+    $lastFacture = static::orderBy('id', 'desc')->first();
+    
+    if (!$lastFacture) {
+        $next = 1;
+    } else {
+        // Extraire le chiffre du dernier numéro
+        $dernierNumero = (int) str_replace($prefix, '', $lastFacture->numero_facture);
+        $next = $dernierNumero + 1;
+    }
+
+    return $prefix . str_pad($next, 2, '0', STR_PAD_LEFT);
 }
+
+
+
 
 protected static function booted()
 {

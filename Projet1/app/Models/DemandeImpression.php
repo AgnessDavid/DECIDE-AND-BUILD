@@ -36,6 +36,22 @@ protected static function booted()
             'statut' => 'en_attente',
         ]);
     });
+
+
+static::creating(function ($demande) {
+        // 1️⃣ Génération automatique du numéro d'ordre
+        // Préfixe fixe + incrémentation simple
+        $prefix = 'ORD-IMP-';
+        $count = static::count() + 1;
+        $demande->numero_ordre = $prefix . str_pad($count, 4, '0', STR_PAD_LEFT);
+
+        // 2️⃣ Assignation automatique du service à partir de l'agent commercial
+        if (empty($demande->service) && !empty($demande->agent_commercial)) {
+            $demande->service = $demande->agent_commercial;
+        }
+    });
+
+
 }
 
     // ================== RELATIONS ==================
@@ -74,4 +90,12 @@ public function imprimeries()
         return $this->hasMany(Validation::class, 'document_id')
                     ->where('type', 'demande_impression');
     }
+
+
+
+
+
+
+
+    
 }

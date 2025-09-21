@@ -89,6 +89,18 @@ class MouvementStock extends Model
         }
     }
 
+
+
+public static function genererNumero(): string
+{
+    $prefix = 'BON-';
+    $last = static::latest('id')->first();
+    $count = $last ? $last->id + 1 : 1;
+    return $prefix . str_pad($count, 4, '0', STR_PAD_LEFT);
+}
+
+
+
     /**
      * Calcul automatique du stock résultant avant sauvegarde
      */
