@@ -11,19 +11,33 @@ class CommandeInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('user.name')->label('Agent'),
-                TextEntry::make('client.nom')->label('Client'),
-                TextEntry::make('nom_produits')->label('Produits'),
+                TextEntry::make('user.name')
+                ->label('Agent'),
+                
+                TextEntry::make('client.nom')
+                ->label('Client'),
 
-                TextEntry::make('numero_commande')->label('Numéro de commande'),
-                TextEntry::make('date_commande')->label('Date de commande')->date(),
+                TextEntry::make('nom_produits')
+                ->label('Produits'),
+
+                TextEntry::make('numero_commande')
+                ->label('Numéro de commande'),
+
+                TextEntry::make('date_commande')
+                ->label('Date de commande')
+                ->date(),
 
                 TextEntry::make('montant_ht')
                     ->label('Montant HT')
                     ->getStateUsing(fn($record) => number_format(round($record->montant_ht), 0, ',', ' ') . ' FCFA'),
 
-                TextEntry::make('tva')->label('TVA (%)')->numeric(),
-
+                TextEntry::make('tva')
+                ->label('TVA (%)')
+                ->numeric(),
+                
+                TextEntry::make('produit_non_satisfait')
+                ->label('Produit non satisfait')
+                ->numeric(),
 
                 TextEntry::make('montant_ttc')
                     ->label('Montant TTC')

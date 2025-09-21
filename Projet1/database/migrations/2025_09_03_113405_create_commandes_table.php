@@ -36,7 +36,7 @@ return new class extends Migration
             $table->decimal('montant_ht', 10, 2)->default(0);
             $table->decimal('tva', 5, 2)->default(18.00);
             $table->decimal('montant_ttc', 10, 2)->default(0);
-
+            $table->integer('produit_non_satisfait')->default(0);  
             // Moyen de paiement
             $table->enum('moyen_de_paiement', ['en_ligne', 'especes', 'cheque', 'virement_bancaire'])
                 ->nullable()
