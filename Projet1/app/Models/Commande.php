@@ -59,6 +59,12 @@ class Commande extends Model
         return $this->hasMany(CommandeProduit::class);
     }
 
+
+
+
+    
+
+
     public function facture()
     {
         return $this->hasOne(Facture::class);

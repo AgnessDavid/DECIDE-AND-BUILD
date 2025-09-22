@@ -22,7 +22,7 @@ class FactureResource extends Resource
     protected static ?string $model = Facture::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ventes';
+protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
     protected static ?string $recordTitleAttribute = 'Facture';
 
     public static function form(Schema $schema): Schema

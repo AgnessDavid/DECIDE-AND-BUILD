@@ -90,31 +90,67 @@ TextInput::make('numero_commande')
             ->required()
             ->searchable()
             ->reactive()
-            ->afterStateUpdated(function ($state, callable $set, $get, $livewire) {
-                if ($state) {
-                    $produit = \App\Models\Produit::find($state);
-                    if ($produit) {
-                        $set('prix_unitaire_ht', $produit->prix_unitaire_ht);
+       
 
-                        // Montants initiaux
-                        $quantite = $get('quantite') ?? 1;
-                        $set('montant_ht', $produit->prix_unitaire_ht * $quantite);
-                        $set('montant_ttc', $produit->prix_unitaire_ht * $quantite * 1.18);
+->afterStateUpdated(function ($state, callable $set, $get) {
+    if ($state) {
+        $produit = \App\Models\Produit::find($state);
+        if ($produit) {
+            $set('prix_unitaire_ht', $produit->prix_unitaire_ht);
 
-                        // Stocks
-                        $set('stock_actuel', $produit->stock_actuel);
-                        $set('stock_minimum', $produit->stock_minimum);
-                        $set('stock_maximum', $produit->stock_maximum);
+            // Montants initiaux
+            $quantite = $get('quantite') ?? 1;
+            $set('montant_ht', $produit->prix_unitaire_ht * $quantite);
+            $set('montant_ttc', $produit->prix_unitaire_ht * $quantite * 1.18);
 
-                        // Validation quantité vs stock
-                        if ($quantite > $produit->stock_actuel) {
-                            $livewire->notify('danger', "La quantité demandée ({$quantite}) dépasse le stock disponible ({$produit->stock_actuel}) !");
-                            // Optionnel : ajuster automatiquement la quantité
-                            //$set('quantite', $produit->stock_actuel);
-                        }
-                    }
-                }
-            })
+            // Stocks
+            $set('stock_actuel', $produit->stock_actuel);
+            $set('stock_minimum', $produit->stock_minimum);
+            $set('stock_maximum', $produit->stock_maximum);
+
+            // Vérification des seuils
+            $stockActuel = $produit->stock_actuel;
+            $stockMin = $produit->stock_minimum;
+
+            if ($stockActuel == $stockMin) {
+                Notification::make()
+                    ->title('⚠️ Réapprovisionnement nécessaire')
+                    ->body("Le stock actuel est égal au stock minimum ({$stockMin}). Pensez à réapprovisionner.")
+                    ->warning()
+                    ->duration(300000)
+                    ->send();
+            } elseif ($stockActuel < $stockMin) {
+                Notification::make()
+                    ->title('🚨 Stock critique')
+                    ->body("Le stock actuel ({$stockActuel}) est inférieur au minimum ({$stockMin}) ! Réapprovisionnement obligatoire.")
+                    ->danger()
+                    ->duration(300000)
+                    ->send();
+            } elseif ($stockActuel <= $stockMin + ($stockMin * 0.3)) {
+                Notification::make()
+                    ->title('🔔 Stock en baisse')
+                    ->body("Le stock actuel ({$stockActuel}) se rapproche du minimum ({$stockMin}). Anticipez un réapprovisionnement.")
+                    ->warning()
+                    ->duration(300000)
+                    ->send();
+            }
+
+            // Validation quantité vs stock
+            if ($quantite > $stockActuel) {
+                Notification::make()
+                    ->title('Stock insuffisant')
+                    ->body("La quantité demandée ({$quantite}) dépasse le stock disponible ({$stockActuel}) !")
+                    ->danger()
+                    ->duration(300000)
+                    ->send();
+
+                // Optionnel : limiter la quantité à ce qui est dispo
+                // $set('quantite', $stockActuel);
+            }
+        }
+    }
+})
+
             ->columnSpan(2),
 
 

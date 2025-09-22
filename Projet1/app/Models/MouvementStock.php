@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\StockLowNotification;
+
+
 class MouvementStock extends Model
 {
     use HasFactory;
@@ -90,7 +94,6 @@ class MouvementStock extends Model
     }
 
 
-
 public static function genererNumero(): string
 {
     $prefix = 'BON-';
@@ -118,6 +121,14 @@ public static function genererNumero(): string
                 $mouvement->produit->stock_actuel = $mouvement->stock_resultant;
                 $mouvement->produit->save();
             }
+
+
+            
         });
+
+
+
+
+        
     }
 }
