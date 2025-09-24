@@ -59,6 +59,23 @@ class Produit extends Model
                     ->using(CommandeProduit::class);
     }
 
+    public function demandeExpressionBesoin()
+    {
+
+        return $this->hasMany(DemandeExpressionBesoin::class,'produit_id');
+
+    }
+
+
+    public function imprimerieExpressionBesoin()
+    {
+
+    return $this->hasMany(ImprimerieExpressionBesoin::class);
+
+    }
+
+
+
     public function mouvements(): HasMany
     {
         return $this->hasMany(MouvementStock::class, 'produit_id');

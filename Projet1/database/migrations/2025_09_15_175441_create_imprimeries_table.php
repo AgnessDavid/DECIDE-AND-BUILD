@@ -29,8 +29,8 @@ return new class extends Migration
             $table->string('agent_commercial')->nullable();
             $table->string('service')->nullable();
             $table->string('objet')->nullable();
-               $table->date('date_demande')->nullable();
-             $table->timestamps();
+            $table->date('date_demande')->nullable();
+            $table->timestamps();
             
             
             // Clés étrangères
