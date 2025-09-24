@@ -14,7 +14,11 @@ class MouvementStockInfolist
                 // Produit associé
                 TextEntry::make('produit.nom_produit')
                     ->label('Produit'),
+                
+                     
 
+                Textentry::make('imprimerie_id')
+                ->label('Imprimerie'),    
                 // Date du mouvement
                 TextEntry::make('date_mouvement')
                     ->label('Date du mouvement')
@@ -43,6 +47,7 @@ class MouvementStockInfolist
                     ->numeric()
                     ->label('Quantité sortie'),
 
+                  
                 // Stock actuel et stock restant
                 TextEntry::make('produit.stock_actuel')
                     ->numeric()

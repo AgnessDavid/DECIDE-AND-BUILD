@@ -64,6 +64,11 @@ class Produit extends Model
         return $this->hasMany(MouvementStock::class, 'produit_id');
     }
 
+
+public function gestionImpression(){
+    return $this->hasMany(GestionImpression::class);
+}
+
     /** Lignes de commande pivot */
     public function lignesCommande(): HasMany
     {

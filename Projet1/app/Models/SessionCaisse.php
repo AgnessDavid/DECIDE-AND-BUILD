@@ -39,7 +39,7 @@ class SessionCaisse extends Model
  protected static function booted()
 {
     static::saving(function ($session) {
-        $session->solde_final = ($session->entrees ?? 0) - ($session->sorties ?? 0);
+        $session->solde_final = (($session->solde_initial ?? 0) + ($session->entrees ?? 0)) - ($session->sorties ?? 0);
     });
 }
 

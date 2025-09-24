@@ -9,7 +9,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use App\Models\Produit;
 use App\Models\Imprimerie;
-use Filament\Schemas\Components\Textarea;
 
 class MouvementStockForm
 {
@@ -56,6 +55,17 @@ class MouvementStockForm
                             ->label('Stock actuel')
                             ->numeric()
                             ->disabled(),
+
+
+Select::make('type_mouvement')
+    ->label('Type de mouvement')
+    ->options([
+        'entree' => 'Entrée',
+        'sortie' => 'Sortie',
+    ])
+    ->required()
+    ->default('entree') // tu peux mettre entrée par défaut
+    ->reactive(),
 
                         TextInput::make('stock_resultant')
                             ->label('Stock après mouvement')

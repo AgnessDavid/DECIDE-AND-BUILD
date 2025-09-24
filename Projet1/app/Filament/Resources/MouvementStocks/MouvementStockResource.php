@@ -30,6 +30,7 @@ class MouvementStockResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return MouvementStockForm::configure($schema);
+        
     }
 
     public static function infolist(Schema $schema): Schema
@@ -59,7 +60,7 @@ class MouvementStockResource extends Resource
             'view' => ViewMouvementStock::route('/{record}'),
             'edit' => EditMouvementStock::route('/{record}/edit'),
 
-             'imprimeries' => Pages\ImprimeriesMouvements::route('/imprimeries'),
+             
            
         ];
     }

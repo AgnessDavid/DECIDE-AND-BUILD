@@ -18,11 +18,14 @@ class MouvementStock extends Model
 
     protected $fillable = [
         'produit_id',
+        'imprimerie_id',
         'demande_impression_id',
         'designation',
         'date_mouvement',
         'type_mouvement',
         'quantite_entree',
+        'quantite_demandee',
+        'quantite_imprimee',
         'numero_bon',
         'quantite_sortie',
         'stock_resultant',
@@ -42,6 +45,10 @@ class MouvementStock extends Model
     {
         return $this->belongsTo(Produit::class);
     }
+    public function imprimerie()
+    {
+        return $this->belongsTo(Imprimerie::class);
+    }
 
     public function demandeImpression(): BelongsTo
     {
@@ -54,6 +61,7 @@ class MouvementStock extends Model
     {
         return $query->where('type_mouvement', 'entree');
     }
+
 
     public function scopeSorties($query)
     {

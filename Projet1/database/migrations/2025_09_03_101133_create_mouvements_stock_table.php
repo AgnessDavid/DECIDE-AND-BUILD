@@ -15,9 +15,15 @@ Schema::create('mouvements_stock', function (Blueprint $table) {
     $table->id();
 
     // Produit lié
-    $table->foreignId('produit_id')
-        ->constrained('produits')
-        ->cascadeOnDelete();
+$table->foreignId('produit_id')
+->nullable()
+->constrained('produits')
+->cascadeOnDelete();
+
+    $table->foreignId('imprimerie_id')
+     ->nullable()
+    ->constrained('imprimeries')
+    ->cascadeOnDelete();
 
     // Optionnel : lien avec demande d'impression
     $table->foreignId('demande_impression_id')

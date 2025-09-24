@@ -59,11 +59,12 @@ static::creating(function ($demande) {
     /**
      * La demande appartient à une fiche de besoin
      */
-    public function ficheBesoin(): BelongsTo
-    {
-        return $this->belongsTo(FicheBesoin::class);
-    }
 
+    public function gestionImpression(){
+
+        return $this->hasMany(GestionImpression::class);
+
+    }
 
 public function imprimeries()
 {

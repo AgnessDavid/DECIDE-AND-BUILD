@@ -18,35 +18,40 @@ class SessionCaisseForm
                     ->required()
                     ->label('Caissier'),
 
-                TextInput::make('solde_initial')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+             TextInput::make('solde_initial')
+    ->required()
+    ->numeric()
+    ->default(0)
+    ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
 
 TextInput::make('entrees')
     ->numeric()
     ->default(0)
     ->reactive()
-    ->afterStateUpdated(fn ($state, callable $set, $get) => $set('solde_final', ($state ?? 0) - ($get('sorties') ?? 0)))
-    ->formatStateUsing(fn ($state) => number_format($state ?? 0, 0, ',', '.')),
-
+    ->afterStateUpdated(fn ($state, callable $set, $get) => 
+        $set('solde_final', ($get('solde_initial') ?? 0) + ($state ?? 0) - ($get('sorties') ?? 0))
+    )
+    ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
 
 TextInput::make('sorties')
     ->numeric()
     ->default(0)
-    ->label('Sorties')
-    ->reactive() // <-- rend le champ réactif
-    ->afterStateUpdated(fn ($state, callable $set, $get) => $set('solde_final', ($get('entrees') ?? 0) - ($state ?? 0))),
+    ->reactive()
+    ->afterStateUpdated(fn ($state, callable $set, $get) => 
+        $set('solde_final', ($get('solde_initial') ?? 0) + ($get('entrees') ?? 0) - ($state ?? 0))
+    )
+    ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
 
-TextInput::make('solde_final')
-    ->numeric()
-    ->disabled()
-    ->label('Solde Final'),
+        TextInput::make('solde_final')
+            ->numeric()
+            ->disabled()
+            ->label('Solde Final')
+            ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
 
 
                 TextInput::make('statut')
                     ->disabled()
-                    ->default('ouvert'),
+                    ->default('fermé'),
 
                 DateTimePicker::make('ouvert_le')
                     ->required()
