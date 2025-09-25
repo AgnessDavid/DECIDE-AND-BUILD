@@ -22,7 +22,7 @@ class ValidationFicheExpressionBesoinResource extends Resource
     protected static ?string $model = ValidationFicheExpressionBesoin::class;
 
     protected static UnitEnum|string|null $navigationGroup = 'Validation';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::CheckCircle;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ShieldCheck;
     protected static ?string $recordTitleAttribute = 'Gestion Validation';
     public static function form(Schema $schema): Schema
     {

@@ -21,7 +21,7 @@ class DemandeExpressionBesoinResource extends Resource
 {
     protected static ?string $model = DemandeExpressionBesoin::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Clipboard; // icône de clipboard
 
     protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
   

@@ -20,7 +20,8 @@ class ImprimerieExpressionBesoinResource extends Resource
 {
     protected static ?string $model = ImprimerieExpressionBesoin::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentPlus; // icône pour créer un document
+
 
     protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
   

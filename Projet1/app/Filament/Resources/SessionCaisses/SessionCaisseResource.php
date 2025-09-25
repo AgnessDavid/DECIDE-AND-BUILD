@@ -21,7 +21,7 @@ class SessionCaisseResource extends Resource
 {
     protected static ?string $model = SessionCaisse::class;
     protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Banknotes;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ArrowDownTray;
 
     protected static ?string $recordTitleAttribute = 'SessionCaisse';
 

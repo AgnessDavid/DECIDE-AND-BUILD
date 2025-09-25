@@ -20,7 +20,7 @@ class GestionImpressionResource extends Resource
 {
     protected static ?string $model = GestionImpression::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Cog;
     protected static ?string $recordTitleAttribute = 'Gestion Imprimerie';
 
     protected static UnitEnum|string|null $navigationGroup = 'Gestion Produits et Stock';

@@ -21,7 +21,7 @@ class FactureResource extends Resource
 {
     protected static ?string $model = Facture::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+   protected static string|BackedEnum|null $navigationIcon = Heroicon::ClipboardDocument; 
 protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
     protected static ?string $recordTitleAttribute = 'Facture';
 

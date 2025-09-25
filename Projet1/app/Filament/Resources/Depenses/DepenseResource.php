@@ -21,8 +21,8 @@ class DepenseResource extends Resource
 {
     protected static ?string $model = Depense::class;
     protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
+protected static string|BackedEnum|null $navigationIcon = Heroicon::CurrencyDollar; // icône dollar
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'Depense';
 

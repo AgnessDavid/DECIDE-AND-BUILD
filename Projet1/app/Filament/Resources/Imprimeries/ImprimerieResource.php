@@ -21,8 +21,11 @@ class ImprimerieResource extends Resource
 {
     protected static ?string $model = Imprimerie::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
+protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentPlus; // icône pour créer un document
+
+ // icône de clipboard
+
+     protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
   
     protected static ?string $recordTitleAttribute = 'Imprimerie';
 
