@@ -23,8 +23,7 @@ class ValidationResource extends Resource
     protected static ?string $model = Validation::class;
     protected static UnitEnum|string|null $navigationGroup = 'Validation';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::CheckCircle;
-
-    protected static ?string $recordTitleAttribute = 'Validation';
+    protected static ?string $recordTitleAttribute = 'Gestion Validation';
 
     public static function form(Schema $schema): Schema
     {

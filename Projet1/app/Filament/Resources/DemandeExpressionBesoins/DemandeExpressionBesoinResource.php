@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DemandeExpressionBesoinResource extends Resource
 {
@@ -22,7 +23,9 @@ class DemandeExpressionBesoinResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Demande Expression Besoin';
+    protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
+  
+    protected static ?string $recordTitleAttribute = 'Demande Production';
 
     public static function form(Schema $schema): Schema
     {

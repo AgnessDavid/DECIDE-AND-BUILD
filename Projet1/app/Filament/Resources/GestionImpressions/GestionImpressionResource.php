@@ -15,14 +15,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-
+use UnitEnum;
 class GestionImpressionResource extends Resource
 {
     protected static ?string $model = GestionImpression::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $recordTitleAttribute = 'Gestion Imprimerie';
 
-    protected static ?string $recordTitleAttribute = 'Gestion Impression';
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion Produits et Stock';
 
     public static function form(Schema $schema): Schema
     {

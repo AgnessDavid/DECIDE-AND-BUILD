@@ -75,6 +75,13 @@ class Produit extends Model
     }
 
 
+    public function gestionimprimerie()
+    {
+
+        return $this->hasMany(GestionImprimerie::class,'produit_id');
+
+    }
+
 
     public function mouvements(): HasMany
     {
