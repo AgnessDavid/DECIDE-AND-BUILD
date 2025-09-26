@@ -55,4 +55,12 @@ class ValidationFicheExpressionBesoinResource extends Resource
             'edit' => EditValidationFicheExpressionBesoin::route('/{record}/edit'),
         ];
     }
+
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }

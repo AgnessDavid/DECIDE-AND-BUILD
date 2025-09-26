@@ -58,4 +58,14 @@ class ClientResource extends Resource
             'edit' => EditClient::route('/{record}/edit'),
         ];
     }
+
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
 }
+
+
+
+
+}
+

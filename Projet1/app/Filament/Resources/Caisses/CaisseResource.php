@@ -59,4 +59,12 @@ protected static string|BackedEnum|null $navigationIcon = Heroicon::Banknotes;
             'edit' => EditCaisse::route('/{record}/edit'),
         ];
     }
+
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }

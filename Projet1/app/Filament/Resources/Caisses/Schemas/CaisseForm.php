@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Caisses\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use App\Models\Commande;
 
 class CaisseForm
@@ -13,69 +14,91 @@ class CaisseForm
     {
         return $schema
             ->components([
-                // Choix de la commande
-                Select::make('commande_id')
-                    ->relationship('commande', 'id')
-                    ->required()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        if ($state) {
-                            $commande = Commande::with('client')->find($state);
 
-                            if ($commande) {
-                                $set('client_id', $commande->client_id);
-                                $set('user_id', $commande->user_id);
-                                $set('montant_ht', $commande->montant_ht);
-                                $set('montant_ttc', $commande->montant_ttc);
-                                $set('tva', 18.0);
-                            }
-                        }
-                    }),
+                // Section 1 : Choix de la commande
+                Section::make('Commande')
+                    ->schema([
+                        Select::make('commande_id')
+                            ->relationship('commande', 'id')
+                            ->label('Commande')
+                            ->required()
+                            ->searchable()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $commande = Commande::with('client')->find($state);
 
-                // Ces champs vont se remplir automatiquement
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
+                                    if ($commande) {
+                                        $set('client_id', $commande->client_id);
+                                        $set('user_id', $commande->user_id);
+                                        $set('montant_ht', $commande->montant_ht);
+                                        $set('montant_ttc', $commande->montant_ttc);
+                                        $set('tva', 18.0);
+                                    }
+                                }
+                            }),
+                    ]),
 
-                Select::make('client_id')
-                    ->relationship('client', 'id')
-                    ->required(),
+                // Section 2 : Informations du client et de l'agent
+                Section::make('Informations')
+                    ->schema([
+                        Select::make('user_id')
+                            ->relationship('user', 'name')
+                            ->label('Agent')
+                            ->required(),
 
-                TextInput::make('montant_ht')
-                    ->required()
-                    ->numeric(),
+                        Select::make('client_id')
+                            ->relationship('client', 'id')
+                            ->label('Client')
+                            ->required(),
+                    ]),
 
-                TextInput::make('tva')
-                    ->required()
-                    ->numeric()
-                    ->default(18.0),
+                // Section 3 : Montants
+                Section::make('Montants')
+                    ->schema([
+                        TextInput::make('montant_ht')
+                            ->label('Montant HT')
+                            ->required()
+                            ->numeric(),
 
-                TextInput::make('montant_ttc')
-                    ->required()
-                    ->numeric(),
+                        TextInput::make('tva')
+                            ->label('TVA (%)')
+                            ->required()
+                            ->numeric()
+                            ->default(18.0),
 
-                    
-TextInput::make('entree')
-    ->label('Montant Entré')
-    ->numeric()
-    ->reactive()
-    ->afterStateUpdated(function ($state, callable $set, callable $get) {
-        $set('sortie', $state - ($get('montant_ttc') ?? 0));
-    }),
+                        TextInput::make('montant_ttc')
+                            ->label('Montant TTC')
+                            ->required()
+                            ->numeric(),
+                    ]),
 
-TextInput::make('sortie')
-    ->label('Monnaie à rendre')
-    ->numeric()
-    ->disabled(), // on empêche la saisie manuelle
+                // Section 4 : Paiement
+                Section::make('Paiement')
+                    ->schema([
+                        TextInput::make('entree')
+                            ->label('Montant Entré')
+                            ->numeric()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                $set('sortie', $state - ($get('montant_ttc') ?? 0));
+                            }),
 
+                        TextInput::make('sortie')
+                            ->label('Monnaie à rendre')
+                            ->numeric()
+                            ->disabled(),
 
-                Select::make('statut_paiement')
-                    ->options([
-                        'payé' => 'Payé',
-                        'impayé' => 'Impayé',
-                    ])
-                    ->default('impayé')
-                    ->required(),
+                        Select::make('statut_paiement')
+                            ->label('Statut paiement')
+                            ->options([
+                                'payé' => 'Payé',
+                                'impayé' => 'Impayé',
+                            ])
+                            ->default('impayé')
+                            ->required(),
+                    ]),
+
             ]);
     }
 }

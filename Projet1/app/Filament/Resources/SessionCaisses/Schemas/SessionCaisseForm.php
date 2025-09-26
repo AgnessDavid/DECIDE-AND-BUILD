@@ -6,6 +6,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 
 class SessionCaisseForm
 {
@@ -13,52 +14,59 @@ class SessionCaisseForm
     {
         return $schema
             ->components([
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required()
-                    ->label('Caissier'),
+                // Section 1 : Caissier et ouverture
+                Section::make('Informations du caissier')
+                    ->schema([
+                        Select::make('user_id')
+                            ->relationship('user', 'name')
+                            ->required()
+                            ->label('Caissier'),
 
-             TextInput::make('solde_initial')
-    ->required()
-    ->numeric()
-    ->default(0)
-    ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
+                        DateTimePicker::make('ouvert_le')
+                            ->required()
+                            ->label('Ouvert le'),
 
-TextInput::make('entrees')
-    ->numeric()
-    ->default(0)
-    ->reactive()
-    ->afterStateUpdated(fn ($state, callable $set, $get) => 
-        $set('solde_final', ($get('solde_initial') ?? 0) + ($state ?? 0) - ($get('sorties') ?? 0))
-    )
-    ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
+                        DateTimePicker::make('ferme_le')
+                            ->label('Fermé le'),
 
-TextInput::make('sorties')
-    ->numeric()
-    ->default(0)
-    ->reactive()
-    ->afterStateUpdated(fn ($state, callable $set, $get) => 
-        $set('solde_final', ($get('solde_initial') ?? 0) + ($get('entrees') ?? 0) - ($state ?? 0))
-    )
-    ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
+                        TextInput::make('statut')
+                            ->disabled()
+                            ->default('fermé'),
+                    ]),
 
-        TextInput::make('solde_final')
-            ->numeric()
-            ->disabled()
-            ->label('Solde Final')
-            ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
+                // Section 2 : Solde
+                Section::make('Solde et mouvements')
+                    ->schema([
+                        TextInput::make('solde_initial')
+                            ->required()
+                            ->numeric()
+                            ->default(0)
+                            ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
 
+                        TextInput::make('entrees')
+                            ->numeric()
+                            ->default(0)
+                            ->reactive()
+                            ->afterStateUpdated(fn ($state, callable $set, $get) =>
+                                $set('solde_final', ($get('solde_initial') ?? 0) + ($state ?? 0) - ($get('sorties') ?? 0))
+                            )
+                            ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
 
-                TextInput::make('statut')
-                    ->disabled()
-                    ->default('fermé'),
+                        TextInput::make('sorties')
+                            ->numeric()
+                            ->default(0)
+                            ->reactive()
+                            ->afterStateUpdated(fn ($state, callable $set, $get) =>
+                                $set('solde_final', ($get('solde_initial') ?? 0) + ($get('entrees') ?? 0) - ($state ?? 0))
+                            )
+                            ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
 
-                DateTimePicker::make('ouvert_le')
-                    ->required()
-                    ->label('Ouvert le'),
-
-                DateTimePicker::make('ferme_le')
-                    ->label('Fermé le'),
+                        TextInput::make('solde_final')
+                            ->numeric()
+                            ->disabled()
+                            ->label('Solde Final')
+                            ->formatStateUsing(fn($state) => number_format($state ?? 0, 0, ',', '.')),
+                    ]),
             ]);
     }
 }

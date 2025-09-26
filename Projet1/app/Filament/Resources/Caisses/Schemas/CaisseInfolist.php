@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Caisses\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+
 
 class CaisseInfolist
 {
@@ -11,54 +13,70 @@ class CaisseInfolist
     {
         return $schema
             ->components([
-                // Utilisateur ayant créé/enregistré
-                TextEntry::make('user.name')
-                    ->label('Utilisateur'),
 
-                // Commande liée
-                TextEntry::make('commande.numero_commande')
-                    ->label('Commande'),
+                // Section 1 : Informations générales
+                Section::make('Informations générales')
+                    ->schema([
+                        TextEntry::make('user.name')
+                            ->label('Utilisateur')
+                     ,
 
-                // Client lié
-                TextEntry::make('client.nom')
-                    ->label('Client'),
+                        TextEntry::make('commande.numero_commande')
+                            ->label('Commande')
+                        ,
 
-                // Montants
-                TextEntry::make('montant_ht')
-                    ->label('Montant HT')
-                    ->numeric()
-                    ->money('XOF', true),
+                        TextEntry::make('client.nom')
+                            ->label('Client')
+                            ,
+                    ]),
 
-                TextEntry::make('tva')
-                    ->label('TVA (%)')
-                    ->numeric(),
+                // Section 2 : Montants
+                Section::make('Montants')
+                    ->schema([
+                        TextEntry::make('montant_ht')
+                            ->label('Montant HT')
+                            ->numeric()
+                            ->money('XOF', true),
 
-                TextEntry::make('montant_ttc')
-                    ->label('Montant TTC')
-                    ->numeric()
-                    ->money('XOF', true),
+                        TextEntry::make('tva')
+                            ->label('TVA (%)')
+                            ->numeric(),
 
-                TextEntry::make('entree')
-                    ->label('Entrée')
-                    ->numeric()
-                    ->money('XOF', true),
+                        TextEntry::make('montant_ttc')
+                            ->label('Montant TTC')
+                            ->numeric()
+                            ->money('XOF', true),
 
-                TextEntry::make('sortie')
-                    ->label('Sortie')
-                    ->numeric()
-                    ->money('XOF', true),
+                        TextEntry::make('entree')
+                            ->label('Entrée')
+                            ->numeric()
+                            ->money('XOF', true),
 
-                TextEntry::make('statut_paiement')
-                    ->label('Statut paiement'),
+                        TextEntry::make('sortie')
+                            ->label('Sortie')
+                            ->numeric()
+                            ->money('XOF', true),
+                    ]),
 
-                // Dates
-                TextEntry::make('created_at')
-                    ->label('Créé le')
-                    ->dateTime('d/m/Y H:i'),
+                // Section 3 : Paiement
+                Section::make('Paiement')
+                    ->schema([
+                        TextEntry::make('statut_paiement')
+                            ->label('Statut paiement')
+                            ->badge(fn($state) => $state === 'payé' ? 'success' : 'danger'),
+                    ]),
 
-                TextEntry::make('updated_at')
-                    ->label('Modifié le')
-                    ->dateTime('d/m/Y H:i'),
+                // Section 4 : Dates
+                Section::make('Dates')
+                    ->schema([
+                        TextEntry::make('created_at')
+                            ->label('Créé le')
+                            ->dateTime('d/m/Y H:i'),
+
+                        TextEntry::make('updated_at')
+                            ->label('Modifié le')
+                            ->dateTime('d/m/Y H:i'),
+                    ]),
             ]);
     }
 }

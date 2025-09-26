@@ -56,4 +56,13 @@ class GestionImpressionResource extends Resource
             'edit' => EditGestionImpression::route('/{record}/edit'),
         ];
     }
+
+
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }

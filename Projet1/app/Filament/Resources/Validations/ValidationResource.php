@@ -58,4 +58,12 @@ class ValidationResource extends Resource
             'edit' => EditValidation::route('/{record}/edit'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }

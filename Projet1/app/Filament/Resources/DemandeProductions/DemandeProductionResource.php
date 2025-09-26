@@ -59,4 +59,12 @@ protected static ?string $model = DemandeImpression::class;
             'edit' => EditDemandeProduction::route('/{record}/edit'),
         ];
     }
+
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }

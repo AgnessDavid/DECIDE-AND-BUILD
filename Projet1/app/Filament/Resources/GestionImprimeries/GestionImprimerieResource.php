@@ -59,4 +59,12 @@ class GestionImprimerieResource extends Resource
             'edit' => EditGestionImprimerie::route('/{record}/edit'),
         ];
     }
+
+
+    public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
 }

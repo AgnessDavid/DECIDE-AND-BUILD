@@ -56,4 +56,12 @@ protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
             'edit' => EditFacture::route('/{record}/edit'),
         ];
     }
+
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }

@@ -59,4 +59,10 @@ protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ven
             'edit' => EditCommande::route('/{record}/edit'),
         ];
     }
+
+    // fonction pour compter les éléments
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }

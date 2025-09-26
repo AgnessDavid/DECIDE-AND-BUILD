@@ -60,4 +60,12 @@ class ProduitResource extends Resource
             'edit' => EditProduit::route('/{record}/edit'),
         ];
     }
+
+public static function getNavigationBadge(): ?string
+{
+    return static::getModel()::count();
+}
+
+
+
 }
