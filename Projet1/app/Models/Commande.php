@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Commande extends Model
 {
@@ -30,19 +30,15 @@ class Commande extends Model
     ];
 
     // ================== RELATIONS ==================
-
-
-
- public function ventes(): HasMany
+    public function ventes(): HasMany
     {
         return $this->hasMany(Vente::class);
     }
 
-      public function caisse(): HasOne
+    public function caisse(): HasOne
     {
         return $this->hasOne(Caisse::class);
     }
-
 
     public function user(): BelongsTo
     {
@@ -59,13 +55,7 @@ class Commande extends Model
         return $this->hasMany(CommandeProduit::class);
     }
 
-
-
-
-    
-
-
-    public function facture()
+    public function facture(): HasOne
     {
         return $this->hasOne(Facture::class);
     }
@@ -86,61 +76,19 @@ class Commande extends Model
         return $this->produits->pluck('produit.nom_produit')->implode(', ');
     }
 
-
-
-
     // ================== EVENTS ==================
-
-
-
-
     protected static function booted()
     {
-        static::created(function ($commande) {
-            // Création automatique de la facture lors de la création de la commande
-            Facture::create([
-                'commande_id' => $commande->id,
-                'client_id' => $commande->client_id,
-                'user_id' => $commande->user_id,
-                'date_facturation' => now(),
-                //'produit_non_satisfait' => $commande->produit_non_satisfait,
-                'moyen_de_paiement' => $commande->moyen_de_paiement,
-                'statut_paiement' => $commande->statut_paiement ?? 'non_paye',
-                'montant_ht' => $commande->montant_ht,
-                'tva' => 18.00,
-                'montant_ttc' => $commande->montant_ttc,
-                'produits' => $commande->produits->map(function ($ligne) {
-                    return [
-                        'nom' => $ligne->produit->nom_produit,
-                        'quantite' => $ligne->quantite,
-                        'prix_unitaire_ht' => $ligne->prix_unitaire_ht,
-                        'montant_ht' => $ligne->quantite * $ligne->prix_unitaire_ht,
-                        'montant_ttc' => $ligne->quantite * $ligne->prix_unitaire_ht * 1.18,
-                    ];
-                }),
-                'notes' => $commande->notes_internes,
-            ]);
+        // Générer automatiquement le numéro de commande
+        static::creating(function ($commande) {
+            if (empty($commande->numero_commande)) {
+                $prefix = 'CMD-BNET-';
+                $last = static::latest('id')->first();
+                $count = $last ? $last->id + 1 : 1;
+                $commande->numero_commande = $prefix . str_pad($count, 2, '0', STR_PAD_LEFT);
+            }
         });
 
-static::creating(function ($commande) {
-    if (empty($commande->numero_commande)) {
-        $prefix = 'CMD-BNET-';
-        $last = static::latest('id')->first();
-        $count = $last ? $last->id + 1 : 1;
-        $commande->numero_commande = $prefix . str_pad($count, 2, '0', STR_PAD_LEFT);
-    }
-});
-
 
     }
-
-
-
-
-
-
-    
-
 }
-
-

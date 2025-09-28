@@ -98,15 +98,17 @@ Section::make('Paiement')
             ->numeric()
             ->disabled(),
 
-        Select::make('statut_paiement')
-            ->label('Statut paiement')
-            ->options([
-                'payé' => 'Payé',
-                'impayé' => 'Impayé',
-            ])
-            ->default('impayé')
-            ->disabled()
-            ->required(),
+    Select::make('statut_paiement')
+    ->label('Statut paiement')
+    ->options([
+        'payé' => 'Payé',
+        'impayé' => 'Impayé',
+    ])
+    ->default('impayé')
+    ->disabled() // lecture seule
+    ->dehydrated(true) // ⚡ forcé pour enregistrer en DB
+    ->required()
+
     ]),
 
             ]);

@@ -13,6 +13,7 @@ class Facture extends Model
         'commande_id',
         'client_id',
         'user_id',
+        'caisse_id',
         'numero_facture',
         'date_facturation',
         'montant_ht',
@@ -36,6 +37,14 @@ class Facture extends Model
     {
         return $this->belongsTo(Commande::class);
     }
+
+    public function caisse()
+    {
+    return $this->belongsTo(Caisse::class,'caisse_id');
+
+    }
+
+
 
     public function client()
     {
@@ -108,7 +117,7 @@ protected static function booted()
             'prix_unitaire_ht' => $ligne->prix_unitaire_ht,
             'montant_ht' => $ligne->quantite * $ligne->prix_unitaire_ht,
             'montant_ttc' => $ligne->quantite * $ligne->prix_unitaire_ht * 1.18, 
-             'statut_paiement_commande' => $this->commande->statut ?? 'impayé',
+            'statut_paiement_commande' => $this->caisse?->statut_paiement ?? 'impayé',
             // juste pour affichage
         ])->toArray();
     }

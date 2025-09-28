@@ -35,6 +35,11 @@ class Caisse extends Model
     {
         return $this->belongsTo(Commande::class, 'commande_id');
     }
+public function facture()
+{
+    return $this->hasOne(Facture::class, 'caisse_id');
+}
+
 
     public function client(): BelongsTo
     {
@@ -120,19 +125,29 @@ protected static function booted()
     });
 
     // Après sauvegarde
-    static::saved(function ($caisse) {
-        // Vérifier si le statut de paiement est "payé"
-        if ($caisse->statut === 'payé') {
-            // Mettre à jour la commande associée
-            if ($caisse->commande) {
-                $caisse->commande->update([
+static::saved(function ($caisse) {
+        // Vérifier si le statut de paiement est "payé" (insensible à la casse)
+        if (strtolower($caisse->statut_paiement) === 'payé') {
+            // Récupérer la facture associée à cette caisse
+            $facture = $caisse->facture;
+            
+            if ($facture) {
+                // Mettre à jour automatiquement le statut de paiement
+                $facture->update([
                     'statut_paiement' => 'payé',
                 ]);
             }
 
-        
+            // Optionnel : mettre aussi à jour la commande si besoin
+            $commande = $caisse->commande;
+            if ($commande) {
+                $commande->update([
+                    'statut_paiement' => 'payé',
+                ]);
+            }
         }
     });
+
 }
 
 }

@@ -45,6 +45,13 @@ class FactureForm
                             ->disabled()
                             ->dehydrated(false),
 
+Select::make('caisse_id')
+    ->label('Caisse')
+    ->relationship('caisse', 'id') // nom de la relation en minuscule + colonne à afficher
+    ->getOptionLabelFromRecordUsing(fn($record) => "Caisse #{$record->id}") // personnaliser l'affichage
+       // lecture seule
+    ->dehydrated(false), // ne pas sauvegarder
+
                         Select::make('user_id')
                             ->relationship('user', 'name')
                             ->label('Agent')
@@ -59,14 +66,21 @@ class FactureForm
                             ->label('Date de facturation')
                             ->required(),
 
-                        Select::make('statut_paiement')
-                            ->label('Statut paiement')
-                            ->options([
-                                'Impayé' => 'Impayé',
-                                'paye' => 'Payé',
-                            ])
-                            ->default('Impayé')
-                            ->required(),
+                     Select::make('statut_paiement')
+    ->label('Statut paiement')
+    ->options([
+        'impayé' => 'Impayé',
+        'payé' => 'Payé',
+    ])
+    ->afterStateHydrated(function ($state, $record, $set) {
+        // Si la facture a une caisse associée
+        if ($record?->caisse?->statut_paiement) {
+            $set('statut_paiement', $record->caisse->statut_paiement);
+        }
+    })
+    ->required(),
+
+
                     ])  ->columns(2),
 
                 // Section 2 : Montants
