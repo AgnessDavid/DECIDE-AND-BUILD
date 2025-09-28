@@ -72,32 +72,42 @@ class CaisseForm
                             ->required()
                             ->numeric(),
                     ]),
+// Section 4 : Paiement
+Section::make('Paiement')
+    ->schema([
+        TextInput::make('entree')
+            ->label('Montant Entré')
+            ->numeric()
+            ->reactive()
+            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                $montantTTC = $get('montant_ttc') ?? 0;
 
-                // Section 4 : Paiement
-                Section::make('Paiement')
-                    ->schema([
-                        TextInput::make('entree')
-                            ->label('Montant Entré')
-                            ->numeric()
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                                $set('sortie', $state - ($get('montant_ttc') ?? 0));
-                            }),
+                // Calcul monnaie à rendre
+                $set('sortie', max(0, $state - $montantTTC));
 
-                        TextInput::make('sortie')
-                            ->label('Monnaie à rendre')
-                            ->numeric()
-                            ->disabled(),
+                // Mise à jour du statut
+                if ($state >= $montantTTC && $montantTTC > 0) {
+                    $set('statut_paiement', 'payé');
+                } else {
+                    $set('statut_paiement', 'impayé');
+                }
+            }),
 
-                        Select::make('statut_paiement')
-                            ->label('Statut paiement')
-                            ->options([
-                                'payé' => 'Payé',
-                                'impayé' => 'Impayé',
-                            ])
-                            ->default('impayé')
-                            ->required(),
-                    ]),
+        TextInput::make('sortie')
+            ->label('Monnaie à rendre')
+            ->numeric()
+            ->disabled(),
+
+        Select::make('statut_paiement')
+            ->label('Statut paiement')
+            ->options([
+                'payé' => 'Payé',
+                'impayé' => 'Impayé',
+            ])
+            ->default('impayé')
+            ->disabled()
+            ->required(),
+    ]),
 
             ]);
     }

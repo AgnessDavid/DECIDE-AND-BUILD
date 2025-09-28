@@ -56,6 +56,10 @@ public static function configure(Schema $schema): Schema
                         ->required(),
                     ]),
 
+
+
+
+                    
                 
             // Section 2 : Produits commandés
             Section::make('Produits commandés')
@@ -71,23 +75,97 @@ public static function configure(Schema $schema): Schema
                                 ->searchable()
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $set, $get) {
-                                    // ton code de calcul, notifications et stock
-                                })
-                                ->columnSpan(2),
+    if ($state) {
+        $produit = \App\Models\Produit::find($state);
+        if ($produit) {
+            $set('prix_unitaire_ht', $produit->prix_unitaire_ht);
 
-                            TextInput::make('quantite')
-                                ->label('Quantité')
-                                ->numeric()
-                                ->required()
-                                ->reactive()
-                                ->afterStateUpdated(function ($state, callable $set, $get) {
-                                    // calcul des montants et validation stock
-                                })
-                                ->columnSpan(2),
+            // Montants initiaux
+            $quantite = $get('quantite') ?? 1;
+            $set('montant_ht', $produit->prix_unitaire_ht * $quantite);
+            $set('montant_ttc', $produit->prix_unitaire_ht * $quantite * 1.18);
 
-                            TextInput::make('stock_actuel')->label('Stock actuel')->disabled()->dehydrated(false)->columnSpan(2),
-                            TextInput::make('stock_minimum')->label('Stock minimum')->disabled()->dehydrated(false)->columnSpan(2),
-                            TextInput::make('stock_maximum')->label('Stock maximum')->disabled()->dehydrated(false)->columnSpan(2),
+            // Stocks
+            $set('stock_actuel', $produit->stock_actuel);
+            $set('stock_minimum', $produit->stock_minimum);
+            $set('stock_maximum', $produit->stock_maximum);
+
+            // Vérification des seuils
+            $stockActuel = $produit->stock_actuel;
+            $stockMin = $produit->stock_minimum;
+
+            if ($stockActuel == $stockMin) {
+                Notification::make()
+                    ->title('⚠️ Réapprovisionnement nécessaire')
+                    ->body("Le stock actuel est égal au stock minimum ({$stockMin}). Pensez à réapprovisionner.")
+                    ->warning()
+                    ->duration(300000)
+                    ->send();
+            } elseif ($stockActuel < $stockMin) {
+                Notification::make()
+                    ->title('🚨 Stock critique')
+                    ->body("Le stock actuel ({$stockActuel}) est inférieur au minimum ({$stockMin}) ! Réapprovisionnement obligatoire.")
+                    ->danger()
+                    ->duration(300000)
+                    ->send();
+            } elseif ($stockActuel <= $stockMin + ($stockMin * 0.3)) {
+                Notification::make()
+                    ->title('🔔 Stock en baisse')
+                    ->body("Le stock actuel ({$stockActuel}) se rapproche du minimum ({$stockMin}). Anticipez un réapprovisionnement.")
+                    ->warning()
+                    ->duration(300000)
+                    ->send();
+            }
+
+            // Validation quantité vs stock
+            if ($quantite > $stockActuel) {
+                Notification::make()
+                    ->title('Stock insuffisant')
+                    ->body("La quantité demandée ({$quantite}) dépasse le stock disponible ({$stockActuel}) !")
+                    ->danger()
+                    ->duration(300000)
+                    ->send();
+
+                // Optionnel : limiter la quantité à ce qui est dispo
+                // $set('quantite', $stockActuel);
+            }
+        }
+    }
+})
+                                ->columnSpan(2),
+                                
+                                
+                       TextInput::make('quantite')
+    ->label('Quantité')
+    ->numeric()
+    ->reactive() // important !
+    ->afterStateUpdated(function ($state, callable $set, $get) {
+        $prixUnitaire = $get('prix_unitaire_ht') ?? 0;
+        $set('montant_ht', $state * $prixUnitaire);
+        $set('montant_ttc', $state * $prixUnitaire * 1.18);
+    })
+    ->columnSpan(2),
+                           
+
+                            TextInput::make('stock_actuel')    
+                            ->label('Stock actuel')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->columnSpan(2),                            
+
+/*
+                            TextInput::make('stock_minimum')
+                            ->label('Stock minimum')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->columnSpan(2),
+
+                            TextInput::make('stock_maximum')
+                            ->label('Stock maximum')
+                            ->disabled()->dehydrated(false)
+                            ->columnSpan(2),
+*/
+
                             TextInput::make('prix_unitaire_ht')
                                 ->label('Prix unitaire HT')
                                 ->numeric()

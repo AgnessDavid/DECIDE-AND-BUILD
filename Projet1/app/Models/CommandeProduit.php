@@ -32,22 +32,22 @@ class CommandeProduit extends Model
     }
 
 
-
-
-    protected static function booted()
+protected static function booted()
 {
     // Quand une ligne de commande est créée
     static::created(function ($ligne) {
         $produit = $ligne->produit;
-        if ($produit) {
+        $quantite = (int) ($ligne->quantite ?? 0); // force int et évite null
+
+        if ($produit && $quantite > 0) {
             // Retirer la quantité commandée du stock actuel
-            $produit->retirerStock($ligne->quantite);
+            $produit->retirerStock($quantite);
 
             // Optionnel : créer un mouvement de stock pour historiser
             $produit->mouvements()->create([
                 'date_mouvement' => now(),
                 'type_mouvement' => 'sortie',
-                'quantite' => $ligne->quantite,
+                'quantite' => $quantite,
                 'stock_resultant' => $produit->stock_actuel,
                 'details' => "Commande n°{$ligne->commande_id}",
             ]);
