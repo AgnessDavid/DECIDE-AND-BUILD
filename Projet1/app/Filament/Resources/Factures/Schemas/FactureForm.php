@@ -77,7 +77,7 @@ Select::make('caisse_id')
         if ($record?->caisse?->statut_paiement) {
             $set('statut_paiement', $record->caisse->statut_paiement);
         }
-    })
+    }) // ryrt
     ->required(),
 
 
