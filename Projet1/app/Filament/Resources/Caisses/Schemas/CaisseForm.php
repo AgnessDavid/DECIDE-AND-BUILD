@@ -19,7 +19,7 @@ class CaisseForm
                 Section::make('Commande')
                     ->schema([
                         Select::make('commande_id')
-                            ->relationship('commande', 'id')
+                            ->relationship('commande', 'numero_commande')
                             ->label('Commande')
                             ->required()
                             ->searchable()
@@ -48,7 +48,7 @@ class CaisseForm
                             ->required(),
 
                         Select::make('client_id')
-                            ->relationship('client', 'id')
+                            ->relationship('client', 'nom')
                             ->label('Client')
                             ->required(),
                     ]),
@@ -97,6 +97,8 @@ Section::make('Paiement')
             ->label('Monnaie à rendre')
             ->numeric()
             ->disabled(),
+
+
 
     Select::make('statut_paiement')
     ->label('Statut paiement')

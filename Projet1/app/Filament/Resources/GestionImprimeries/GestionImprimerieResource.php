@@ -20,6 +20,7 @@ class GestionImprimerieResource extends Resource
 {
     protected static ?string $model = GestionImprimerie::class;
 
+    protected static ?string $navigationLabel = ' Gestion fiche de besoin';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ChartPie;
 
     protected static ?string $recordTitleAttribute = 'Gestion Imprimerie';

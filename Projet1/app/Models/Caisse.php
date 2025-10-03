@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Caisse extends Model
 {
-    protected $table = 'caisse';
+    protected $table = 'caisses';
 
     protected $fillable = [
         'commande_id',
@@ -40,6 +40,10 @@ public function facture()
     return $this->hasOne(Facture::class, 'caisse_id');
 }
 
+    public function sessionCaisses()
+    {
+        return $this->belongsTo(SessionCaisse::class, 'session_caisse_id');
+    }
 
     public function client(): BelongsTo
     {

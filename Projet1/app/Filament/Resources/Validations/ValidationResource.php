@@ -21,7 +21,9 @@ use Filament\Tables\Table;
 class ValidationResource extends Resource
 {
     protected static ?string $model = Validation::class;
-    protected static UnitEnum|string|null $navigationGroup = 'Validation';
+
+    protected static ?string $navigationLabel = 'Autorisation de production';
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion autorisation et validation';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::CheckCircle;
     protected static ?string $recordTitleAttribute = 'Gestion Validation';
 

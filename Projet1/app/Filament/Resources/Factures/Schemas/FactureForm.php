@@ -39,18 +39,23 @@ class FactureForm
                                 }
                             }),
 
+                            
                         Select::make('client_id')
                             ->relationship('client', 'nom')
                             ->label('Client')
                             ->disabled()
                             ->dehydrated(false),
 
+                        
 Select::make('caisse_id')
     ->label('Caisse')
     ->relationship('caisse', 'id') // nom de la relation en minuscule + colonne à afficher
     ->getOptionLabelFromRecordUsing(fn($record) => "Caisse #{$record->id}") // personnaliser l'affichage
        // lecture seule
     ->dehydrated(false), // ne pas sauvegarder
+
+                
+
 
                         Select::make('user_id')
                             ->relationship('user', 'name')
@@ -77,7 +82,7 @@ Select::make('caisse_id')
         if ($record?->caisse?->statut_paiement) {
             $set('statut_paiement', $record->caisse->statut_paiement);
         }
-    }) // ryrt
+    }) 
     ->required(),
 
 

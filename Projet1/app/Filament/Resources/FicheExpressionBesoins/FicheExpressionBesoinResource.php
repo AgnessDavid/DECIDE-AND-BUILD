@@ -23,7 +23,7 @@ class FicheExpressionBesoinResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentText;
 
     protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
-protected static ?string $navigationLabel = 'Expression de besoin';
+protected static ?string $navigationLabel = 'Fiche de besoin client';
 
     public static function form(Schema $schema): Schema
     {

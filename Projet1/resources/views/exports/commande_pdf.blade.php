@@ -173,9 +173,10 @@
 
     <div class="totals">
         <h3 style="margin-top: 0; color: #007bff;">Totaux</h3>
-        <p><span class="label">Total HT :</span> <span class="value">{{ number_format($commande->montant_ht, 0, ',', ' ') }} FCFA</span></p>
-        <p><span class="label">TVA :</span> <span class="value">{{ $commande->tva ?? 18 }} %</span></p>
-        <p><span class="label">Total TTC :</span> <span class="value">{{ number_format($commande->montant_ttc, 0, ',', ' ') }} FCFA</span></p>
+        <p><span class="label">Produit non satisfait :</span> <span class="value">{{ number_format($commande->produit_non_satisfait, 0, ',', ' ') }} Produit</span></p>
+        <p><span class="label">Total HT :</span> <span class="value">{{ number_format($commande->montant_ht, 0, ',', ' ') }} FCFA (SANS TVA)</span></p>
+        <p><span class="label">TVA :</span> <span class="value"> {{ number_format($commande->montant_ttc, 0, ',', ' ') }} ({{ $commande->tva ?? 18 }} % )FCFA (AVEC LA TVA)</span></p>
+        <p><span class="label">Total TTC :</span> <span class="value">{{ number_format($commande->montant_ttc, 0, ',', ' ') }} FCFA </span></p>
     </div>
 </body>
 </html>

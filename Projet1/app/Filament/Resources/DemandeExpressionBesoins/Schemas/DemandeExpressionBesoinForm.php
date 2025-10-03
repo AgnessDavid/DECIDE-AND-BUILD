@@ -18,7 +18,7 @@ class DemandeExpressionBesoinForm
                 Section::make('Produit et impression')
                     ->schema([
                         Select::make('produit_id')
-                            ->relationship('produit', 'id')
+                            ->relationship('produit', 'nom')
                             ->label('Produit'),
 
                         Select::make('type_impression')

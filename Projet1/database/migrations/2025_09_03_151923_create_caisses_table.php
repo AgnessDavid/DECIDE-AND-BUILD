@@ -8,13 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('caisse', function (Blueprint $table) {
+        Schema::create('caisses', function (Blueprint $table) {
             $table->id();
             
             // Référence à la commande
             $table->foreignId('commande_id')
                   ->constrained('commandes')
                   ->onDelete('cascade');
+
+            $table->foreignId('session_caisse_id')
+                ->constrained('session_caisse')
+                ->onDelete('cascade'); // si une session est supprimée, ses opérations aussi
+
 
             // Référence au client
             $table->foreignId('client_id')
@@ -44,6 +49,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('caisse');
+        Schema::dropIfExists('caisses');
     }
 };

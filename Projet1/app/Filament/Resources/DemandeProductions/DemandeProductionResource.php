@@ -23,7 +23,7 @@ protected static ?string $model = DemandeImpression::class;
 
    protected static string|BackedEnum|null $navigationIcon = Heroicon::Clipboard; // icône de clipboard
 
-
+    protected static ?string $navigationLabel = ' Demande de production';
     protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
   
     protected static ?string $recordTitleAttribute = 'Demande Production';

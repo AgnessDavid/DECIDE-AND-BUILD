@@ -20,6 +20,15 @@ class Depense extends Model
         'details',
     ];
 
+
+    // Dans Depense.php  
+    public function sessionCaisse()
+    {
+        return $this->belongsTo(SessionCaisse::class, 'session_caisse_id');
+    }
+
+
+
     protected static function booted()
     {
         static::creating(function ($depense) {

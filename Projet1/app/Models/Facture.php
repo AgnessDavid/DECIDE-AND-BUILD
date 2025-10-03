@@ -116,6 +116,7 @@ protected static function booted()
             'quantite' => $ligne->quantite,
             'prix_unitaire_ht' => $ligne->prix_unitaire_ht,
             'montant_ht' => $ligne->quantite * $ligne->prix_unitaire_ht,
+            'produit_non_satisfait' => $ligne->produit_non_satisfait ?? 0,
             'montant_ttc' => $ligne->quantite * $ligne->prix_unitaire_ht * 1.18, 
             'statut_paiement_commande' => $this->caisse?->statut_paiement ?? 'impayé',
             // juste pour affichage

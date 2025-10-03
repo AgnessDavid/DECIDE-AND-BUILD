@@ -12,8 +12,8 @@ class Dashboard extends BaseDashboard
     {
         return [
             StatsCommandesWidget::class,
-               CaisseStatsOverview::class,
-                       ClientStatsOverview::class,
+            CaisseStatsOverview::class,
+            ClientStatsOverview::class,
             // Ajoutez d'autres widgets ici
         ];
     }

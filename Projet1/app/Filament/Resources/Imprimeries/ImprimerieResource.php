@@ -23,7 +23,8 @@ class ImprimerieResource extends Resource
 
 protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentPlus; // icône pour créer un document
 
- // icône de clipboard
+
+    protected static ?string $navigationLabel = 'Imprimerie de production';
 
      protected static UnitEnum|string|null $navigationGroup = '  Gestion Production et Imprimerie';
   
