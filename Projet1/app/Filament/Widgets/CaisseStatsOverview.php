@@ -34,24 +34,12 @@ class CaisseStatsOverview extends BaseWidget
         $solde = $totalEntree - $totalSortie;
 
         return [
-            Stat::make('Entrées Totales', number_format($totalEntree, 2) . ' €')
+            Stat::make('Entrées Totales', number_format($totalEntree, 2) . ' FCFA ')
                 ->description('Montant total des entrées')
  
                 ->color('success')
                 ->chart([7, 3, 10, 5, 8, 15, 12]), // Exemple de données pour un petit graphique (adaptez)
-/*
-            Stat::make('Sorties Totales', number_format($totalSortie, 2) . ' €')
-                ->description('Montant total des sorties')
-                //->descriptionIcon('heroicon-m-trending-down')
-                ->color('danger')
-                ->chart([2, 5, 1, 8, 4, 3, 9]),
 
-            Stat::make('Solde', number_format($solde, 2) . ' €')
-                ->description('Solde net (Entrées - Sorties)')
-                //->descriptionIcon('heroicon-m-banknotes')
-                ->color($solde >= 0 ? 'success' : 'danger')
-                ->chart([5, 2, 8, 3, 7, 4, 6]),
-*/
             Stat::make('Paiements Effectués', $totalPaye)
                 ->description('Nombre de paiements "payé"')
                 //->descriptionIcon('heroicon-m-check-circle')

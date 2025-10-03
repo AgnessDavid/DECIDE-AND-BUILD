@@ -2,19 +2,25 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\StatsCommandesWidget;
+
 use Filament\Pages\Dashboard as BaseDashboard;
-use App\Filament\Widgets\CaisseStatsOverview;
-use App\Filament\Widgets\ClientStatsOverview;
+
+// use App\Filament\Widgets\CaisseBarChart;
 class Dashboard extends BaseDashboard
 {
+
+    // Désactiver les widgets sur le dashboard
+    public function getWidgets(): array
+    {
+        return [];
+    }
+
+    // Optionnel : désactiver aussi l'en-tête
     protected function getHeaderWidgets(): array
     {
-        return [
-            StatsCommandesWidget::class,
-            CaisseStatsOverview::class,
-            ClientStatsOverview::class,
-            // Ajoutez d'autres widgets ici
-        ];
+        return [];
     }
+
+
+
 }

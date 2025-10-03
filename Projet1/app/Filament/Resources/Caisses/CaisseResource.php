@@ -33,6 +33,7 @@ protected static string|BackedEnum|null $navigationIcon = Heroicon::Banknotes;
         return CaisseForm::configure($schema);
     }
 
+    
     public static function infolist(Schema $schema): Schema
     {
         return CaisseInfolist::configure($schema);
