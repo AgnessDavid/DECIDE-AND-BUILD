@@ -35,6 +35,12 @@ class FicheBesoin extends Model
 
    }
 
+   public function livraisons(){
+
+   return $this->hasMany(Livraison::class,'fiche_besoin_id');
+
+   }
+
     public function validationsFiche(): HasMany
     {
         return $this->hasMany(ValidationFicheExpressionBesoin::class, 'fiche_besoin_id');

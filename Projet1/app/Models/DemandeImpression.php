@@ -14,7 +14,6 @@ class DemandeImpression extends Model
     protected $table = 'demandes_impression';
 
     protected $fillable = [
-  
         'produit_id',
         'type_impression',
         'numero_ordre',
@@ -22,6 +21,12 @@ class DemandeImpression extends Model
         'quantite_demandee',
         'quantite_imprimee',
         'date_demande',
+        'date_visa_chef_service',
+        'nom_visa_chef_service',
+        'date_autorisation',
+        'est_autorise_chef_informatique',
+        'nom_visa_autorisateur',
+        'date_impression',
         'agent_commercial',
         'service',
         'objet',

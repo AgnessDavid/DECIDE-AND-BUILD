@@ -74,6 +74,12 @@ class Produit extends Model
 
     }
 
+    public function livraison() {
+
+    return $this->hasMany(Livraison::class,'produit_id');
+
+    }
+
 
     public function gestionimprimerie()
     {
