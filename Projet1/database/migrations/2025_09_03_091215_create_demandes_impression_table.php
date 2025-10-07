@@ -10,46 +10,52 @@ return new class extends Migration {
         Schema::create('demandes_impression', function (Blueprint $table) {
             $table->id();
 
-            //  Relation avec la fiche de besoin (si applicable)
+            // Relation avec la fiche de besoin (optionnelle)
             $table->foreignId('fiche_besoin_id')
                 ->nullable()
                 ->constrained('fiches_besoin')
                 ->nullOnDelete();
 
-            //  Relation avec le produit
+            // Relation avec le produit (optionnelle)
             $table->foreignId('produit_id')
                 ->nullable()
                 ->constrained('produits')
                 ->nullOnDelete();
 
-            //  Type d'impression
+           // Nom de l'imprimerie
+            $table->string('nom_imprimerie')->nullable(); // nom ou titre de la demande
+
+
+
+            // Type d'impression
             $table->enum('type_impression', ['simple', 'specifique'])->default('simple');
 
-            //  Informations de la demande
+            // Informations de la demande
+            $table->string('nom_demandes')->nullable(); // nom ou titre de la demande
             $table->string('numero_ordre')->nullable();
             $table->string('designation')->nullable();
             $table->integer('quantite_demandee')->default(0);
             $table->integer('quantite_imprimee')->default(0);
             $table->date('date_demande')->nullable();
 
-            //  Informations sur le demandeur
+            // Informations sur le demandeur
             $table->string('agent_commercial')->nullable();
             $table->string('service')->nullable();
             $table->string('objet')->nullable();
 
-            //  Validation du chef de service
+            // Validation du chef de service
             $table->date('date_visa_chef_service')->nullable();
             $table->string('nom_visa_chef_service')->nullable();
 
-            //  Autorisation du chef informatique
+            // Autorisation du chef informatique
             $table->date('date_autorisation')->nullable();
             $table->boolean('est_autorise_chef_informatique')->default(false);
             $table->string('nom_visa_autorisateur')->nullable();
 
-            //  Date d'impression effective
+            // Date d'impression effective
             $table->date('date_impression')->nullable();
 
-            //  Horodatage
+            // Horodatage
             $table->timestamps();
         });
     }

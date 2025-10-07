@@ -50,7 +50,7 @@ class GestionImpressionForm
                             ->required(),
 
                         Select::make('produit_id')
-                            ->relationship('produit', 'id')
+                            ->relationship('produit', 'nom_produit')
                             ->required(),
                     ]),
 

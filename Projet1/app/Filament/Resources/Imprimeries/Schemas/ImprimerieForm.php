@@ -40,11 +40,12 @@ class ImprimerieForm
                             }
                         })
                         ->required(),
-
+/*
                     Select::make('produit_id')
                         ->label('Produit')
                         ->relationship('produit', 'nom_produit')
                         ->disabled(),
+*/
 
                     TextInput::make('nom_produit')
                         ->label('Nom du produit')
@@ -86,11 +87,11 @@ class ImprimerieForm
                         ->label('Quantité imprimée')
                         ->numeric()
                         ->required(),
-
+/*
                     TextInput::make('valide_par')
                         ->label('Validé par')
                         ->disabled(),
-
+*/
                     DatePicker::make('date_impression')
                         ->label('Date d’impression')
                         ->default(now()),

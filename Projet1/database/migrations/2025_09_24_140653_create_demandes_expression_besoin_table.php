@@ -11,6 +11,11 @@ return new class extends Migration
         Schema::create('demandes_expression_besoin', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('fiche_besoin_id')
+                ->nullable()
+                ->constrained('fiches_besoin')
+                ->nullOnDelete();
+
             // 🔹 Relation avec Produit
             $table->foreignId('produit_id')
                 ->nullable()

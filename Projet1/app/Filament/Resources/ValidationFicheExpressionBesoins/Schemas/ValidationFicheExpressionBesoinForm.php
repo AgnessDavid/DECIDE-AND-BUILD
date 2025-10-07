@@ -21,7 +21,7 @@ class ValidationFicheExpressionBesoinForm
 Select::make('fiche_besoin_id')
     ->label('Fiche d\'expression de besoin')
     ->required()
-    ->options(FicheBesoin::pluck('nom_structure', 'id'))
+    ->options(FicheBesoin::pluck('nom_structure', 'nom_fiche_besoin'))
     ->searchable()
     ->reactive()
     ->afterStateUpdated(function ($state, $set) {
@@ -43,6 +43,7 @@ Select::make('fiche_besoin_id')
                 $set('type_carte', $fiche->type_carte ?? null);
             $set('produit_souhaite', $fiche->produit?->produit_souhaite ?? $fiche->produit_souhaite ?? null);
             $set('echelle', $fiche->echelle ?? null);
+            $set('quantite_demandee', $fiche->quantite_demandee);
             $set('orientation', $fiche->orientation ?? null);
             $set('auteur', $fiche->auteur ?? null);
             $set('symbole', $fiche->symbole ?? null);
@@ -94,7 +95,8 @@ Select::make('fiche_besoin_id')
             // 🔹 Informations cartographiques / produit
             Section::make('Informations cartographiques')->schema([
                 TextInput::make('type_carte'),
-                 TextInput::make('produit_souhaite'),
+                TextInput::make('produit_souhaite'),
+                TextInput::make('quantite_demandee')->numeric(),
                 TextInput::make('echelle'),
                 TextInput::make('orientation'),
                 TextInput::make('auteur'),

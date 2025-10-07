@@ -13,25 +13,29 @@ class DemandeImpression extends Model
 
     protected $table = 'demandes_impression';
 
+    use HasFactory;
+
     protected $fillable = [
-        'produit_id',
+        'fiche_besoin_id',                 // relation avec la fiche de besoin
+        'produit_id',    
+        'nom_imprimerie',                  // relation avec le produit
         'type_impression',
+        'nom_demandes',                    // nom ou titre de la demande
         'numero_ordre',
         'designation',
         'quantite_demandee',
         'quantite_imprimee',
         'date_demande',
+        'agent_commercial',
+        'service',
+        'objet',
         'date_visa_chef_service',
         'nom_visa_chef_service',
         'date_autorisation',
         'est_autorise_chef_informatique',
         'nom_visa_autorisateur',
         'date_impression',
-        'agent_commercial',
-        'service',
-        'objet',
     ];
-
 protected static function booted()
 {
     static::created(function ($demande) {

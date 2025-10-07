@@ -4,22 +4,48 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class FicheBesoin extends Model
 {
+    use HasFactory;
     protected $table = 'fiches_besoin';
 
     protected $fillable = [
         // Infos générales
-        'client_id', 'produit_id', 'produit_souhaite',
-        'nom_structure', 'type_structure', 'nom_interlocuteur', 'fonction',
-        'telephone', 'cellulaire', 'fax', 'email',
-        'nom_agent_bnetd', 'date_entretien', 'objectifs_vises',
-        'commande_ferme', 'demande_facture_proforma',
-        'delai_souhaite', 'date_livraison_prevue', 'date_livraison_reelle',
-        'signature_client', 'signature_agent_bnetd',
-        'titre', 'echelle', 'orientation', 'auteur',
-        'symbole', 'type_element', 'latitude', 'longitude',
-        'nom_zone', 'type_zone',
+        'client_id', 
+        'produit_id',
+        'nom_fiche_besoin',
+        'produit_souhaite',
+        'nom_structure', 
+        'type_structure',
+        'nom_interlocuteur', 
+        'fonction',
+        'telephone', 
+        'cellulaire', 
+        'fax', 
+        'email',
+        'nom_agent_bnetd',
+        'date_entretien', 
+        'objectifs_vises',
+        'commande_ferme', 
+        'demande_facture_proforma',
+        'delai_souhaite', 
+        'date_livraison_prevue', 
+        'date_livraison_reelle',
+        'signature_client', 
+        'signature_agent_bnetd',
+        'titre',
+        'echelle', 
+        'orientation', 
+        'auteur',
+        'symbole', 
+        'type_element', 
+        'latitude', 
+        'longitude',
+        'nom_zone', 
+        'type_zone',
+        'quantite_demandee',
     ];
 
     // ================= RELATIONS =================
@@ -90,8 +116,19 @@ protected static function booted()
             'longitude' => $fiche->longitude,
             'nom_zone' => $fiche->nom_zone,
             'type_zone' => $fiche->type_zone,
+            'quantite_demandee' => $fiche->quantite_demandee,
         ]);
     });
+
+
+        static::creating(function ($fiche) {
+            if (!$fiche->nom_fiche_besoin) {
+                $lastId = static::latest('id')->first()?->id ?? 0;
+                $fiche->nom_fiche_besoin = 'FBC-' . date('Y') . '-' . str_pad($lastId + 1, 4, '0', STR_PAD_LEFT);
+            }
+        });
+
+
 }
 
 }

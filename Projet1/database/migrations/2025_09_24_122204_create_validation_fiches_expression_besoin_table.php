@@ -47,6 +47,8 @@ return new class extends Migration
             $table->string('type_element', 50)->nullable();    // ex. Relief, Hydrographie...
             $table->decimal('latitude', 10, 6)->nullable();
             $table->decimal('longitude', 10, 6)->nullable();
+            $table->integer('quantite_demandee')->default(0);   // Quantité demandée
+            
             $table->string('nom_zone', 255)->nullable();       // Nom de la zone
             $table->string('type_zone', 50)->nullable();       // Type de zone
 

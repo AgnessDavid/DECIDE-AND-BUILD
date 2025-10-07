@@ -36,10 +36,12 @@ class ValidationFicheExpressionBesoin extends Model
         'longitude',
         'nom_zone',
         'type_zone',
+        'quantite_demandee',
     ];
 
     // Relation avec la fiche d'expression de besoin
-    public function fiche()
+
+    public function ficheBesoin()
     {
         return $this->belongsTo(FicheBesoin::class, 'fiche_besoin_id');
     }

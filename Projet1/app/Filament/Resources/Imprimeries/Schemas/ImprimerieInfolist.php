@@ -11,7 +11,7 @@ class ImprimerieInfolist
     {
         return $schema->components([
             TextEntry::make('demande.id')->label('ID Demande'),
-            TextEntry::make('produit.nom_produit')->label('Produit'),
+            //TextEntry::make('produit.nom_produit')->label('Produit'),
             TextEntry::make('nom_produit')->label('Nom produit'),
             TextEntry::make('type_impression')->label('Type de production'),
             TextEntry::make('quantite_demandee')->label('Quantité demandée'),

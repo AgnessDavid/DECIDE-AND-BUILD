@@ -28,9 +28,24 @@ class FicheExpressionBesoinForm
                             'organisme' => 'Organisme',  
                             'particulier' => 'Particulier',  
                         ])  
-                        ->required(),  
-                    TextInput::make('nom_interlocuteur')->label('Nom de l’interlocuteur')->required(),  
-                    TextInput::make('fonction')->label('Fonction'),  
+                        ->required(), 
+                        
+                     TextInput::make('nom_fiche_besoin')
+                    ->label('Code de la fiche de besoin')
+                    ->default(function () {
+                     // Générer un code unique, ex : FB-2025-0001
+                        $lastId = \App\Models\FicheBesoin::latest('id')->first()?->id ?? 0;
+                        $nextId = $lastId + 1;
+                        return 'FBC-' . date('Y') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+                    })
+                    ->disabled() // Empêche la modification manuelle
+                    ->required(),
+
+                    TextInput::make('nom_interlocuteur')
+                    ->label('Nom de l’interlocuteur')
+                    ->required(),  
+                    TextInput::make('fonction')
+                    ->label('Fonction'),  
                 ])->columns(2),  
 
             // 🔹 Contacts
@@ -63,8 +78,9 @@ class FicheExpressionBesoinForm
             // 🔹 Informations cartographiques
             Section::make('Informations cartographiques')  
                 ->schema([  
+                    // titre du produit
                     TextInput::make('produit_souhaite')  
-                    ->label('Description')  
+                    ->label('Titre de la carte')  
                     ->required(),  
                     TextInput::make('type_carte')->label('Type de carte'),
                     TextInput::make('echelle')->label('Échelle (ex: 1:50000)'),  
@@ -76,6 +92,12 @@ class FicheExpressionBesoinForm
                     TextInput::make('longitude')->label('Longitude'),  
                     TextInput::make('nom_zone')->label('Nom de la zone'),  
                     TextInput::make('type_zone')->label('Type de zone'),  
+                    
+                    TextInput::make('quantite_demandee')
+                    ->label('Quantité demandée')
+                    ->numeric()
+                    ->default(0)
+
                 ])->columns(2),  
         ]);  
     }  

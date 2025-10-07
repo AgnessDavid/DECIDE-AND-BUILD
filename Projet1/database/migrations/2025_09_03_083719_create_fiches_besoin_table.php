@@ -18,12 +18,14 @@ return new class extends Migration
             $table->unsignedBigInteger('produit_id')->nullable();
             $table->string('produit_souhaite');
 
+
+            $table->string('nom_fiche_besoin')->nullable();
             // ================= STRUCTURE =================
             $table->string('nom_structure');
             $table->enum('type_structure', ['societe', 'organisme', 'particulier']);
             $table->string('nom_interlocuteur');
             $table->string('fonction')->nullable();
-
+            $table->integer('quantite_demandee')->default(0);
             // ================= CONTACTS =================
             $table->string('telephone')->nullable();
             $table->string('cellulaire')->nullable();

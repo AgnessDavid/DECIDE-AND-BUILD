@@ -12,11 +12,15 @@ class ValidationFicheExpressionBesoinInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('fiche_besoin_id')
-                    ->numeric(),
-                TextEntry::make('user_id')
-                    ->numeric(),
+                TextEntry::make('ficheBesoin.nom_fiche_besoin')
+                ->label('Fiche de besoin'),
+
+                TextEntry::make('user.name')
+                    ->label('Utilisateur'),
+
+
                 TextEntry::make('nom_structure'),
+                TextEntry::make('produit_souhaite'),
                 TextEntry::make('type_structure'),
                 TextEntry::make('nom_interlocuteur'),
                 TextEntry::make('fonction'),
@@ -25,6 +29,8 @@ class ValidationFicheExpressionBesoinInfolist
                     ->date(),
                 IconEntry::make('valide')
                     ->boolean(),
+                TextEntry::make('Quantite_demandee')
+                    ->numeric(),    
                 TextEntry::make('type_carte'),
                 TextEntry::make('echelle'),
                 TextEntry::make('orientation'),

@@ -11,6 +11,7 @@ class Imprimerie extends Model
         'validation_id',      // pour relier à la validation
         'demande_id',         // référence à la demande
         'produit_id',
+        'nom_fiche_besoin',
         'nom_produit',
         'type_impression',
         'quantite_demandee',
