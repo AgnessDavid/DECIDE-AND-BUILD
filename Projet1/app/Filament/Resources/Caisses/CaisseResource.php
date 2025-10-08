@@ -28,6 +28,29 @@ protected static string|BackedEnum|null $navigationIcon = Heroicon::Banknotes;
     protected static UnitEnum|string|null $navigationGroup = 'Gestion Caisse';
     protected static ?string $recordTitleAttribute = 'Caisse';
 
+
+    /* 
+    
+     Connecter en tant Admin 
+     
+     Distinguer les vues
+    
+    */ 
+
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && (
+            auth()->user()->hasRole('agent') || auth()->user()->hasRole('superadmin')
+        );
+    }
+
+    // 🔹 Cacher le lien dans le menu si l'utilisateur n'a pas accès
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canViewAny();
+    }
+
+
     public static function form(Schema $schema): Schema
     {
         return CaisseForm::configure($schema);
