@@ -35,12 +35,20 @@ return [
     |
     */
 
+
+
     'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'online' => [  // nouveau guard pour les utilisateurs front
+            'driver' => 'session',
+            'provider' => 'onlines',
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -59,11 +67,20 @@ return [
     |
     */
 
+ 
+
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
-        ],
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+
+        'onlines' => [   // provider pour le modèle Online
+        'driver' => 'eloquent',
+        'model' => App\Models\Online::class,
+    ],
+
+
 
         // 'users' => [
         //     'driver' => 'database',
@@ -112,4 +129,15 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+
+
+
+
+
+
+
+
+
+
+    
 ];

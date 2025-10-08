@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('produits', function (Blueprint $table) {
+        Schema::create('produits', function (Blueprint $table) {
+
+            $table->id();
+
+
             // Colonnes existantes
             $table->string('reference_produit', 100)->unique()->after('id');
             $table->string('nom_produit', 255)->after('reference_produit');
