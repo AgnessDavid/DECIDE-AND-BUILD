@@ -28,6 +28,15 @@ protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ven
 
     protected static ?string $recordTitleAttribute = 'Commande';
 
+
+
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && (
+            auth()->user()->hasRole('agent') || auth()->user()->hasRole('admin')
+        );
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CommandeForm::configure($schema);

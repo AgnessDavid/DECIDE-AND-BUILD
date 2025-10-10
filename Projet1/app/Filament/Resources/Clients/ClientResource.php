@@ -24,7 +24,16 @@ class ClientResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::User;
     protected static UnitEnum|string|null $navigationGroup = 'Gestion Clients et Ventes';
     protected static ?string $navigationLabel = 'Clients';
-  
+
+
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && (
+            auth()->user()->hasRole('agent') || auth()->user()->hasRole('admin')
+        );
+    }
+
+
     protected static ?string $recordTitleAttribute = 'Clients';
 
     public static function form(Schema $schema): Schema

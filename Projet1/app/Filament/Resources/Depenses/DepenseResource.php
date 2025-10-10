@@ -26,6 +26,13 @@ protected static string|BackedEnum|null $navigationIcon = Heroicon::CurrencyDoll
 
     protected static ?string $recordTitleAttribute = 'Depense';
 
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && (
+            auth()->user()->hasRole('agent') || auth()->user()->hasRole('admin')
+        );
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DepenseForm::configure($schema);

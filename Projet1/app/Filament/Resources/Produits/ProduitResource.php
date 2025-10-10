@@ -29,6 +29,14 @@ class ProduitResource extends Resource
     protected static UnitEnum|string|null $navigationGroup = 'Gestion Produits et Stock';
 
 
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && (
+            auth()->user()->hasRole('agent') || auth()->user()->hasRole('admin')
+        );
+    }
+
+
     public static function form(Schema $schema): Schema
     {
         return ProduitForm::configure($schema);

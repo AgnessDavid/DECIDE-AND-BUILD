@@ -30,6 +30,15 @@ class DemandeExpressionBesoinResource extends Resource
   
     protected static ?string $recordTitleAttribute = 'Demande Production';
 
+
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && (
+            auth()->user()->hasRole('agent') || auth()->user()->hasRole('admin')
+        );
+    }
+
+
     public static function form(Schema $schema): Schema
     {
         return DemandeExpressionBesoinForm::configure($schema);

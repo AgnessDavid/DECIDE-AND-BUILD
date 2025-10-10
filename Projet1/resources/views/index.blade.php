@@ -22,26 +22,30 @@
     </style>
 </head>
 <body class="font-sans bg-gray-50">
+   
     <!-- Navigation -->
     <nav class="bg-white shadow-lg fixed w-full z-50">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between">
                 <div class="flex space-x-7">
                     <div>
-                        <a href="index.html" class="flex items-center py-4 px-2">
+                        <a href="{{ route('accueil') }}" class="flex items-center py-4 px-2">
                             <span class="font-semibold text-gray-500 text-2xl">Cartologue</span>
                         </a>
                     </div>
                     <div class="hidden md:flex items-center space-x-1">
-                        <a href="index.html" class="py-4 px-2 text-blue-500 border-b-4 border-blue-500 font-semibold">Accueil</a>
-                        <a href="boutique.html" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Boutique</a>
-                        <a href="panier.html" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Panier</a>
-                        <a href="contact.html" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Contact</a>
+
+                        <a href="{{ route('accueil') }}" class="py-4 px-2 text-blue-500 border-b-4 border-blue-500 font-semibold">Accueil</a>
+                        <a href="{{ route('boutique') }}" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Boutique</a>
+                        <a href="{{ route('panier') }}" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Panier</a>
+                        <a href="{{ route('contact') }}" class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Contact</a>
+
+                        
                     </div>
                 </div>
                 <div class="hidden md:flex items-center space-x-3">
-                    <a href="login.html" class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-blue-500 hover:text-white transition duration-300">Connexion</a>
-                    <a href="register.html" class="py-2 px-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition duration-300">Inscription</a>
+                    <a href="{{ route('login') }}" class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-blue-500 hover:text-white transition duration-300">Connexion</a>
+                    <a href="{{ route('register') }}" class="py-2 px-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition duration-300">Inscription</a>
                 </div>
                 <div class="md:hidden flex items-center">
                     <button class="outline-none mobile-menu-button">
@@ -52,12 +56,12 @@
         </div>
         <div class="hidden mobile-menu">
             <ul>
-                <li><a href="index.html" class="block text-sm px-2 py-4 text-white bg-blue-500 font-semibold">Accueil</a></li>
-                <li><a href="boutique.html" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Boutique</a></li>
-                <li><a href="panier.html" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Panier</a></li>
-                <li><a href="contact.html" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Contact</a></li>
-                <li><a href="login.html" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Connexion</a></li>
-                <li><a href="register.html" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Inscription</a></li>
+                <li><a href="{{ route('accueil') }}" class="block text-sm px-2 py-4 text-white bg-blue-500 font-semibold">Accueil</a></li>
+                <li><a href="{{ route('boutique') }}" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Boutique</a></li>
+                <li><a href="{{ route('panier') }}" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Panier</a></li>
+                <li><a href="{{ route('contact') }}" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Contact</a></li>
+                <li><a href="{{ route('register') }}" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Connexion</a></li>
+                <li><a href="{{ route('login') }}" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Inscription</a></li>
             </ul>
         </div>
     </nav>
@@ -70,10 +74,10 @@
                     <h1 class="text-4xl md:text-5xl font-bold mb-6">Explorez le monde à travers nos cartes</h1>
                     <p class="text-lg mb-8 text-gray-100">Découvrez notre collection exceptionnelle de cartes anciennes, modernes et personnalisées. Chaque carte raconte une histoire unique.</p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="boutique.html" class="bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-300 text-center">
+                        <a href="{{ route('boutique') }}" class="bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-300 text-center">
                             Voir la boutique
                         </a>
-                        <a href="contact.html" class="border-2 border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300 text-center">
+                        <a href="{{ route('contact') }}" class="border-2 border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition duration-300 text-center">
                             Nous contacter
                         </a>
                     </div>
@@ -153,7 +157,9 @@
                                 <span class="text-sm text-gray-500 line-through ml-2">€49.99</span>
                             </div>
                             <button class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition duration-300">
-                                <i data-feather="shopping-cart" class="w-4 h-4"></i>
+                                <a href="{{ route('panier') }}">
+                                    <i  data-feather="shopping-cart" class="w-4 h-4"></i>
+                                </a>
                             </button>
                         </div>
                     </div>
@@ -178,7 +184,9 @@
                         <div class="flex justify-between items-center">
                             <span class="text-lg font-bold text-blue-600">€29.99</span>
                             <button class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition duration-300">
-                                <i data-feather="shopping-cart" class="w-4 h-4"></i>
+                               <a href="{{ route('panier') }}">
+                                    <i  data-feather="shopping-cart" class="w-4 h-4"></i>
+                                </a>
                             </button>
                         </div>
                     </div>
@@ -233,14 +241,16 @@
                         <div class="flex justify-between items-center">
                             <span class="text-lg font-bold text-blue-600">€45.99</span>
                             <button class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition duration-300">
-                                <i data-feather="shopping-cart" class="w-4 h-4"></i>
+                                <a href="{{ route('panier') }}">
+                                    <i  data-feather="shopping-cart" class="w-4 h-4"></i>
+                                </a>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="text-center mt-12" data-aos="fade-up">
-                <a href="boutique.html" class="inline-block bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                <a href="{{ route('boutique') }}" class="inline-block bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
                     Voir toutes les cartes
                 </a>
             </div>
@@ -341,17 +351,17 @@
                 <div>
                     <h4 class="font-semibold mb-4">Navigation</h4>
                     <ul class="space-y-2">
-                        <li><a href="index.html" class="text-gray-400 hover:text-white transition duration-300">Accueil</a></li>
-                        <li><a href="boutique.html" class="text-gray-400 hover:text-white transition duration-300">Boutique</a></li>
-                        <li><a href="panier.html" class="text-gray-400 hover:text-white transition duration-300">Panier</a></li>
-                        <li><a href="contact.html" class="text-gray-400 hover:text-white transition duration-300">Contact</a></li>
+                        <li><a href="{{ route('accueil') }}" class="text-gray-400 hover:text-white transition duration-300">Accueil</a></li>
+                        <li><a href="{{ route('boutique') }}" class="text-gray-400 hover:text-white transition duration-300">Boutique</a></li>
+                        <li><a href="{{ route('panier') }}" class="text-gray-400 hover:text-white transition duration-300">Panier</a></li>
+                        <li><a href="{{ route('contact') }}" class="text-gray-400 hover:text-white transition duration-300">Contact</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-semibold mb-4">Compte</h4>
                     <ul class="space-y-2">
-                        <li><a href="login.html" class="text-gray-400 hover:text-white transition duration-300">Connexion</a></li>
-                        <li><a href="register.html" class="text-gray-400 hover:text-white transition duration-300">Inscription</a></li>
+                        <li><a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition duration-300">Connexion</a></li>
+                        <li><a href="{{ route('register') }}" class="text-gray-400 hover:text-white transition duration-300">Inscription</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Mon compte</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Suivi de commande</a></li>
                     </ul>

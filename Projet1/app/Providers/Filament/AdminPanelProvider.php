@@ -20,6 +20,9 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Swis\Filament\Backgrounds\ImageProviders\MyImages;
+use Xentixar\FilamentPushNotifications\PushNotification;
+
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -50,15 +53,18 @@ class AdminPanelProvider extends PanelProvider
             
             ->plugins([
             FilamentBackgroundsPlugin::make()
-
-              ->imageProvider(
-                    MyImages::make()
-                        ->directory('images/backgrounds')
-                       
-              ),
+                ->imageProvider(
+                    MyImages::make()->directory('images/backgrounds')
+                ),
+            PushNotification::make(), // ✅ Bonne classe maintenant
+            
+        
 
 
         ])
+
+
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -73,5 +79,13 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
+
+
+
+
+
+
+
     }
 }

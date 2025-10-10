@@ -40,7 +40,7 @@ protected static string|BackedEnum|null $navigationIcon = Heroicon::Banknotes;
     public static function canViewAny(): bool
     {
         return auth()->check() && (
-            auth()->user()->hasRole('agent') || auth()->user()->hasRole('superadmin')
+            auth()->user()->hasRole('agent') || auth()->user()->hasRole('admin')
         );
     }
 

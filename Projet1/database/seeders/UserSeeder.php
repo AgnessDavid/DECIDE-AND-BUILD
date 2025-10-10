@@ -74,7 +74,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Agent informatique',
                 'password' => Hash::make('password'),
-                'role' => 'admin',
+                'role' => 'agent',
                 'is_active' => true,
                 'email_verified_at' => now(),
             ]
@@ -109,7 +109,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'Agent de caisse',
                     'password' => Hash::make('password'),
-                    'role' => 'admin',
+                    'role' => 'agent',
                     'is_active' => true,
                     'email_verified_at' => now(),
                 ]
