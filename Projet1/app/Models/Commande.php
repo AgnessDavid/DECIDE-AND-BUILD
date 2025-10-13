@@ -17,6 +17,8 @@ class Commande extends Model
     protected $fillable = [
         'user_id',
         'client_id',
+
+        'etat',
         'numero_commande',
         'date_commande',
         'produit_non_satisfait',
@@ -30,6 +32,10 @@ class Commande extends Model
     ];
 
     // ================== RELATIONS ==================
+   
+   
+   
+   
     public function ventes(): HasMany
     {
         return $this->hasMany(Vente::class);
@@ -50,9 +56,15 @@ class Commande extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function produits(): HasMany
+    // Dans le modèle Commande
+
+
+
+    public function produits()
     {
-        return $this->hasMany(CommandeProduit::class);
+        return $this->belongsToMany(Produit::class, 'commande_produit')
+            ->withPivot('quantite', 'prix_unitaire_ht', 'montant_ht', 'montant_ttc')
+            ->withTimestamps();
     }
 
     public function facture(): HasOne

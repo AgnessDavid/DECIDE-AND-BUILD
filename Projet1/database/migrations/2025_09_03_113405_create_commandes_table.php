@@ -15,15 +15,14 @@ return new class extends Migration
             $table->id();
 
             // Clés étrangères
-            $table->foreignId('user_id')
-                ->comment('Agent qui a créé la commande')
-                ->constrained('users')
-                ->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
 
             $table->foreignId('client_id')
                 ->constrained('clients')
                 ->cascadeOnDelete();
 
+
+            $table->enum('etat', ['en_cours', 'validee', 'annulee'])->default('en_cours');
 
             // Fiche de besoin optionnelle
         
@@ -43,7 +42,7 @@ return new class extends Migration
                 ->comment('Moyen de paiement prévu');
 
             // Statut de la commandeChatGPT can make mistakes. Check important info.
-            $table->enum('statut', ['payé', 'impayé'])->default('impayé');
+            $table->enum('statut_paiement', ['payé', 'impayé'])->default('impayé');
 
             $table->text('notes_internes')->nullable();
 

@@ -20,7 +20,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Swis\Filament\Backgrounds\ImageProviders\MyImages;
-use Xentixar\FilamentPushNotifications\PushNotification;
+//use Xentixar\FilamentPushNotifications\PushNotification;
+use Filament\Enums\DatabaseNotificationsPosition;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -56,13 +57,10 @@ class AdminPanelProvider extends PanelProvider
                 ->imageProvider(
                     MyImages::make()->directory('images/backgrounds')
                 ),
-            PushNotification::make(), // ✅ Bonne classe maintenant
-            
+            // PushNotification::make(), // ✅ Bonne classe maintenant
         
-
-
         ])
-
+           //->databaseNotifications(position: DatabaseNotificationsPosition::Sidebar)
 
 
             ->middleware([

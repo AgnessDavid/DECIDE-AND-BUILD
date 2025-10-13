@@ -9,7 +9,7 @@ class ProduitSeeder extends Seeder
 {
     public function run(): void
     {
-        // Génère 10 produits aléatoires via la factory
-        Produit::factory()->count(15)->create();
+        // Crée 50 produits réalistes
+        Produit::factory()->count(50)->create();
     }
 }

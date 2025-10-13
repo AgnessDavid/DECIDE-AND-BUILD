@@ -77,149 +77,76 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Cart Items -->
-                <div class="lg:w-2/3" data-aos="fade-right">
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <!-- Cart Header -->
-                        <div class="bg-gray-100 px-6 py-4 border-b border-gray-200 hidden md:block">
-                            <div class="grid grid-cols-12 gap-4">
-                                <div class="col-span-6 font-semibold text-gray-700">Produit</div>
-                                <div class="col-span-2 font-semibold text-gray-700 text-center">Prix</div>
-                                <div class="col-span-2 font-semibold text-gray-700 text-center">Quantité</div>
-                                <div class="col-span-2 font-semibold text-gray-700 text-right">Total</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Cart Item 1 -->
-                        <div class="p-4 md:p-6 border-b border-gray-200">
-                            <div class="flex flex-col md:flex-row md:items-center">
-                                <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                                    <img src="http://static.photos/travel/200x200/1" alt="Carte ancienne" class="w-20 h-20 object-cover rounded">
-                                </div>
-                                <div class="flex-grow md:grid md:grid-cols-12 md:gap-4">
-                                    <div class="md:col-span-5 mb-2 md:mb-0">
-                                        <h3 class="font-semibold text-gray-800">Carte du monde 1750</h3>
-                                        <p class="text-sm text-gray-600">Reproduction historique</p>
-                                    </div>
-                                    <div class="md:col-span-2 flex items-center justify-center mb-2 md:mb-0">
-                                        <span class="text-gray-700">€39.99</span>
-                                    </div>
-                                    <div class="md:col-span-2 flex items-center justify-center mb-4 md:mb-0">
-                                        <div class="flex items-center border border-gray-300 rounded">
-                                            <button class="px-2 py-1 text-gray-600 hover:bg-gray-100">
-                                                <i data-feather="minus" class="w-4 h-4"></i>
-                                            </button>
-                                            <span class="px-3 py-1">1</span>
-                                            <button class="px-2 py-1 text-gray-600 hover:bg-gray-100">
-                                                <i data-feather="plus" class="w-4 h-4"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="md:col-span-2 flex items-center justify-end">
-                                        <span class="font-semibold text-gray-800">€39.99</span>
-                                    </div>
-                                    <div class="md:col-span-1 flex items-center justify-end">
-                                        <button class="text-red-500 hover:text-red-700">
-                                            <i data-feather="trash-2" class="w-5 h-5"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Cart Item 2 -->
-                        <div class="p-4 md:p-6 border-b border-gray-200">
-                            <div class="flex flex-col md:flex-row md:items-center">
-                                <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                                    <img src="http://static.photos/travel/200x200/2" alt="Carte topographique" class="w-20 h-20 object-cover rounded">
-                                </div>
-                                <div class="flex-grow md:grid md:grid-cols-12 md:gap-4">
-                                    <div class="md:col-span-5 mb-2 md:mb-0">
-                                        <h3 class="font-semibold text-gray-800">Alpes françaises</h3>
-                                        <p class="text-sm text-gray-600">Carte détaillée pour randonnée</p>
-                                    </div>
-                                    <div class="md:col-span-2 flex items-center justify-center mb-2 md:mb-0">
-                                        <span class="text-gray-700">€29.99</span>
-                                    </div>
-                                    <div class="md:col-span-2 flex items-center justify-center mb-4 md:mb-0">
-                                        <div class="flex items-center border border-gray-300 rounded">
-                                            <button class="px-2 py-1 text-gray-600 hover:bg-gray-100">
-                                                <i data-feather="minus" class="w-4 h-4"></i>
-                                            </button>
-                                            <span class="px-3 py-1">2</span>
-                                            <button class="px-2 py-1 text-gray-600 hover:bg-gray-100">
-                                                <i data-feather="plus" class="w-4 h-4"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="md:col-span-2 flex items-center justify-end">
-                                        <span class="font-semibold text-gray-800">€59.98</span>
-                                    </div>
-                                    <div class="md:col-span-1 flex items-center justify-end">
-                                        <button class="text-red-500 hover:text-red-700">
-                                            <i data-feather="trash-2" class="w-5 h-5"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Cart Actions -->
-                        <div class="p-4 md:p-6 flex justify-between items-center">
-                            <a href="{{ route('boutique') }}" class="flex items-center text-blue-500 hover:text-blue-700">
-                                <i data-feather="arrow-left" class="w-4 h-4 mr-2"></i>
-                                Continuer vos achats
-                            </a>
-                            <button class="text-red-500 hover:text-red-700">
-                                <i data-feather="trash-2" class="w-5 h-5 mr-2"></i>
-                                Vider le panier
-                            </button>
-                        </div>
+<div class="lg:w-2/3" data-aos="fade-right">
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+
+        <!-- Cart Header -->
+        <div class="bg-gray-100 px-6 py-4 border-b border-gray-200 hidden md:block">
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-6 font-semibold text-gray-700">Produit</div>
+                <div class="col-span-2 font-semibold text-gray-700 text-center">Prix</div>
+                <div class="col-span-2 font-semibold text-gray-700 text-center">Quantité</div>
+                <div class="col-span-2 font-semibold text-gray-700 text-right">Total</div>
+            </div>
+        </div>
+
+        <!-- Cart Items -->
+        @foreach($commande->produits as $produit)
+            @php
+                $ligne = $produit->pivot;
+            @endphp
+            <div class="p-4 md:p-6 border-b border-gray-200">
+                <div class="flex flex-col md:flex-row md:items-center">
+                    <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                        <img src="{{ $produit->photo }}" alt="{{ $produit->nom_produit }}" class="w-20 h-20 object-cover rounded">
                     </div>
-                </div>
-                
-                <!-- Order Summary -->
-                <div class="lg:w-1/3" data-aos="fade-left" data-aos-delay="100">
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-xl font-semibold mb-4">Récapitulatif de commande</h2>
-                        
-                        <div class="space-y-4 mb-6">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Sous-total</span>
-                                <span class="font-semibold">€99.97</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Livraison</span>
-                                <span class="font-semibold">Gratuite</span>
-                            </div>
-                            <div class="flex justify-between border-t border-gray-200 pt-4">
-                                <span class="text-lg font-semibold">Total</span>
-                                <span class="text-lg font-bold text-blue-600">€99.97</span>
+                    <div class="flex-grow md:grid md:grid-cols-12 md:gap-4">
+                        <div class="md:col-span-5 mb-2 md:mb-0">
+                            <h3 class="font-semibold text-gray-800">{{ $produit->nom_produit }}</h3>
+                            <p class="text-sm text-gray-600">{{ $produit->description }}</p>
+                        </div>
+                        <div class="md:col-span-2 flex items-center justify-center mb-2 md:mb-0">
+                            <span class="text-gray-700">€{{ number_format($produit->prix_unitaire_ht, 2) }}</span>
+                        </div>
+                        <div class="md:col-span-2 flex items-center justify-center mb-4 md:mb-0">
+                            <div class="flex items-center border border-gray-300 rounded">
+                                <form action="{{ route('panier.reduire', ['commande' => $commande->id, 'produit' => $produit->id]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
+                                        <i data-feather="minus" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                                <span class="px-3 py-1">{{ $ligne->quantite }}</span>
+                                <form action="{{ route('panier.ajouter', ['commande' => $commande->id, 'produit' => $produit->id]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
+                                        <i data-feather="plus" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                        
-                        <div class="mb-6">
-                            <label for="promo" class="block text-sm font-medium text-gray-700 mb-2">Code promo</label>
-                            <div class="flex">
-                                <input type="text" id="promo" placeholder="Entrez votre code" class="flex-grow px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r transition duration-300">
-                                    Appliquer
+                        <div class="md:col-span-2 flex items-center justify-end">
+                            <span class="font-semibold text-gray-800">€{{ number_format($ligne->quantite * $produit->prix_unitaire_ht, 2) }}</span>
+                        </div>
+                        <div class="md:col-span-1 flex items-center justify-end">
+                            <form action="{{ route('panier.supprimer', ['commande' => $commande->id, 'produit' => $produit->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:text-red-700">
+                                    <i data-feather="trash-2" class="w-5 h-5"></i>
                                 </button>
-                            </div>
-                        </div>
-                        
-                        <a href="checkout.html" class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
-                            Passer la commande
-                        </a>
-                        
-                        <div class="mt-6 text-center">
-                            <p class="text-sm text-gray-600">Ou</p>
-                            <button class="mt-2 w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded flex items-center justify-center transition duration-300">
-                                <i data-feather="credit-card" class="w-5 h-5 mr-2"></i>
-                                Payer avec Stripe
-                            </button>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
+        @endforeach
+
+    </div>
+</div>
+
+
             </div>
         </div>
     </section>

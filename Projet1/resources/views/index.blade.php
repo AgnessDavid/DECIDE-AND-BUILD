@@ -129,6 +129,9 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nos cartes populaires</h2>
                 <p class="text-gray-600">Découvrez notre sélection des meilleures ventes</p>
             </div>
+
+
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Product 1 -->
                 <div class="bg-white rounded-lg overflow-hidden shadow-md transition-all card-hover" data-aos="fade-up">

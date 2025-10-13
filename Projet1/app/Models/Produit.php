@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+//use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Produit extends Model
 {
-    use HasFactory;
-
-    protected $table = 'produits';
+    use HasFactory; //SoftDeletes;
 
     protected $fillable = [
+        // Informations de base
         'reference_produit',
         'nom_produit',
         'description',
@@ -22,30 +22,58 @@ class Produit extends Model
         'stock_maximum',
         'stock_actuel',
         'prix_unitaire_ht',
+        'prix_unitaire_ttc',
+        'taux_tva',
+        'est_en_promotion',
+        'prix_promotion',
         'photo',
-        // Colonnes liées à la carte géographique
-  
-        'type',
+        'galerie_images',
+        'slug',
+        'est_actif',
+        'nombre_vues',
+        'nombre_ventes',
+        'tags',
+
+        // Métadonnées cartes
+        'titre',
+        'type_carte',
         'echelle',
         'orientation',
         'date_creation',
         'auteur',
+        'editeur',
+        'largeur_cm',
+        'hauteur_cm',
+        'format',
         'symbole',
         'type_element',
-        'latitude',
-        'longitude',
+        'latitude_centre',
+        'longitude_centre',
         'nom_zone',
         'type_zone',
+        'zone_couverte',
+        'projection',
+        'systeme_coordonnees',
+        'unites',
+        'etat_conservation',
+        'notes_conservation',
     ];
 
     protected $casts = [
-        'stock_minimum' => 'integer',
-        'stock_maximum' => 'integer',
-        'stock_actuel' => 'integer',
         'prix_unitaire_ht' => 'decimal:2',
-        'latitude' => 'decimal:7',
-        'longitude' => 'decimal:7',
+        'prix_unitaire_ttc' => 'decimal:2',
+        'prix_promotion' => 'decimal:2',
+        'taux_tva' => 'decimal:2',
+        'est_en_promotion' => 'boolean',
+        'est_actif' => 'boolean',
+        'galerie_images' => 'array',
+        'tags' => 'array',
+        'zone_couverte' => 'array',
         'date_creation' => 'date',
+        'largeur_cm' => 'decimal:2',
+        'hauteur_cm' => 'decimal:2',
+        'latitude_centre' => 'decimal:7',
+        'longitude_centre' => 'decimal:7',
     ];
 
     // ================== RELATIONS ==================
@@ -54,38 +82,21 @@ class Produit extends Model
     public function commandes(): BelongsToMany
     {
         return $this->belongsToMany(Commande::class, 'commande_produit')
-                    ->withPivot(['quantite', 'prix_unitaire_ht'])
-                    ->withTimestamps()
-                    ->using(CommandeProduit::class);
+            ->withPivot(['quantite', 'prix_unitaire_ht'])
+            ->withTimestamps()
+            ->using(CommandeProduit::class);
     }
 
-    public function demandeExpressionBesoin()
+    public function lignesCommande(): HasMany
     {
-
-        return $this->hasMany(DemandeExpressionBesoin::class,'produit_id');
-
+        return $this->hasMany(CommandeProduit::class, 'produit_id');
     }
 
-
-    public function imprimerieExpressionBesoin()
+    public function produits()
     {
-
-    return $this->hasMany(ImprimerieExpressionBesoin::class);
-
-    }
-
-    public function livraison() {
-
-    return $this->hasMany(Livraison::class,'produit_id');
-
-    }
-
-
-    public function gestionimprimerie()
-    {
-
-        return $this->hasMany(GestionImprimerie::class,'produit_id');
-
+        return $this->belongsToMany(Produit::class, 'commande_produits')
+            ->withPivot('quantite', 'prix_unitaire_ht')
+            ->withTimestamps();
     }
 
 
@@ -94,79 +105,101 @@ class Produit extends Model
         return $this->hasMany(MouvementStock::class, 'produit_id');
     }
 
-
-public function gestionImpression(){
-    return $this->hasMany(GestionImpression::class);
-}
-
-    /** Lignes de commande pivot */
-    public function lignesCommande(): HasMany
+    public function livraisons(): HasMany
     {
-        return $this->hasMany(CommandeProduit::class, 'produit_id');
+        return $this->hasMany(Livraison::class, 'produit_id');
+    }
+
+    public function demandesExpressionBesoin(): HasMany
+    {
+        return $this->hasMany(DemandeExpressionBesoin::class, 'produit_id');
+    }
+
+    public function imprimerieExpressionBesoin(): HasMany
+    {
+        return $this->hasMany(ImprimerieExpressionBesoin::class, 'produit_id');
+    }
+
+    public function gestionImpression(): HasMany
+    {
+        return $this->hasMany(GestionImpression::class, 'produit_id');
+    }
+
+    public function gestionImprimerie(): HasMany
+    {
+        return $this->hasMany(GestionImprimerie::class, 'produit_id');
+    }
+
+    // ================== SCOPES ==================
+
+    public function scopeActif($query)
+    {
+        return $query->where('est_actif', true);
+    }
+
+    public function scopeEnPromotion($query)
+    {
+        return $query->where('est_en_promotion', true)
+            ->whereNotNull('prix_promotion');
+    }
+
+    public function scopeEnStock($query)
+    {
+        return $query->where('stock_actuel', '>', 0);
+    }
+
+    public function scopeParType($query, $type)
+    {
+        return $query->where('type_carte', $type);
+    }
+
+    public function scopeParZone($query, $zone)
+    {
+        return $query->where('nom_zone', 'LIKE', "%{$zone}%");
     }
 
     // ================== ACCESSEURS ==================
 
-    /**
-     * URL publique de la photo ou fichier
-     */
-    public function getPhotoUrlAttribute(): ?string
+    public function getPrixAffichageAttribute()
     {
-        return $this->photo ? Storage::url($this->photo) : null;
+        return $this->est_en_promotion && $this->prix_promotion
+            ? $this->prix_promotion
+            : $this->prix_unitaire_ttc;
     }
 
-    /**
-     * Quantité totale commandée pour ce produit
-     */
-    public function getQuantiteTotaleCommandeeAttribute(): int
+    public function getEstEnStockAttribute(): bool
     {
-        return (int) $this->lignesCommande()
-            ->whereHas('commande', function ($query) {
-                $query->whereIn('statut', ['validee', 'partiellement_facturee']);
-            })
-            ->sum('quantite');
+        return $this->stock_actuel > 0;
     }
 
-    /**
-     * Stock disponible après commandes
-     */
-    public function getStockDisponibleAttribute(): int
+    public function getEconomieAttribute(): float
     {
-        return max(0, $this->stock_actuel - $this->quantite_totale_commandee);
+        if ($this->est_en_promotion && $this->prix_promotion) {
+            return $this->prix_unitaire_ttc - $this->prix_promotion;
+        }
+        return 0;
     }
 
-    // ================== MÉTHODES ==================
-
-    /**
-     * Ajouter du stock
-     */
-    public function ajusterStock(int $quantite): void
+    public function getPourcentagePromotionAttribute(): int
     {
-        $this->increment('stock_actuel', $quantite);
+        if ($this->est_en_promotion && $this->prix_promotion && $this->prix_unitaire_ttc > 0) {
+            return round((($this->prix_unitaire_ttc - $this->prix_promotion) / $this->prix_unitaire_ttc) * 100);
+        }
+        return 0;
     }
 
-    /**
-     * Retirer du stock
-     */
-    public function retirerStock(int $quantite): void
+    public function getDimensionsAttribute(): ?string
     {
-        $this->decrement('stock_actuel', $quantite);
+        if ($this->largeur_cm && $this->hauteur_cm) {
+            return "{$this->largeur_cm} × {$this->hauteur_cm} cm";
+        }
+        return $this->format;
     }
-
-    /**
-     * Vérifie si le produit est en rupture
-     */
-    public function isEnRuptureStock(): bool
-    {
-        return $this->stock_actuel <= ($this->stock_minimum ?? 0);
-    }
-
-    // ================== ACCESSEURS CARTOGRAPHIQUES ==================
 
     public function getCoordonneesAttribute(): ?string
     {
-        if ($this->latitude && $this->longitude) {
-            return "{$this->latitude}, {$this->longitude}";
+        if ($this->latitude_centre && $this->longitude_centre) {
+            return "{$this->latitude_centre}, {$this->longitude_centre}";
         }
         return null;
     }
@@ -175,7 +208,7 @@ public function gestionImpression(){
     {
         return implode(' | ', array_filter([
             $this->titre,
-            $this->type,
+            $this->type_carte,
             $this->echelle,
             $this->orientation,
             $this->nom_zone,
@@ -185,13 +218,52 @@ public function gestionImpression(){
         ]));
     }
 
+    // ================== MÉTHODES ==================
 
+    public function incrementerVues(): void
+    {
+        $this->increment('nombre_vues');
+    }
 
-// ================== ALERTES DE STOCK ==================
+    public function decrementerStock(int $quantite = 1): void
+    {
+        $this->decrement('stock_actuel', $quantite);
+    }
 
+    public function ajusterStock(int $quantite): void
+    {
+        $this->increment('stock_actuel', $quantite);
+    }
 
+    public function retirerStock(int $quantite): void
+    {
+        $this->decrement('stock_actuel', $quantite);
+    }
 
+    public function isEnRuptureStock(): bool
+    {
+        return $this->stock_actuel <= ($this->stock_minimum ?? 0);
+    }
 
+    // ================== BOOT ==================
 
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::creating(function ($produit) {
+            if (empty($produit->slug)) {
+                $produit->slug = \Str::slug($produit->nom_produit);
+            }
+            if (empty($produit->prix_unitaire_ttc)) {
+                $produit->prix_unitaire_ttc = $produit->prix_unitaire_ht * (1 + ($produit->taux_tva / 100));
+            }
+        });
+    }
+
+    /** URL publique de la photo */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo ? Storage::url($this->photo) : null;
+    }
 }

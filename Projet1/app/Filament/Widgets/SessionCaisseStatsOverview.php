@@ -14,8 +14,11 @@ class SessionCaisseStatsOverview extends BaseWidget
         $sessionsFermees = SessionCaisse::where('statut', 'fermé')->count();
         $totalSessions = SessionCaisse::count();
 
+        $totalSoldeInitial = SessionCaisse::sum('solde_initial');
         $totalEntrees = SessionCaisse::sum('entrees');
         $totalSorties = SessionCaisse::sum('sorties');
+        // $soldeFinal = ($get('solde_initial') ?? 0) + ($get('entrees') ?? 0) - ($state ?? 0);
+        $totalSoldeFinal =  $totalSoldeInitial + $totalEntrees - $totalSorties;
         $soldeGlobal = $totalEntrees - $totalSorties;
 
         return [
@@ -24,12 +27,12 @@ class SessionCaisseStatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-play-circle')
                 ->color('success')
                 ->chart($this->getSessionsChartData()),
-
+/*
             Stat::make('Sessions fermées', $sessionsFermees)
                 ->description('Sessions terminées')
                 ->descriptionIcon('heroicon-m-stop-circle')
                 ->color('gray'),
-
+*/
             Stat::make('Total sessions', $totalSessions)
                 ->description('Toutes les sessions')
                 ->descriptionIcon('heroicon-m-document-text')
@@ -39,6 +42,11 @@ class SessionCaisseStatsOverview extends BaseWidget
                 ->description('Entrées: ' . number_format($totalEntrees, 0, ',', ' ') . ' | Sorties: ' . number_format($totalSorties, 0, ',', ' '))
                 ->descriptionIcon('heroicon-m-scale')
                 ->color($soldeGlobal >= 0 ? 'success' : 'danger'),
+
+            Stat::make('Solde final', number_format($totalSoldeFinal, 0, ',', ' ') . ' F CFA')
+                ->description('Solde final de toutes les sessions')
+                ->descriptionIcon('heroicon-m-scale')
+                ->color($totalSoldeFinal >= 0 ? 'success' : 'danger'),
         ];
     }
 

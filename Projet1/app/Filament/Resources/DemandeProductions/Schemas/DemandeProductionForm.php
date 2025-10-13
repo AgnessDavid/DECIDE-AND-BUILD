@@ -98,8 +98,10 @@ class DemandeProductionForm
                 ]),
 
             // 🧾 Section 4 : Validation
+            /*
             Section::make('Validation et autorisation')
                 ->schema([
+                    
                     DatePicker::make('date_visa_chef_service')
                         ->label('Date visa chef de service'),
 
@@ -129,7 +131,7 @@ class DemandeProductionForm
                         ])
                         ->default('en_attente'),
                 ]),
-
+*/
             // 🧾 Section 5 : Objet / remarque
             Section::make('Objet et remarques')
                 ->schema([

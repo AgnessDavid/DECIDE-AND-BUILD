@@ -20,6 +20,17 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+
+
+        // Tables 
+        $this->call([
+            ClientSeeder::class,
+            CommandeSeeder::class,
+        ]);
+
+
+
+       // Special seeder for roles and permissions
         $this->call(UserSeeder::class);
         $this->call(OnlineSeeder::class);
     }

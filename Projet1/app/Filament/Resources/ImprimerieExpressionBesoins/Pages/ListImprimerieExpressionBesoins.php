@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ImprimerieExpressionBesoins\Pages;
 
 use App\Filament\Resources\ImprimerieExpressionBesoins\ImprimerieExpressionBesoinResource;
+use App\Filament\Widgets\ImprimerieExpressionStatsOverview;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,4 +17,17 @@ class ListImprimerieExpressionBesoins extends ListRecords
             CreateAction::make(),
         ];
     }
+
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            
+   ImprimerieExpressionStatsOverview::class,
+
+
+        ];
+    }
+
+
 }
