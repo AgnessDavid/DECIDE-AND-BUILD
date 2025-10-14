@@ -3,30 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\CommandeOnline;
+use App\Models\CommandeProduitOnline;
 use App\Models\PanierOnline;
-use Illuminate\Http\Request;
 use App\Models\Produit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PanierController extends Controller
 {
     /**
-     * Afficher le panier en cours pour l'utilisateur connecté
+     * Afficher le panier de l'utilisateur connecté
      */
-    public function index(Request $request)
+    public function index()
     {
-        $userId = Auth::id(); // id du client online connecté
+        $userId = Auth::id();
 
-        // Récupérer le panier en cours
         $paniers = PanierOnline::with('produit')
             ->where('online_id', $userId)
             ->where('statut', 'actif')
             ->get();
 
-        // Calculer le total HT et TTC
-        $total_ht = $paniers->sum(function ($item) {
-            return $item->quantite * $item->prix_unitaire_ht;
-        });
+        $total_ht = $paniers->sum(fn($item) => $item->quantite * $item->prix_unitaire_ht);
         $total_ttc = $total_ht * 1.18;
 
         return view('panier', compact('paniers', 'total_ht', 'total_ttc'));
@@ -43,20 +40,28 @@ class PanierController extends Controller
         ]);
 
         $userId = Auth::id();
+        $produit = Produit::findOrFail($request->produit_id);
 
-        $panier = PanierOnline::updateOrCreate(
-            [
+        $panier = PanierOnline::where('online_id', $userId)
+            ->where('produit_id', $produit->id)
+            ->where('statut', 'actif')
+            ->first();
+
+        if ($panier) {
+            $panier->update([
+                'quantite' => $panier->quantite + $request->quantite,
+            ]);
+        } else {
+            PanierOnline::create([
                 'online_id' => $userId,
-                'produit_id' => $request->produit_id,
-                'statut' => 'actif'
-            ],
-            [
+                'produit_id' => $produit->id,
                 'quantite' => $request->quantite,
-                'prix_unitaire_ht' => Produit::find($request->produit_id)->prix
-            ]
-        );
+                'prix_unitaire_ht' => $produit->prix,
+                'statut' => 'actif'
+            ]);
+        }
 
-        return back()->with('success', 'Produit ajouté au panier');
+        return redirect()->route('panier')->with('success', 'Produit ajouté au panier.');
     }
 
     /**
@@ -75,13 +80,13 @@ class PanierController extends Controller
             $panier->delete();
         }
 
-        return back()->with('success', 'Produit supprimé du panier');
+        return back()->with('success', 'Produit supprimé du panier.');
     }
 
     /**
-     * Valider le panier → créer une commande_online
+     * Valider le panier → créer la commande_online
      */
-    public function valider(Request $request)
+    public function valider()
     {
         $userId = Auth::id();
         $paniers = PanierOnline::where('online_id', $userId)
@@ -89,46 +94,36 @@ class PanierController extends Controller
             ->get();
 
         if ($paniers->isEmpty()) {
-            return back()->with('error', 'Votre panier est vide');
+            return back()->with('error', 'Votre panier est vide.');
         }
 
-        // Créer la commande
+        // Calcul des montants
         $total_ht = $paniers->sum(fn($item) => $item->quantite * $item->prix_unitaire_ht);
         $total_ttc = $total_ht * 1.18;
 
+        // Créer la commande principale
         $commande = CommandeOnline::create([
             'online_id' => $userId,
-            'numero_commande' => 'CMD-ONLINE-' . time(),
+            'numero_commande' => 'CMD-' . time(),
             'total_ht' => $total_ht,
             'total_ttc' => $total_ttc,
-            'etat' => 'en_cours'
+            'etat' => 'en_cours',
         ]);
 
         // Créer les lignes de commande
         foreach ($paniers as $item) {
-            $commande->produits()->attach($item->produit_id, [
+            CommandeProduitOnline::create([
+                'commande_online_id' => $commande->id,
+                'produit_id' => $item->produit_id,
                 'quantite' => $item->quantite,
                 'prix_unitaire_ht' => $item->prix_unitaire_ht,
                 'montant_ht' => $item->quantite * $item->prix_unitaire_ht,
-                'montant_ttc' => $item->quantite * $item->prix_unitaire_ht * 1.18
+                'montant_ttc' => $item->quantite * $item->prix_unitaire_ht * 1.18,
             ]);
 
-            // Marquer le panier comme converti
-            $item->statut = 'converti';
-            $item->save();
+            $item->update(['statut' => 'converti']);
         }
 
-        // Créer la caisse associée
-        $commande->caisse()->create([
-            'online_id' => $userId,
-            'montant_ht' => $total_ht,
-            'tva' => $total_ttc - $total_ht,
-            'montant_ttc' => $total_ttc,
-            'entree' => 0,
-            'sortie' => 0,
-            'statut_paiement' => 'impayé'
-        ]);
-
-        return redirect()->route('panier')->with('success', 'Commande créée avec succès');
+        return redirect()->route('panier')->with('success', 'Commande validée avec succès !');
     }
 }

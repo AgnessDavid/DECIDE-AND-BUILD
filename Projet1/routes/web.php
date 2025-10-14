@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OnlineAuthController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\CommandeController;
-
+use App\Http\Controllers\PanierController;
 // ------------------------
 // BACK (Admin / Filament)
 // ------------------------
@@ -64,9 +64,13 @@ Route::middleware('auth:online')->group(function () {
     Route::post('/panier/reduire/{produit}', [CommandeController::class, 'reduireQuantite'])->name('panier.reduire');
     Route::delete('/panier/supprimer/{produit}', [CommandeController::class, 'supprimerProduit'])->name('panier.supprimer');
     Route::delete('/panier/vider', [CommandeController::class, 'viderPanier'])->name('panier.vider');
+    // Résumé de la commande
+    
+    Route::post('/panier/valider', [CommandeController::class, 'validerCommande'])->name('panier.valider');
+    
+    Route::get('/commande/resume', [CommandeController::class, 'passerCommande'])
+        ->name('commande.resume');
 
-    // Valider la commande
-    Route::post('/commande/valider', [CommandeController::class, 'validerCommande'])->name('commande.valider');
 
     // Dashboard client
     Route::get('/dashboard-front', function () {

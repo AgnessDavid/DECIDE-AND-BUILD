@@ -11,12 +11,14 @@ class CommandeProduitOnline extends Model
 
     protected $table = 'commande_produit_online';
 
-    protected $fillable = ['commande_online_id', 
+    protected $fillable = [
+    'commande_online_id',
+    'panier_id', 
     'produit_id',
-     'quantite', 
-     'prix_unitaire_ht',
-      'montant_ht',
-       'montant_ttc'];
+    'quantite', 
+    'prix_unitaire_ht',
+    'montant_ht',
+    'montant_ttc'];
 
     public function commande()
     {
@@ -27,4 +29,12 @@ class CommandeProduitOnline extends Model
     {
         return $this->belongsTo(Produit::class);
     }
+
+   public function panier()
+    {
+        return $this->belongsTo(PanierOnline::class, 'panier_id');
+    }
+
+
+    
 }

@@ -33,6 +33,7 @@ class CommandeOnline extends Model
             ->withTimestamps();
     }
 
+
     public function caisse()
     {
         return $this->hasOne(CaisseOnline::class);

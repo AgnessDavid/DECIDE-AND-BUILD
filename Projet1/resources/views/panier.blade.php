@@ -72,84 +72,155 @@
         </div>
     </div>
 
-    <!-- Cart Content -->
-    <section class="py-12">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Cart Items -->
-<div class="lg:w-2/3" data-aos="fade-right">
+<!-- Cart Content -->
+<section class="py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- 🛒 Liste des produits du panier -->
+            <div class="lg:w-2/3" data-aos="fade-right">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
 
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <!-- En-tête du panier -->
+                    <div class="bg-gray-100 px-6 py-4 border-b border-gray-200 hidden md:block">
+                        <div class="grid grid-cols-12 gap-4">
+                            <div class="col-span-6 font-semibold text-gray-700">Produit</div>
+                            <div class="col-span-2 font-semibold text-gray-700 text-center">Prix</div>
+                            <div class="col-span-2 font-semibold text-gray-700 text-center">Quantité</div>
+                            <div class="col-span-2 font-semibold text-gray-700 text-right">Total</div>
+                        </div>
+                    </div>
 
-        <!-- Cart Header -->
-        <div class="bg-gray-100 px-6 py-4 border-b border-gray-200 hidden md:block">
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-6 font-semibold text-gray-700">Produit</div>
-                <div class="col-span-2 font-semibold text-gray-700 text-center">Prix</div>
-                <div class="col-span-2 font-semibold text-gray-700 text-center">Quantité</div>
-                <div class="col-span-2 font-semibold text-gray-700 text-right">Total</div>
+                    @php
+                        $total = 0;
+                    @endphp
+
+                    <!-- 🔁 Produits -->
+                    @foreach($commande->produits as $produit)
+                        @php
+                            $ligne = $produit->pivot;
+                            $sousTotal = $ligne->quantite * $produit->prix_unitaire_ht;
+                            $total += $sousTotal;
+                        @endphp
+
+                        <div class="p-4 md:p-6 border-b border-gray-200">
+                            <div class="flex flex-col md:flex-row md:items-center">
+                                <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                                    <img src="{{ asset($produit->photo) }}" 
+                                         alt="{{ $produit->nom_produit }}" 
+                                         class="w-20 h-20 object-cover rounded">
+                                </div>
+                                <div class="flex-grow md:grid md:grid-cols-12 md:gap-4">
+                                    <div class="md:col-span-5 mb-2 md:mb-0">
+                                        <h3 class="font-semibold text-gray-800">{{ $produit->nom_produit }}</h3>
+                                        <p class="text-sm text-gray-600">{{ $produit->description }}</p>
+                                    </div>
+
+                                    <div class="md:col-span-2 flex items-center justify-center">
+                                        <span class="text-gray-700">€{{ number_format($produit->prix_unitaire_ht, 2) }}</span>
+                                    </div>
+
+                                    <div class="md:col-span-2 flex items-center justify-center">
+                                        <div class="flex items-center border border-gray-300 rounded">
+                                            <!-- Réduire quantité -->
+                                            <form action="{{ route('panier.reduire', ['produit' => $produit->id]) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
+                                                    <i data-feather="minus" class="w-4 h-4"></i>
+                                                </button>
+                                            </form>
+                                            <span class="px-3 py-1">{{ $ligne->quantite }}</span>
+                                            <!-- Augmenter quantité -->
+                                            <form action="{{ route('panier.ajouter', ['produit' => $produit->id]) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
+                                                    <i data-feather="plus" class="w-4 h-4"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="md:col-span-2 flex items-center justify-end">
+                                        <span class="font-semibold text-gray-800">
+                                            €{{ number_format($sousTotal, 2) }}
+                                        </span>
+                                    </div>
+
+                                    <div class="md:col-span-1 flex items-center justify-end">
+                                        <!-- Supprimer -->
+                                        <form action="{{ route('panier.supprimer', ['produit' => $produit->id]) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-700">
+                                                <i data-feather="trash-2" class="w-5 h-5"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- 🧾 Récapitulatif commande -->
+          <div class="lg:w-1/3" data-aos="fade-left" data-aos-delay="100">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Récapitulatif de commande</h2>
+        
+        @php
+            $tva = 0.18; // TVA 18%
+            $totalHT = $total; // total sans TVA
+            $montantTVA = $totalHT * $tva;
+            $totalTTC = $totalHT + $montantTVA;
+        @endphp
+
+        <div class="space-y-4 mb-6">
+            <div class="flex justify-between">
+                <span class="text-gray-600">Sous-total (HT)</span>
+                <span class="font-semibold">€{{ number_format($totalHT, 2) }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600">TVA (18%)</span>
+                <span class="font-semibold">€{{ number_format($montantTVA, 2) }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600">Livraison</span>
+                <span class="font-semibold">Gratuite</span>
+            </div>
+            <div class="flex justify-between border-t border-gray-200 pt-4">
+                <span class="text-lg font-semibold">Total TTC</span>
+                <span class="text-lg font-bold text-blue-600">€{{ number_format($totalTTC, 2) }}</span>
             </div>
         </div>
 
-        <!-- Cart Items -->
-        @foreach($commande->produits as $produit)
-            @php
-                $ligne = $produit->pivot;
-            @endphp
-            <div class="p-4 md:p-6 border-b border-gray-200">
-                <div class="flex flex-col md:flex-row md:items-center">
-                    <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                        <img src="{{ $produit->photo }}" alt="{{ $produit->nom_produit }}" class="w-20 h-20 object-cover rounded">
-                    </div>
-                    <div class="flex-grow md:grid md:grid-cols-12 md:gap-4">
-                        <div class="md:col-span-5 mb-2 md:mb-0">
-                            <h3 class="font-semibold text-gray-800">{{ $produit->nom_produit }}</h3>
-                            <p class="text-sm text-gray-600">{{ $produit->description }}</p>
-                        </div>
-                        <div class="md:col-span-2 flex items-center justify-center mb-2 md:mb-0">
-                            <span class="text-gray-700">€{{ number_format($produit->prix_unitaire_ht, 2) }}</span>
-                        </div>
-                        <div class="md:col-span-2 flex items-center justify-center mb-4 md:mb-0">
-                            <div class="flex items-center border border-gray-300 rounded">
-                                <form action="{{ route('panier.reduire', ['commande' => $commande->id, 'produit' => $produit->id]) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
-                                        <i data-feather="minus" class="w-4 h-4"></i>
-                                    </button>
-                                </form>
-                                <span class="px-3 py-1">{{ $ligne->quantite }}</span>
-                                <form action="{{ route('panier.ajouter', ['commande' => $commande->id, 'produit' => $produit->id]) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
-                                        <i data-feather="plus" class="w-4 h-4"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="md:col-span-2 flex items-center justify-end">
-                            <span class="font-semibold text-gray-800">€{{ number_format($ligne->quantite * $produit->prix_unitaire_ht, 2) }}</span>
-                        </div>
-                        <div class="md:col-span-1 flex items-center justify-end">
-                            <form action="{{ route('panier.supprimer', ['commande' => $commande->id, 'produit' => $produit->id]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:text-red-700">
-                                    <i data-feather="trash-2" class="w-5 h-5"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
+        <!-- Bouton de validation -->
+        <form action="{{ route('panier.valider') }}" method="POST">
+            @csrf
+            <button type="submit"
+                class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
+                Passer la commande
+            </button>
+        </form>
 
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">Ou</p>
+            <button
+                class="mt-2 w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded flex items-center justify-center transition duration-300">
+                <i data-feather="credit-card" class="w-5 h-5 mr-2"></i>
+                Payer avec Stripe
+            </button>
+        </div>
     </div>
 </div>
 
 
-            </div>
         </div>
-    </section>
+    </div>
+</section>
+
+
+
 
     <!-- Newsletter -->
     <section class="py-12 bg-blue-600 text-white">

@@ -22,4 +22,9 @@ class PanierOnline extends Model
     {
         return $this->belongsTo(Produit::class);
     }
+
+    public function commandeProduits()
+    {
+        return $this->hasMany(CommandeProduitOnline::class, 'panier_id');
+    }
 }

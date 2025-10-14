@@ -69,5 +69,6 @@ class Online extends Authenticatable
         return $this->commandesOnline()->where('etat', 'en_cours');
     }
 
-    
+
+
 }
