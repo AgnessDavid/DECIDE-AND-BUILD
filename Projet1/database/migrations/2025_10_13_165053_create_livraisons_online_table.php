@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->enum('type', ['facturation', 'livraison']);
             $table->string('adresse');
             $table->string('ville');
+            $table->string('numero_tel')->nullable()->after('adresse');
             $table->string('code_postal');
             $table->string('pays');
             $table->timestamps();

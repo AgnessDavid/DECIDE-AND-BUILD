@@ -164,61 +164,132 @@
             </div>
 
             <!-- 🧾 Récapitulatif commande -->
-          <div class="lg:w-1/3" data-aos="fade-left" data-aos-delay="100">
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold mb-4">Récapitulatif de commande</h2>
-        
-        @php
-            $tva = 0.18; // TVA 18%
-            $totalHT = $total; // total sans TVA
-            $montantTVA = $totalHT * $tva;
-            $totalTTC = $totalHT + $montantTVA;
-        @endphp
+            <div class="lg:w-1/3" data-aos="fade-left" data-aos-delay="100">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">Récapitulatif de commande</h2>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Sous-total</span>
+                            <span class="font-semibold">€{{ number_format($total, 2) }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Livraison</span>
+                            <span class="font-semibold">Gratuit</span>
+                        </div>
+                        <div class="flex justify-between border-t border-gray-200 pt-4">
+                            <span class="text-lg font-semibold">Total TTC</span>
+                            <span class="text-lg font-bold text-blue-600">
+                                €{{ number_format($total * 1.18, 2) }}
+                            </span>
+                        </div>
+                    </div>
 
-        <div class="space-y-4 mb-6">
-            <div class="flex justify-between">
-                <span class="text-gray-600">Sous-total (HT)</span>
-                <span class="font-semibold">€{{ number_format($totalHT, 2) }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-gray-600">TVA (18%)</span>
-                <span class="font-semibold">€{{ number_format($montantTVA, 2) }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-gray-600">Livraison</span>
-                <span class="font-semibold">Gratuite</span>
-            </div>
-            <div class="flex justify-between border-t border-gray-200 pt-4">
-                <span class="text-lg font-semibold">Total TTC</span>
-                <span class="text-lg font-bold text-blue-600">€{{ number_format($totalTTC, 2) }}</span>
-            </div>
-        </div>
 
-        <!-- Bouton de validation -->
-        <form action="{{ route('panier.valider') }}" method="POST">
-            @csrf
-            <button type="submit"
-                class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
-                Passer la commande
-            </button>
-        </form>
-
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600">Ou</p>
-            <button
-                class="mt-2 w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded flex items-center justify-center transition duration-300">
-                <i data-feather="credit-card" class="w-5 h-5 mr-2"></i>
-                Payer avec Stripe
-            </button>
-        </div>
-    </div>
-</div>
-
+                </div>
+            </div>
 
         </div>
     </div>
 </section>
 
+<!-- 🧍 Informations client + livraison + paiement -->
+<section class="py-12 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="flex flex-col items-center space-y-8">
+            
+            <!-- 🧍 Informations du client -->
+            <div class="bg-white rounded-lg shadow-md p-6 w-full lg:w-2/3" data-aos="fade-up" data-aos-delay="100">
+                <h2 class="text-xl font-semibold mb-4">Informations du client</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+                    <p><span class="font-medium">Nom :</span> {{ auth()->user()->name ?? 'Non renseigné' }}</p>
+                    <p><span class="font-medium">Email :</span> {{ auth()->user()->email ?? 'Non renseigné' }}</p>
+                  
+                </div>
+            </div>
+
+            <!-- 🚚 Détails de livraison -->
+            <div class="bg-white rounded-lg shadow-md p-6 w-full lg:w-2/3" data-aos="fade-up" data-aos-delay="200">
+                <h2 class="text-xl font-semibold mb-4">Détails de livraison</h2>
+                <form action="{{ route('panier.valider') }}" method="POST" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="adresse_livraison" class="block font-medium text-gray-700 mb-2">Adresse de livraison</label>
+                        <textarea name="adresse_livraison" id="adresse_livraison" rows="3"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
+                            placeholder="Entrez votre adresse complète" required></textarea>
+                    </div>
+
+                    <div>
+                        <label for="ville" class="block font-medium text-gray-700 mb-2">Ville</label>
+                        <input type="text" name="ville" id="ville"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
+                            placeholder="Entrez votre ville" required>
+                    </div>
+
+<div>
+    <label for="numero_tel" class="block font-medium text-gray-700 mb-2">Téléphone</label>
+    <input type="text" name="numero_tel" id="numero_tel"
+        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
+        placeholder="Entrez votre numéro de téléphone" required>
+</div>
+
+
+                    <div>
+                        <label for="code_postal" class="block font-medium text-gray-700 mb-2">Code postal</label>
+                        <input type="text" name="code_postal" id="code_postal"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
+                            placeholder="Entrez votre code postal" required>
+                    </div>
+
+                    <div>
+                        <label for="instructions" class="block font-medium text-gray-700 mb-2">Instructions de livraison (optionnel)</label>
+                        <textarea name="instructions" id="instructions" rows="2"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
+                            placeholder="Ex : Laisser le colis à la loge..."></textarea>
+                    </div>
+            </div>
+
+            <!-- 💳 Mode de paiement -->
+            <div class="bg-white rounded-lg shadow-md p-6 w-full lg:w-2/3" data-aos="fade-up" data-aos-delay="300">
+                <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
+
+                <div class="space-y-4">
+                    <label class="flex items-center">
+                        <input type="radio" name="mode_paiement" value="carte" class="text-blue-600 focus:ring-blue-500" checked>
+                        <span class="ml-2 text-gray-700">Carte bancaire (Visa / MasterCard)</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="mode_paiement" value="mobile" class="text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-gray-700">Paiement mobile (Orange Money / Moov Money)</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="mode_paiement" value="livraison" class="text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-gray-700">Paiement à la livraison</span>
+                    </label>
+                </div>
+
+                <div class="mt-8">
+                     <!-- Bouton de validation -->
+                    <form action="{{ route('panier.valider') }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
+                            Passer la commande
+                        </button>
+                    </form>
+
+                </div>
+
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</section>
 
 
 

@@ -64,12 +64,8 @@ Route::middleware('auth:online')->group(function () {
     Route::post('/panier/reduire/{produit}', [CommandeController::class, 'reduireQuantite'])->name('panier.reduire');
     Route::delete('/panier/supprimer/{produit}', [CommandeController::class, 'supprimerProduit'])->name('panier.supprimer');
     Route::delete('/panier/vider', [CommandeController::class, 'viderPanier'])->name('panier.vider');
-    // Résumé de la commande
     
     Route::post('/panier/valider', [CommandeController::class, 'validerCommande'])->name('panier.valider');
-    
-    Route::get('/commande/resume', [CommandeController::class, 'passerCommande'])
-        ->name('commande.resume');
 
 
     // Dashboard client
@@ -95,3 +91,8 @@ Route::post('/deconnexion', [OnlineAuthController::class, 'logout'])->name('onli
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+
+
+
+Route::get('/resume/{id}', [CommandeController::class, 'resume'])->name('resume');
+

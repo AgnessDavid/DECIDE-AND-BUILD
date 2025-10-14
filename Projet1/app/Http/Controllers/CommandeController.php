@@ -6,6 +6,7 @@ use App\Models\Produit;
 use App\Models\CommandeOnline;
 use App\Models\PanierOnline;
 use App\Models\CommandeProduitOnline;
+use App\Models\LivraisonOnline;
 use Illuminate\Http\Request;
 
 class CommandeController extends Controller
@@ -162,8 +163,20 @@ class CommandeController extends Controller
             return redirect()->route('online.login')->with('error', 'Veuillez vous connecter pour valider votre commande.');
         }
 
+        $clientId = auth()->id();
+
+        // Valider les champs de livraison et mode de paiement
+        $request->validate([
+            'adresse_livraison' => 'required|string|max:255',
+            'ville' => 'required|string|max:100',
+            'code_postal' => 'required|string|max:20',
+            'numero_tel' => 'required|string|max:20',
+            'instructions' => 'nullable|string|max:255',
+            'mode_paiement' => 'required|in:carte,mobile,livraison',
+        ]);
+
         // Récupère la commande en cours du client
-        $commande = CommandeOnline::where('online_id', auth()->id())
+        $commande = CommandeOnline::where('online_id', $clientId)
             ->where('etat', 'en_cours')
             ->first();
 
@@ -171,17 +184,31 @@ class CommandeController extends Controller
             return redirect()->route('panier')->with('error', 'Aucune commande en cours.');
         }
 
-        // Vérifie s’il y a au moins un produit
         if ($commande->produits()->count() === 0) {
             return redirect()->route('panier')->with('error', 'Votre panier est vide.');
         }
 
-        // Calcule le montant total
+        // Enregistrer ou mettre à jour les informations de livraison
+        $livraison = LivraisonOnline::updateOrCreate(
+            [
+                'online_id' => $clientId,
+                'type' => 'livraison',
+            ],
+            [
+                'adresse' => $request->adresse_livraison,
+                'ville' => $request->ville,
+                'code_postal' => $request->code_postal,
+                'numero_tel' => $request->numero_tel,
+                'instructions' => $request->instructions,
+                'pays' => 'Côte d\'Ivoire', // tu peux aussi le récupérer via un champ formulaire
+            ]
+        );
+
+        // Calcul du montant total
         $montantTotalHT = $commande->produits->sum(function ($produit) {
             return $produit->pivot->quantite * $produit->pivot->prix_unitaire_ht;
         });
-
-        $montantTotalTTC = $montantTotalHT * 1.2; // exemple avec TVA 20%
+        $montantTotalTTC = $montantTotalHT * 1.18; // TVA 18%
 
         // Met à jour la commande
         $commande->update([
@@ -190,13 +217,21 @@ class CommandeController extends Controller
             'montant_ttc' => $montantTotalTTC,
             'date_validation' => now(),
             'numero_commande' => 'CMD-' . strtoupper(uniqid()),
+            'mode_paiement' => $request->mode_paiement,
         ]);
 
-        // (Optionnel) — Tu peux aussi vider le panier ici
-        // CommandeProduitOnline::where('commande_online_id', $commande->id)->delete();
-
-        return redirect()->route('accueil')->with('success', 'Votre commande a été validée avec succès !');
+        return redirect()->route('resume', ['id' => $commande->id])
+            ->with('success', 'Votre commande a été validée avec succès !');
     }
 
+    /**
+     * Afficher le résumé d’une commande validée
+     */
+    public function resume($id)
+    {
+        $commande = CommandeOnline::with('produits')->findOrFail($id);
+
+        return view('resume', compact('commande'));
+    }
 
 }

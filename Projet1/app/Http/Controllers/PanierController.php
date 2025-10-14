@@ -125,5 +125,10 @@ class PanierController extends Controller
         }
 
         return redirect()->route('panier')->with('success', 'Commande validée avec succès !');
+
+
+
     }
+
+
 }

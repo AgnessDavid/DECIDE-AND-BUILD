@@ -41,8 +41,11 @@ class CommandeOnline extends Model
 
     public function livraison()
     {
-        return $this->belongsTo(LivraisonOnline::class, 'adresse_livraison_id');
+        return $this->hasOne(LivraisonOnline::class, 'online_id', 'online_id')
+            ->where('type', 'livraison');
     }
+
+
 
     protected static function boot()
     {

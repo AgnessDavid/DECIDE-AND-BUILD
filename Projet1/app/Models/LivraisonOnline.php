@@ -11,15 +11,17 @@ class LivraisonOnline extends Model
 
     protected $table = 'livraison_online';
 
-    protected $fillable = ['online_id', 'type', 'adresse', 'ville', 'code_postal', 'pays'];
+    protected $fillable = ['online_id', 
+    'type', 'adresse', 'numero_tel', 'ville', 'code_postal', 'pays'];
 
     public function online()
     {
         return $this->belongsTo(Online::class);
     }
 
-    public function commandes()
+    public function commande()
     {
-        return $this->hasMany(CommandeOnline::class, 'adresse_livraison_id');
+        return $this->belongsTo(CommandeOnline::class, 'online_id', 'online_id');
     }
+
 }
