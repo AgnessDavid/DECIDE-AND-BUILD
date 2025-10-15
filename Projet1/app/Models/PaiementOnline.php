@@ -10,10 +10,10 @@ class PaiementOnline extends Model
 
     protected $table = 'paiement_online';
 
-    protected $fillable = ['caisse_online_id', 'montant', 'mode_paiement', 'statut', 'reference_transaction'];
+    protected $fillable = ['caisse_online_id', 'montant', 'mode_paiement', 'categorie','statut', 'reference_transaction'];
 
     public function caisse()
     {
-        return $this->belongsTo(CaisseOnline::class);
+        return $this->belongsTo(CaisseOnline::class, 'caisse_online_id');
     }
 }

@@ -7,6 +7,11 @@ use App\Models\CommandeOnline;
 use App\Models\PanierOnline;
 use App\Models\CommandeProduitOnline;
 use App\Models\LivraisonOnline;
+use App\Models\CaisseOnline;
+use App\Models\PaiementOnline;
+use App\Enums\CategoriePaiement;
+use App\Enums\MoyenPaiement;
+
 use Illuminate\Http\Request;
 
 class CommandeController extends Controller
@@ -31,7 +36,11 @@ class CommandeController extends Controller
             ]);
         }
 
-        return view('panier', compact('commande'));
+        // Récupérer la livraison si elle existe
+        $livraison = LivraisonOnline::where('online_id', $client->id)
+            ->where('type', 'livraison')
+            ->first();
+        return view('panier', compact('commande', 'livraison'));
     }
 
     /**
@@ -165,15 +174,28 @@ class CommandeController extends Controller
 
         $clientId = auth()->id();
 
-        // Valider les champs de livraison et mode de paiement
         $request->validate([
             'adresse_livraison' => 'required|string|max:255',
             'ville' => 'required|string|max:100',
             'code_postal' => 'required|string|max:20',
             'numero_tel' => 'required|string|max:20',
             'instructions' => 'nullable|string|max:255',
-            'mode_paiement' => 'required|in:carte,mobile,livraison',
+            'mode_paiement' => 'required|in:' . implode(',', [
+                MoyenPaiement::ESPECES->value,
+                MoyenPaiement::WAVE->value,
+                MoyenPaiement::MOOV_MONEY->value,
+                MoyenPaiement::MTN_MONEY->value,
+                MoyenPaiement::ORANGE_MONEY->value,
+                MoyenPaiement::PAYPAL->value,
+                MoyenPaiement::STRIPE->value,
+                MoyenPaiement::CARTE->value,
+                MoyenPaiement::BITCOIN->value,
+                MoyenPaiement::ETHEREUM->value,
+            ]),
         ]);
+
+        // ✅ Définit $mode après validation
+        $mode = $request->input('mode_paiement');
 
         // Récupère la commande en cours du client
         $commande = CommandeOnline::where('online_id', $clientId)
@@ -205,31 +227,84 @@ class CommandeController extends Controller
         );
 
         // Calcul du montant total
-        $montantTotalHT = $commande->produits->sum(function ($produit) {
-            return $produit->pivot->quantite * $produit->pivot->prix_unitaire_ht;
-        });
-        $montantTotalTTC = $montantTotalHT * 1.18; // TVA 18%
+        $montantTotalHT = $commande->produits->sum(fn($produit) => $produit->pivot->quantite * $produit->pivot->prix_unitaire_ht);
+        $montantTotalTTC = $montantTotalHT * 1.18;
 
-        // Met à jour la commande
+        // Création de la caisse
+        $caisse = CaisseOnline::create([
+            'commande_online_id' => $commande->id,
+            'online_id' => $clientId,
+            'montant_ht' => $montantTotalHT,
+            'tva' => $montantTotalHT * 0.18,
+            'montant_ttc' => $montantTotalTTC,
+            'statut_paiement' => 'impayé',
+        ]);
+
+        // Détermination de la catégorie correctement
+        $categorie = null;
+        if (in_array($mode, [MoyenPaiement::ESPECES->value])) {
+            $categorie = CategoriePaiement::ESPECES->value;
+        } elseif (
+            in_array($mode, [
+                MoyenPaiement::WAVE->value,
+                MoyenPaiement::MOOV_MONEY->value,
+                MoyenPaiement::MTN_MONEY->value,
+                MoyenPaiement::ORANGE_MONEY->value
+            ])
+        ) {
+            $categorie = CategoriePaiement::MOBILE_MONEY->value;
+        } elseif (
+            in_array($mode, [
+                MoyenPaiement::PAYPAL->value,
+                MoyenPaiement::STRIPE->value,
+                MoyenPaiement::CARTE->value
+            ])
+        ) {
+            $categorie = CategoriePaiement::EN_LIGNE->value;
+        } elseif (
+            in_array($mode, [
+                MoyenPaiement::BITCOIN->value,
+                MoyenPaiement::ETHEREUM->value
+            ])
+        ) {
+            $categorie = CategoriePaiement::CRYPTO->value;
+        }
+
+        // Création du paiement
+        $paiement = PaiementOnline::create([
+            'caisse_online_id' => $caisse->id,
+            'montant' => $caisse->montant_ttc,
+            'mode_paiement' => $mode,
+            'categorie' => $categorie,
+            'statut' => 'en_attente',
+            'reference_transaction' => 'TXN-' . strtoupper(uniqid()),
+        ]);
+
+
+        // 🔄 Mettre à jour la commande
         $commande->update([
             'etat' => 'validee',
-            'montant_ht' => $montantTotalHT,
-            'montant_ttc' => $montantTotalTTC,
-            'date_validation' => now(),
+            'total_ht' => $montantTotalHT,
+            'total_ttc' => $montantTotalTTC,
             'numero_commande' => 'CMD-' . strtoupper(uniqid()),
-            'mode_paiement' => $request->mode_paiement,
+            'adresse_livraison_id' => $livraison->id,
         ]);
 
         return redirect()->route('resume', ['id' => $commande->id])
             ->with('success', 'Votre commande a été validée avec succès !');
     }
 
+
+
+
+
+    
     /**
      * Afficher le résumé d’une commande validée
      */
     public function resume($id)
     {
-        $commande = CommandeOnline::with('produits')->findOrFail($id);
+        $commande = CommandeOnline::with(['produits', 'livraison', 'paiements'])->findOrFail($id);
 
         return view('resume', compact('commande'));
     }

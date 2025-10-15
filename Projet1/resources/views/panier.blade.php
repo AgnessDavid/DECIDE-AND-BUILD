@@ -205,86 +205,103 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
                     <p><span class="font-medium">Nom :</span> {{ auth()->user()->name ?? 'Non renseigné' }}</p>
                     <p><span class="font-medium">Email :</span> {{ auth()->user()->email ?? 'Non renseigné' }}</p>
-                  
                 </div>
             </div>
 
-            <!-- 🚚 Détails de livraison -->
-            <div class="bg-white rounded-lg shadow-md p-6 w-full lg:w-2/3" data-aos="fade-up" data-aos-delay="200">
-                <h2 class="text-xl font-semibold mb-4">Détails de livraison</h2>
-                <form action="{{ route('panier.valider') }}" method="POST" class="space-y-6">
-                    @csrf
+            <!-- 🚚 Détails de livraison + 💳 Mode de paiement + Bouton -->
+            <form action="{{ route('panier.valider') }}" method="POST" class="space-y-6 w-full lg:w-2/3">
+                @csrf
+
+                <!-- Détails de livraison -->
+                <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="200">
+                    <h2 class="text-xl font-semibold mb-4">Détails de livraison</h2>
 
                     <div>
                         <label for="adresse_livraison" class="block font-medium text-gray-700 mb-2">Adresse de livraison</label>
                         <textarea name="adresse_livraison" id="adresse_livraison" rows="3"
                             class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
-                            placeholder="Entrez votre adresse complète" required></textarea>
+                            placeholder="Entrez votre adresse complète"
+                            required
+                            {{ $livraison ? 'readonly' : '' }}>{{ $livraison->adresse ?? '' }}</textarea>
                     </div>
 
                     <div>
                         <label for="ville" class="block font-medium text-gray-700 mb-2">Ville</label>
                         <input type="text" name="ville" id="ville"
                             class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
-                            placeholder="Entrez votre ville" required>
+                            placeholder="Entrez votre ville"
+                            value="{{ $livraison->ville ?? '' }}"
+                            required
+                            {{ $livraison ? 'readonly' : '' }}>
                     </div>
 
-<div>
-    <label for="numero_tel" class="block font-medium text-gray-700 mb-2">Téléphone</label>
-    <input type="text" name="numero_tel" id="numero_tel"
-        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
-        placeholder="Entrez votre numéro de téléphone" required>
-</div>
-
+                    <div>
+                        <label for="numero_tel" class="block font-medium text-gray-700 mb-2">Téléphone</label>
+                        <input type="text" name="numero_tel" id="numero_tel"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
+                            placeholder="Entrez votre numéro de téléphone"
+                            value="{{ $livraison->numero_tel ?? '' }}"
+                            required
+                            {{ $livraison ? 'readonly' : '' }}>
+                    </div>
 
                     <div>
                         <label for="code_postal" class="block font-medium text-gray-700 mb-2">Code postal</label>
                         <input type="text" name="code_postal" id="code_postal"
                             class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
-                            placeholder="Entrez votre code postal" required>
+                            placeholder="Entrez votre code postal"
+                            value="{{ $livraison->code_postal ?? '' }}"
+                            required
+                            {{ $livraison ? 'readonly' : '' }}>
                     </div>
 
                     <div>
                         <label for="instructions" class="block font-medium text-gray-700 mb-2">Instructions de livraison (optionnel)</label>
                         <textarea name="instructions" id="instructions" rows="2"
                             class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm"
-                            placeholder="Ex : Laisser le colis à la loge..."></textarea>
+                            placeholder="Ex : Laisser le colis à la loge..."
+                            {{ $livraison ? 'readonly' : '' }}>{{ $livraison->instructions ?? '' }}</textarea>
                     </div>
-            </div>
-
-            <!-- 💳 Mode de paiement -->
-            <div class="bg-white rounded-lg shadow-md p-6 w-full lg:w-2/3" data-aos="fade-up" data-aos-delay="300">
-                <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
-
-                <div class="space-y-4">
-                    <label class="flex items-center">
-                        <input type="radio" name="mode_paiement" value="carte" class="text-blue-600 focus:ring-blue-500" checked>
-                        <span class="ml-2 text-gray-700">Carte bancaire (Visa / MasterCard)</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="mode_paiement" value="mobile" class="text-blue-600 focus:ring-blue-500">
-                        <span class="ml-2 text-gray-700">Paiement mobile (Orange Money / Moov Money)</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="mode_paiement" value="livraison" class="text-blue-600 focus:ring-blue-500">
-                        <span class="ml-2 text-gray-700">Paiement à la livraison</span>
-                    </label>
                 </div>
 
-                <div class="mt-8">
-                     <!-- Bouton de validation -->
-                    <form action="{{ route('panier.valider') }}" method="POST">
-                        @csrf
+                <!-- Mode de paiement -->
+                <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="300">
+                    <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
+
+                    <select name="mode_paiement" id="mode_paiement" required
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+                        <optgroup label="Espèces">
+                            <option value="{{ \App\Enums\MoyenPaiement::ESPECES->value }}"
+                                {{ ($paiement->mode_paiement ?? '') === \App\Enums\MoyenPaiement::ESPECES->value ? 'selected' : '' }}>
+                                Espèces
+                            </option>
+                        </optgroup>
+                        <optgroup label="Mobile Money">
+                            @foreach ([\App\Enums\MoyenPaiement::WAVE, \App\Enums\MoyenPaiement::MOOV_MONEY, \App\Enums\MoyenPaiement::MTN_MONEY, \App\Enums\MoyenPaiement::ORANGE_MONEY] as $moyen)
+                                <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
+                                    {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
+                                </option>
+                            @endforeach
+                        </optgroup>
+                        <optgroup label="Carte bancaire / en ligne">
+                            @foreach ([\App\Enums\MoyenPaiement::PAYPAL, \App\Enums\MoyenPaiement::STRIPE, \App\Enums\MoyenPaiement::CARTE] as $moyen)
+                                <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
+                                    {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
+                                </option>
+                            @endforeach
+                        </optgroup>
+                    </select>
+
+                    <!-- Bouton de validation -->
+                    <div class="mt-8">
                         <button type="submit"
                             class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
                             Passer la commande
                         </button>
-                    </form>
-
+                    </div>
                 </div>
 
-                </form>
-            </div>
+            </form>
 
         </div>
 

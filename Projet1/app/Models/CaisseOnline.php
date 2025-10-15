@@ -22,18 +22,22 @@ class CaisseOnline extends Model
         'methode_paiement'
     ];
 
+
+    public function online()
+    {
+        return $this->belongsTo(Online::class,'online_id');
+    }
+
+
     public function commande()
     {
         return $this->belongsTo(CommandeOnline::class, 'commande_online_id');
     }
 
-    public function online()
+    public function paiement()
     {
-        return $this->belongsTo(Online::class);
+        return $this->hasOne(PaiementOnline::class, 'caisse_online_id');
     }
 
-    public function paiements()
-    {
-        return $this->hasMany(PaiementOnline::class);
-    }
+
 }
