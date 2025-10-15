@@ -37,7 +37,20 @@ class CommandeOnline extends Model
 
     public function caisse()
     {
-        return $this->hasOne(CaisseOnline::class, 'commande_online_id');
+        return $this->hasOne(CaisseOnline::class, 'commande_online_id', 'id');
+    }
+
+    // Relation vers le paiement via la caisse
+    public function paiement()
+    {
+        return $this->hasOneThrough(
+            PaiementOnline::class, // Modèle final
+            CaisseOnline::class,   // Modèle intermédiaire
+            'commande_online_id',  // clé étrangère sur CaisseOnline (vers CommandeOnline)
+            'caisse_online_id',    // clé étrangère sur PaiementOnline (vers CaisseOnline)
+            'id',                  // clé locale sur CommandeOnline
+            'id'                   // clé locale sur CaisseOnline
+        );
     }
 
 
@@ -47,13 +60,6 @@ class CommandeOnline extends Model
             ->where('type', 'livraison');
     }
 
-
-    public function paiements()
-    {
-        return $this->hasMany(PaiementOnline::class, 'caisse_online_id', 'id');
-        // ou si le lien se fait via la caisse
-        // return $this->hasManyThrough(PaiementOnline::class, CaisseOnline::class, 'commande_online_id', 'caisse_online_id', 'id', 'id');
-    }
 
     protected static function boot()
     {

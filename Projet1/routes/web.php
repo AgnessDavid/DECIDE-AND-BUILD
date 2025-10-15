@@ -95,4 +95,4 @@ Route::get('/contact', function () {
 
 
 Route::get('/resume/{id}', [CommandeController::class, 'resume'])->name('resume');
-
+Route::get('/paiement/{commandeId}', [CommandeController::class, 'afficherPaiement'])->name('afficher.paiement');

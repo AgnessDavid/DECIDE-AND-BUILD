@@ -295,16 +295,38 @@ class CommandeController extends Controller
     }
 
 
+    public function afficherPaiement($commandeId)
+    {
+        $commande = CommandeOnline::with([
+            'produits',   // produits du panier
+            'livraison',  // infos livraison
+            'paiement',   // paiement associé
+            'caisse'      // infos caisse
+        ])->findOrFail($commandeId);
+
+        $mode = $commande->paiement?->mode_paiement ?? null;
+
+        // Résumé du panier
+        $panierDetails = $commande->produits->map(function ($produit) {
+            return [
+                'nom' => $produit->nom,
+                'quantite' => $produit->pivot->quantite ?? 1,
+                'prix_unitaire' => $produit->prix ?? 0,
+                'total' => ($produit->prix ?? 0) * ($produit->pivot->quantite ?? 1)
+            ];
+        });
+
+        return view('paiement', compact('commande', 'mode', 'panierDetails'));
+    }
 
 
 
-    
     /**
      * Afficher le résumé d’une commande validée
      */
     public function resume($id)
     {
-        $commande = CommandeOnline::with(['produits', 'livraison', 'paiements'])->findOrFail($id);
+        $commande = CommandeOnline::with(['produits', 'livraison', 'paiement'])->findOrFail($id);
 
         return view('resume', compact('commande'));
     }
