@@ -6,6 +6,7 @@ use App\Models\CommandeOnline;
 use App\Models\CommandeProduitOnline;
 use App\Models\PanierOnline;
 use App\Models\Produit;
+// use App\Models\PanierOnline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,19 @@ class PanierController extends Controller
 
         return view('panier', compact('paniers', 'total_ht', 'total_ttc'));
     }
+
+
+    public function count()
+    {
+        $userId = auth()->id();
+
+        $count = \App\Models\PanierOnline::where('online_id', $userId)
+            ->where('statut', 'actif')
+            ->sum('quantite');
+
+        return response()->json(['count' => $count]);
+    }
+
 
     /**
      * Ajouter un produit au panier

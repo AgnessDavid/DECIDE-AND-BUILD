@@ -6,6 +6,8 @@ use App\Http\Controllers\OnlineAuthController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\PanierController;
+use App\Http\Controllers\BoutiqueController;
+use App\Http\Controllers\DashboardController;
 // ------------------------
 // BACK (Admin / Filament)
 // ------------------------
@@ -34,7 +36,9 @@ Route::get('/', function () {
 // Boutique / Produits
 // ------------------------
 Route::get('/boutique', [ProduitController::class, 'index'])->name('boutique');
+Route::get('/boutique', [BoutiqueController::class, 'index'])->name('boutique');
 Route::get('/boutique/{slug}', [ProduitController::class, 'show'])->name('produit.show');
+Route::get('/recherche', [App\Http\Controllers\BoutiqueController::class, 'resultat'])->name('resultat');
 
 // Routes protégées pour gérer les produits (admin)
 Route::middleware('auth')->group(function () {
@@ -66,6 +70,7 @@ Route::middleware('auth:online')->group(function () {
     Route::delete('/panier/vider', [CommandeController::class, 'viderPanier'])->name('panier.vider');
     
     Route::post('/panier/valider', [CommandeController::class, 'validerCommande'])->name('panier.valider');
+    Route::get('/panier/count', [PanierController::class, 'count'])->name('panier.count');
 
 
     // Dashboard client
@@ -95,6 +100,9 @@ Route::get('/contact', function () {
 
 
 Route::get('/resume/{id}', [CommandeController::class, 'resume'])->name('resume');
+
 Route::get('/paiement/{commandeId}', [CommandeController::class, 'afficherPaiement'])->name('afficher.paiement');
-Route::get('/paiement/voir/{commandeId}', [CommandeController::class, 'voirPaiement'])
-    ->name('voirPaiement');
+
+// Route::get('/paiement/voir/{commandeId}', [CommandeController::class, 'voirPaiement'])
+    //->name('voirPaiement');
+

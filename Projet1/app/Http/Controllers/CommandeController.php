@@ -83,7 +83,7 @@ class CommandeController extends Controller
         $ligne->montant_ttc = $ligne->montant_ht * 1.18; // TVA 18%
         $ligne->save();
 
-        return back()->with('success', "Quantité ajoutée pour {$produit->nom_produit}");
+        return redirect()->route('panier')->with('success', "Produit {$produit->nom_produit} ajouté au panier !");
     }
 
 
@@ -121,8 +121,7 @@ class CommandeController extends Controller
                 $ligne->save();
             }
         }
-
-        return back()->with('success', "Quantité réduite pour {$produit->nom_produit}");
+        return redirect()->route('panier')->with('success', "Produit {$produit->nom_produit} ajouté au panier !");
     }
 
 
@@ -145,7 +144,7 @@ class CommandeController extends Controller
         if ($ligne)
             $ligne->delete();
 
-        return back()->with('success', "{$produit->nom_produit} supprimé du panier");
+        return back()->with('error', "{$produit->nom_produit} supprimé du panier");
     }
 
     /**
