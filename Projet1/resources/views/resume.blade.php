@@ -164,18 +164,19 @@
 </div>
 
 
-                <div class="text-center mt-8">
+             
+
+                 <div class="text-center mt-8">
+                   <a href="{{ route('afficher.paiement', ['commandeId' => $commande->id]) }}" class="btn btn-primary">
+                 Payer maintenant
+                 </a>
+                </div>
+
+                   <div class="text-center mt-8">
                     <a href="{{ route('accueil') }}" class="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition">
                         Retour à vos achats
                     </a>
                 </div>
-
-                 <div class="text-center mt-8">
-                   <a href="{{ route('afficher.paiement', ['commandeId' => $commande->id]) }}" class="btn btn-primary">
-    Payer maintenant
-</a>
-                </div>
-
 
                 @else
                     <p class="text-center text-red-500">Aucune commande trouvée.</p>

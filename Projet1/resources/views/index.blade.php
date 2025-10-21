@@ -41,7 +41,7 @@
           <nav class="hidden md:flex items-center gap-3">
             <a href="{{ route('accueil') }}" class="py-2 px-3 text-blue-600 border-b-2 border-blue-600 font-semibold">Accueil</a>
             <a href="{{ route('boutique') }}" class="py-2 px-3 hover:text-blue-600">Boutique</a>
-            <a href="{{ route('panier') }}" class="py-2 px-3 hover:text-blue-600">Panier</a>
+           <!-- <a href="{{ route('panier') }}" class="py-2 px-3 hover:text-blue-600">Panier</a> --> 
             <a href="{{ route('contact') }}" class="py-2 px-3 hover:text-blue-600">Contact</a>
           </nav>
         </div>
@@ -62,17 +62,19 @@
         </div>
 
         <!-- Right actions -->
-        <div class="flex items-center gap-3">
-          <div class="hidden md:flex items-center gap-2">
-            <a href="{{ route('login') }}" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Connexion</a>
-            <a href="{{ route('register') }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a>
-          </div>
-
+  
           <!-- Cart button -->
           <button id="cartToggle" aria-label="Ouvrir le panier" class="relative p-2 rounded-full hover:bg-gray-100">
             <i data-feather="shopping-cart" class="w-5 h-5 text-gray-700"></i>
             <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">0</span>
           </button>
+
+      <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2">
+            <a href="{{ route('login') }}" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Connexion</a>
+            <a href="{{ route('register') }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a>
+          </div>
+
 
           <!-- Mobile menu -->
           <div class="md:hidden">

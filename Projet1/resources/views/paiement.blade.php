@@ -10,6 +10,16 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <style>
         .transition-all { transition: all 0.3s ease; }
+        #wave-qr {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.4s ease;
+}
+#wave-qr:not(.hidden) {
+    opacity: 1;
+    transform: scale(1);
+}
+
     </style>
 </head>
 <body class="font-sans bg-gray-50">
@@ -103,7 +113,7 @@
         <p><span class="font-medium">Mode choisi :</span> {{ ucfirst(str_replace('_', ' ', $mode)) }}</p>
     </div>
 
-
+   
     {{-- Résumé du panier --}}
     <div class="bg-white p-4 rounded shadow">
         <h3 class="text-lg font-semibold mb-2">Résumé du panier</h3>
@@ -171,6 +181,28 @@
             </div>
         @endif
 
+
+<!-- QR Code Wave (PDF) -->
+<div id="wave-qr" class="mt-6 text-center transition-all duration-500 ease-in-out transform opacity-0 scale-95">
+    <p class="text-gray-700 mb-3 font-medium">
+        Scannez ce code QR avec votre application <span class="text-blue-500 font-semibold">Wave</span> pour effectuer le paiement :
+    </p>
+    <iframe src="{{ asset('images/wave_qr.pdf') }}" 
+            class="mx-auto w-64 h-64 rounded-lg shadow-md border border-gray-200"
+            frameborder="0">
+    </iframe>
+    <p class="text-sm text-gray-500 mt-2">
+        Si le QR code ne s'affiche pas, 
+        <a href="{{ asset('images/wave_qr.pdf') }}" target="_blank" class="text-blue-500 underline">
+            cliquez ici
+        </a> pour l’ouvrir.
+    </p>
+</div>
+
+
+
+
+
         {{-- Carte / Paypal / Stripe --}}
         @if(in_array($mode, ['paypal', 'stripe', 'carte']))
             <div>
@@ -230,18 +262,38 @@
         </div>
     </footer>
 
-    <script>
-        // Mobile menu toggle
-        const btn = document.querySelector(".mobile-menu-button");
-        const menu = document.querySelector(".mobile-menu");
+<script>
+    // Mobile menu toggle
+    const btn = document.querySelector(".mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
 
-        btn.addEventListener("click", () => menu.classList.toggle("hidden"));
+    btn.addEventListener("click", () => menu.classList.toggle("hidden"));
 
-        // Initialize AOS and Feather Icons
-        document.addEventListener('DOMContentLoaded', () => {
-            AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
-            feather.replace();
-        });
-    </script>
+    // Initialisation AOS et Feather Icons
+    document.addEventListener('DOMContentLoaded', () => {
+        AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
+        feather.replace();
+
+       const selectOperateur = document.getElementById('operateur');
+const waveQr = document.getElementById('wave-qr');
+
+function toggleWaveQR() {
+    if (selectOperateur && selectOperateur.value.toLowerCase() === 'wave') {
+        waveQr.classList.remove('opacity-0', 'scale-95');
+        waveQr.classList.add('opacity-100', 'scale-100');
+    } else {
+        waveQr.classList.remove('opacity-100', 'scale-100');
+        waveQr.classList.add('opacity-0', 'scale-95');
+    }
+}
+
+if (selectOperateur) {
+    selectOperateur.addEventListener('change', toggleWaveQR);
+    toggleWaveQR(); // Vérifie au chargement
+}
+
+    });
+</script>
+
 </body>
 </html>

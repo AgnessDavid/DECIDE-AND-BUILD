@@ -21,4 +21,10 @@ enum MoyenPaiement: string
     // Crypto
     case BITCOIN = 'bitcoin';
     case ETHEREUM = 'ethereum';
+
+    // Pour récupérer toutes les valeurs sous forme de tableau
+    public static function values(): array
+    {
+        return array_map(fn($case) => $case->value, self::cases());
+    }
 }

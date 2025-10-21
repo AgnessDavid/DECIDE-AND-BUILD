@@ -269,34 +269,68 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="300">
-                        <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
-                        <select name="mode_paiement" id="mode_paiement" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
-                            <optgroup label="Espèces">
-                                <option value="{{ \App\Enums\MoyenPaiement::ESPECES->value }}" {{ ($paiement->mode_paiement ?? '') === \App\Enums\MoyenPaiement::ESPECES->value ? 'selected' : '' }}>Espèces</option>
-                            </optgroup>
-                            <optgroup label="Mobile Money">
-                                @foreach ([\App\Enums\MoyenPaiement::WAVE, \App\Enums\MoyenPaiement::MOOV_MONEY, \App\Enums\MoyenPaiement::MTN_MONEY, \App\Enums\MoyenPaiement::ORANGE_MONEY] as $moyen)
-                                    <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
-                                        {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                            <optgroup label="Carte bancaire / en ligne">
-                                @foreach ([\App\Enums\MoyenPaiement::PAYPAL, \App\Enums\MoyenPaiement::STRIPE, \App\Enums\MoyenPaiement::CARTE] as $moyen)
-                                    <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
-                                        {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                        </select>
+                   <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="300">
+    <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
+    <select name="mode_paiement" id="mode_paiement" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+        @php
+            $paiements = [
+                'Espèces' => [\App\Enums\MoyenPaiement::ESPECES],
+                'Mobile Money' => [
+                    \App\Enums\MoyenPaiement::WAVE,
+                    \App\Enums\MoyenPaiement::MOOV_MONEY,
+                    \App\Enums\MoyenPaiement::MTN_MONEY,
+                    \App\Enums\MoyenPaiement::ORANGE_MONEY,
+                ],
+                'Carte bancaire / en ligne' => [
+                    \App\Enums\MoyenPaiement::PAYPAL,
+                    \App\Enums\MoyenPaiement::STRIPE,
+                    \App\Enums\MoyenPaiement::CARTE,
+                ],
+                'Crypto' => [
+                    \App\Enums\MoyenPaiement::BITCOIN,
+                    \App\Enums\MoyenPaiement::ETHEREUM,
+                ],
+            ];
+        @endphp
 
-                        <div class="mt-8">
-                            <button type="submit" class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
-                                Passer la commande
-                            </button>
-                        </div>
-                    </div>
+        @foreach($paiements as $categorie => $moyens)
+            <optgroup label="{{ $categorie }}">
+                @foreach($moyens as $moyen)
+                    <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
+                        {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
+                    </option>
+                @endforeach
+            </optgroup>
+        @endforeach
+    </select>
+
+
+<div id="wave-qr" class="hidden mt-6 text-center transition-all duration-500 ease-in-out transform">
+    <p class="text-gray-700 mb-3 font-medium">
+        Scannez ce code QR avec votre application <span class="text-blue-500 font-semibold">Wave</span> pour effectuer le paiement :
+    </p>
+    <iframe src="{{ asset('images/wave_qr.pdf') }}" 
+            class="mx-auto w-64 h-64 rounded-lg shadow-md border border-gray-200"
+            frameborder="0">
+    </iframe>
+    <p class="text-sm text-gray-500 mt-2">
+        Si le QR code ne s'affiche pas, 
+        <a href="{{ asset('images/wave_qr.pdf') }}" target="_blank" class="text-blue-500 underline">
+            cliquez ici
+        </a> pour l’ouvrir.
+    </p>
+</div>
+
+
+
+    {{-- Bouton --}}
+    <div class="mt-8">
+        <button type="submit" class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
+            Passer la commande
+        </button>
+    </div>
+</div>
+
                 </form>
             </div>
         </div>
@@ -424,6 +458,24 @@
     });
 });
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    const selectMode = document.getElementById('mode_paiement');
+    const waveQr = document.getElementById('wave-qr');
+
+    function toggleWaveQR() {
+        if (selectMode.value === '{{ \App\Enums\MoyenPaiement::WAVE->value }}') {
+            waveQr.classList.remove('hidden');
+        } else {
+            waveQr.classList.add('hidden');
+        }
+    }
+
+    selectMode.addEventListener('change', toggleWaveQR);
+
+    // Vérifie au chargement si “Wave” est déjà sélectionné
+    toggleWaveQR();
+});
 
     </script>
 

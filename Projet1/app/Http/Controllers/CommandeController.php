@@ -315,7 +315,9 @@ class CommandeController extends Controller
             ];
         });
 
-        return view('paiement', compact('commande', 'mode', 'panierDetails'));
+        $showWaveQr = $mode === MoyenPaiement::WAVE->value;
+       
+        return view('paiement', compact('commande', 'mode', 'panierDetails', 'showWaveQr'));
     }
 
 
