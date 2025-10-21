@@ -14,6 +14,12 @@ return new class extends Migration {
             $table->decimal('total_ttc', 10, 2)->default(0);
             $table->enum('etat', ['en_cours', 'validee', 'annulee'])->default('en_cours');
             $table->timestamp('date_commande')->useCurrent();
+            
+             $table->enum('statut_paiement', ['impayé','partiellement payé','payé'])
+              ->default('impayé')
+              ->after('etat'); // ou après le champ que tu souhaites
+  
+
             $table->foreignId('adresse_livraison_id')->nullable()->constrained('adresses')->onDelete('set null');
             $table->timestamps();
         });

@@ -101,8 +101,24 @@ Route::get('/contact', function () {
 
 Route::get('/resume/{id}', [CommandeController::class, 'resume'])->name('resume');
 
-Route::get('/paiement/{commandeId}', [CommandeController::class, 'afficherPaiement'])->name('afficher.paiement');
-
 // Route::get('/paiement/voir/{commandeId}', [CommandeController::class, 'voirPaiement'])
     //->name('voirPaiement');
 
+
+// Pour afficher le paiement (GET)
+Route::get('paiement/{id}', [CommandeController::class, 'afficherPaiement'])
+    ->name('paiement');
+
+// Affiche la page de paiement
+Route::get('/paiement/{commandeId}', [CommandeController::class, 'afficherPaiement'])
+    ->name('afficher.paiement');
+
+
+// Pour traiter le paiement (POST)
+Route::post('paiement/{id}', [CommandeController::class, 'traiterPaiement'])
+    ->name('paiement.post');
+Route::get('/paiement/wave/{commande}', [CommandeController::class, 'confirmerWave'])
+    ->name('confirmer.wave');
+
+Route::post('/paiement/wave/{commande}/valider', [CommandeController::class, 'validerWave'])
+    ->name('confirmer.wave.post');

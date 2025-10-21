@@ -320,6 +320,89 @@ class CommandeController extends Controller
         return view('paiement', compact('commande', 'mode', 'panierDetails', 'showWaveQr'));
     }
 
+    private function synchroniserPaiementCommande(CaisseOnline $caisse, CommandeOnline $commande, $montantPaye = null)
+    {
+        $montantPaye ??= $commande->total_ttc;
+
+        // 1️⃣ Mettre à jour la commande
+        $commande->statut_paiement = 'payé';
+        $commande->etat = 'validee';
+        $commande->save();
+
+        // 2️⃣ Mettre à jour ou créer la caisse
+        $caisse->commande_online_id = $commande->id;
+        $caisse->montant_ttc = $montantPaye;
+        $caisse->statut_paiement = $commande->statut_paiement;
+        $caisse->save();
+
+        // 3️⃣ Mettre à jour ou créer le paiement associé
+        $paiement = $caisse->paiement;
+        if (!$paiement) {
+            $paiement = PaiementOnline::create([
+                'caisse_online_id' => $caisse->id,
+                'montant' => $caisse->montant_ttc,
+                'mode_paiement' => $commande->paiement?->mode_paiement ?? 'unknown',
+                'categorie' => $commande->paiement?->categorie ?? 'unknown',
+                'statut' => 'validée',
+                'reference_transaction' => 'TXN-' . strtoupper(uniqid()),
+            ]);
+        } else {
+            $paiement->statut = 'réussi';
+            $paiement->save();
+        }
+
+        return [$commande, $caisse, $paiement];
+    }
+
+
+    public function traiterPaiement(Request $request, $id)
+    {
+        $commande = CommandeOnline::with(['caisse', 'paiement'])->findOrFail($id);
+
+        $montantPaye = $request->filled('montant') ? $request->montant : $commande->total_ttc;
+
+        if ($request->filled('montant') && $request->montant != $commande->total_ttc) {
+            return back()->with('error', 'Le montant payé ne correspond pas au total de la commande.');
+        }
+
+        $caisse = $commande->caisse ?? new CaisseOnline();
+
+        [$commande, $caisse, $paiement] = $this->synchroniserPaiementCommande($caisse, $commande, $montantPaye);
+
+        return redirect()->route('confirmer.wave', ['commande' => $commande->id])
+            ->with('success', 'Paiement confirmé et synchronisé !');
+    }
+
+    public function validerWave(Request $request, $commandeId)
+    {
+        $commande = CommandeOnline::with('caisse')->findOrFail($commandeId);
+
+        $caisse = $commande->caisse ?? new CaisseOnline();
+
+        [$commande, $caisse, $paiement] = $this->synchroniserPaiementCommande($caisse, $commande);
+
+        return redirect()->route('confirmer.wave', ['commande' => $commande->id])
+            ->with('success', 'Paiement Wave confirmé et synchronisé !');
+    }
+
+
+
+    public function confirmerWave($commandeId)
+    {
+        $commande = CommandeOnline::findOrFail($commandeId);
+
+        // Vérifie que le mode de paiement est bien Wave
+        if ($commande->paiement?->mode_paiement !== MoyenPaiement::WAVE->value) {
+            return redirect()->route('paiement', $commandeId)
+                ->with('error', 'Le mode de paiement sélectionné n’est pas Wave.');
+        }
+
+        return view('wave_confirmation', compact('commande'));
+    }
+
+    // Enregistre la confirmation de paiement
+
+
 
 
     /**

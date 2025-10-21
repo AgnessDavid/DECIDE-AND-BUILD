@@ -303,7 +303,7 @@
             </optgroup>
         @endforeach
     </select>
-
+/*
 
 <div id="wave-qr" class="hidden mt-6 text-center transition-all duration-500 ease-in-out transform">
     <p class="text-gray-700 mb-3 font-medium">
@@ -320,7 +320,7 @@
         </a> pour l’ouvrir.
     </p>
 </div>
-
+*/
 
 
     {{-- Bouton --}}
@@ -458,6 +458,7 @@
     });
 });
 
+/*
 
 document.addEventListener('DOMContentLoaded', function () {
     const selectMode = document.getElementById('mode_paiement');
@@ -476,7 +477,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Vérifie au chargement si “Wave” est déjà sélectionné
     toggleWaveQR();
 });
-
+*/
     </script>
 
 
