@@ -134,39 +134,94 @@
 @endif
 
 
-<!-- Shop Header -->
-<div class="bg-gray-800 text-white py-12 pt-20">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-        <h1 class="text-3xl font-bold mb-4 md:mb-0" data-aos="fade-right">Notre collection de cartes</h1>
-        <div class="flex items-center space-x-4" data-aos="fade-left">
-            
-<form method="GET" action="{{ route('boutique') }}" class="flex gap-4">
-    <!-- Catégorie -->
-    <select name="categorie" onchange="this.form.submit()"
-            class="block appearance-none bg-gray-700 border border-gray-600 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-gray-600 focus:border-gray-500">
-        <option value="">Toutes les catégories</option>
-        @foreach($categories as $categorie)
-            <option value="{{ $categorie->categorie }}" {{ request('categorie') == $categorie->categorie ? 'selected' : '' }}>
-                {{ $categorie->categorie }}
-            </option>
-        @endforeach
-    </select>
 
-    <!-- Tri -->
-    <select name="tri" onchange="this.form.submit()"
-            class="block appearance-none bg-gray-700 border border-gray-600 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-gray-600 focus:border-gray-500">
-        <option value="">Trier par prix</option>
-        <option value="prix_croissant" {{ request('tri') == 'prix_croissant' ? 'selected' : '' }}>Prix croissant</option>
-        <option value="prix_decroissant" {{ request('tri') == 'prix_decroissant' ? 'selected' : '' }}>Prix décroissant</option>
-    </select>
-</form>
+
+
+
+<section>
+
+    <div class="bg-gray-800 text-white py-12 pt-20 mb-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+        
+        <!-- Titre -->
+        <h1 class="text-3xl font-bold mb-4 md:mb-0" data-aos="fade-right">
+          Notre collection de cartes
+        </h1>
+  <!-- Section filtre -->
+<div class="flex items-center space-x-4" data-aos="fade-left">
+    
+    <!-- Conteneur Alpine.js pour le menu déroulant -->
+    <div class="relative" x-data="{ open: false }">
+        
+        <!-- Bouton Filtre -->
+        <button @click="open = !open"
+                class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-blue-700 transition transform hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L14 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 018 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+            </svg>
+            <span>Filtres</span>
+        </button>
+
+        <!-- Menu déroulant -->
+        <div x-show="open"
+             x-transition
+             @click.away="open = false"
+             class="absolute right-0 mt-2 w-64 bg-white text-gray-800 rounded-xl shadow-lg z-50 p-4 space-y-4">
+
+            <form method="GET" action="{{ route('boutique') }}" class="space-y-4">
+                
+                <!-- Catégories -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Catégories</label>
+                    <select name="categorie" onchange="this.form.submit()"
+                            class="w-full bg-gray-100 border border-gray-300 text-gray-800 py-2 px-3 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-400">
+                        <option value="">Toutes les catégories</option>
+                        @foreach($categories as $categorie)
+                            <option value="{{ $categorie->categorie }}" {{ request('categorie') == $categorie->categorie ? 'selected' : '' }}>
+                                {{ $categorie->categorie }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Tri par prix -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Trier par prix</label>
+                    <select name="tri" onchange="this.form.submit()"
+                            class="w-full bg-gray-100 border border-gray-300 text-gray-800 py-2 px-3 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-400">
+                        <option value="">Aucun</option>
+                        <option value="prix_croissant" {{ request('tri') == 'prix_croissant' ? 'selected' : '' }}>Prix croissant</option>
+                        <option value="prix_decroissant" {{ request('tri') == 'prix_decroissant' ? 'selected' : '' }}>Prix décroissant</option>
+                    </select>
+                </div>
+
+                <!-- Bouton Appliquer -->
+                <div>
+                    <button type="submit"
+                            class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">
+                        Appliquer
+                    </button>
+                </div>
+
+            </form>
 
         </div>
     </div>
+
 </div>
 
+      </div>
+    </div>
+
+
+    
+</section>
+<!-- Shop Header -->
+
+
 <!-- Products Grid -->
-<section class="py-12 bg-white">
+<section class="py-12 pt-20 bg-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @foreach($produits as $produit)

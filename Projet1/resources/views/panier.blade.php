@@ -142,7 +142,8 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Liste des produits -->
-                <div class="lg:w-2/3" data-aos="fade-right">
+                <div class="lg:w-3/3" data-aos="fade-right">
+
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
 
                         <div class="bg-gray-100 px-6 py-4 border-b border-gray-200 hidden md:block">
@@ -203,138 +204,168 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
 
-                <!-- Récapitulatif -->
-                <div class="lg:w-1/3" data-aos="fade-left" data-aos-delay="100">
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-xl font-semibold mb-4">Récapitulatif de commande</h2>
-                        <div class="space-y-4 mb-6">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Montant HT</span>
-                                <span class="font-semibold">€{{ number_format($total, 2) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">TVA (18%)</span>
-                                <span class="font-semibold">€{{ number_format($total * 0.18, 2) }}</span>
-                            </div>
-                            <div class="flex justify-between border-t border-gray-200 pt-4">
-                                <span class="text-lg font-semibold">Total TTC</span>
-                                <span class="text-lg font-bold text-blue-600">€{{ number_format($total * 1.18, 2) }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-            </div>
+       <div class="space-y-8 pt-5">
+      
+      <!-- Infos client -->
+      <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-xl font-semibold mb-4">Informations du client</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+          <p><span class="font-medium">Nom :</span> {{ auth()->user()->name ?? 'Non renseigné' }}</p>
+          <p><span class="font-medium">Email :</span> {{ auth()->user()->email ?? 'Non renseigné' }}</p>
         </div>
-    </section>
+      </div>
 
-    <!-- Informations client et livraison/paiement -->
-    <section class="py-12 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col items-center space-y-8">
+      <!-- Formulaire Livraison / Paiement -->
+      <form action="{{ route('panier.valider') }}" method="POST" class="space-y-6">@csrf
+        
+        <!-- Livraison -->
+        <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="200">
+          <h2 class="text-xl font-semibold mb-4">Détails de livraison</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Adresse de livraison</label>
+              <textarea name="adresse_livraison" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Entrez votre adresse complète" required>{{ $livraison->adresse ?? '' }}</textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+              <input type="text" name="ville" value="{{ $livraison->ville ?? '' }}" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+              <input type="text" name="numero_tel" value="{{ $livraison->numero_tel ?? '' }}" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
+              <input type="text" name="code_postal" value="{{ $livraison->code_postal ?? '' }}" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Instructions (optionnel)</label>
+              <textarea name="instructions" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Ex : Laisser le colis à la loge...">{{ $livraison->instructions ?? '' }}</textarea>
+            </div>
+          </div>
+        </div>
 
-                <div class="bg-white rounded-lg shadow-md p-6 w-full lg:w-2/3" data-aos="fade-up" data-aos-delay="100">
-                    <h2 class="text-xl font-semibold mb-4">Informations du client</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-                        <p><span class="font-medium">Nom :</span> {{ auth()->user()->name ?? 'Non renseigné' }}</p>
-                        <p><span class="font-medium">Email :</span> {{ auth()->user()->email ?? 'Non renseigné' }}</p>
-                    </div>
-                </div>
-
-                <form action="{{ route('panier.valider') }}" method="POST" class="space-y-6 w-full lg:w-2/3">@csrf
-                    <!-- Détails livraison et paiement -->
-                    <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="200">
-                        <h2 class="text-xl font-semibold mb-4">Détails de livraison</h2>
-                        <div>
-                            <label for="adresse_livraison" class="block font-medium text-gray-700 mb-2">Adresse de livraison</label>
-                            <textarea name="adresse_livraison" id="adresse_livraison" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Entrez votre adresse complète" required {{ $livraison ? 'readonly' : '' }}>{{ $livraison->adresse ?? '' }}</textarea>
-                        </div>
-                        <div>
-                            <label for="ville" class="block font-medium text-gray-700 mb-2">Ville</label>
-                            <input type="text" name="ville" id="ville" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Entrez votre ville" value="{{ $livraison->ville ?? '' }}" required {{ $livraison ? 'readonly' : '' }}>
-                        </div>
-                        <div>
-                            <label for="numero_tel" class="block font-medium text-gray-700 mb-2">Téléphone</label>
-                            <input type="text" name="numero_tel" id="numero_tel" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Entrez votre numéro de téléphone" value="{{ $livraison->numero_tel ?? '' }}" required {{ $livraison ? 'readonly' : '' }}>
-                        </div>
-                        <div>
-                            <label for="code_postal" class="block font-medium text-gray-700 mb-2">Code postal</label>
-                            <input type="text" name="code_postal" id="code_postal" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Entrez votre code postal" value="{{ $livraison->code_postal ?? '' }}" required {{ $livraison ? 'readonly' : '' }}>
-                        </div>
-                        <div>
-                            <label for="instructions" class="block font-medium text-gray-700 mb-2">Instructions de livraison (optionnel)</label>
-                            <textarea name="instructions" id="instructions" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Ex : Laisser le colis à la loge..." {{ $livraison ? 'readonly' : '' }}>{{ $livraison->instructions ?? '' }}</textarea>
-                        </div>
-                    </div>
-
-                   <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="300">
-    <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
-    <select name="mode_paiement" id="mode_paiement" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
-        @php
-            $paiements = [
-                'Espèces' => [\App\Enums\MoyenPaiement::ESPECES],
-                'Mobile Money' => [
-                    \App\Enums\MoyenPaiement::WAVE,
-                    \App\Enums\MoyenPaiement::MOOV_MONEY,
-                    \App\Enums\MoyenPaiement::MTN_MONEY,
-                    \App\Enums\MoyenPaiement::ORANGE_MONEY,
-                ],
-                'Carte bancaire / en ligne' => [
-                    \App\Enums\MoyenPaiement::PAYPAL,
-                    \App\Enums\MoyenPaiement::STRIPE,
-                    \App\Enums\MoyenPaiement::CARTE,
-                ],
-                'Crypto' => [
-                    \App\Enums\MoyenPaiement::BITCOIN,
-                    \App\Enums\MoyenPaiement::ETHEREUM,
-                ],
-            ];
-        @endphp
-
-        @foreach($paiements as $categorie => $moyens)
-            <optgroup label="{{ $categorie }}">
+        <!-- Paiement -->
+        <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="300">
+          <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
+          <select name="mode_paiement" id="mode_paiement" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+            @php
+              $paiements = [
+                  'Espèces' => [\App\Enums\MoyenPaiement::ESPECES],
+                  'Mobile Money' => [
+                      \App\Enums\MoyenPaiement::WAVE,
+                      \App\Enums\MoyenPaiement::MOOV_MONEY,
+                      \App\Enums\MoyenPaiement::MTN_MONEY,
+                      \App\Enums\MoyenPaiement::ORANGE_MONEY,
+                  ],
+                  'Carte / en ligne' => [
+                      \App\Enums\MoyenPaiement::PAYPAL,
+                      \App\Enums\MoyenPaiement::STRIPE,
+                      \App\Enums\MoyenPaiement::CARTE,
+                  ],
+                  'Crypto' => [
+                      \App\Enums\MoyenPaiement::BITCOIN,
+                      \App\Enums\MoyenPaiement::ETHEREUM,
+                  ],
+              ];
+            @endphp
+            @foreach($paiements as $categorie => $moyens)
+              <optgroup label="{{ $categorie }}">
                 @foreach($moyens as $moyen)
-                    <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
-                        {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
-                    </option>
+                  <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
+                    {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
+                  </option>
                 @endforeach
-            </optgroup>
-        @endforeach
-    </select>
-/*
+              </optgroup>
+            @endforeach
+          </select>
 
-<div id="wave-qr" class="hidden mt-6 text-center transition-all duration-500 ease-in-out transform">
-    <p class="text-gray-700 mb-3 font-medium">
-        Scannez ce code QR avec votre application <span class="text-blue-500 font-semibold">Wave</span> pour effectuer le paiement :
-    </p>
-    <iframe src="{{ asset('images/wave_qr.pdf') }}" 
-            class="mx-auto w-64 h-64 rounded-lg shadow-md border border-gray-200"
-            frameborder="0">
-    </iframe>
-    <p class="text-sm text-gray-500 mt-2">
-        Si le QR code ne s'affiche pas, 
-        <a href="{{ asset('images/wave_qr.pdf') }}" target="_blank" class="text-blue-500 underline">
-            cliquez ici
-        </a> pour l’ouvrir.
-    </p>
-</div>
-*/
-
-
-    {{-- Bouton --}}
-    <div class="mt-8">
-        <button type="submit" class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded text-center transition duration-300">
-            Passer la commande
-        </button>
-    </div>
-</div>
-
-                </form>
-            </div>
+          <div class="mt-8">
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-300">
+              Passer la commande
+            </button>
+          </div>
         </div>
-    </section>
+
+      </form>
+
+    </div>
+
+                </div>
+
+
+  <div class="container my-5">
+ 
+    <div class="row g-4">
+    <!-- Récapitulatif -->
+    <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
+      <div class="bg-white rounded-lg shadow-md p-6 h-100">
+        <h2 class="text-xl font-semibold mb-4">Récapitulatif de commande</h2>
+        <div class="space-y-4 mb-6">
+          <div class="d-flex justify-content-between">
+            <span class="text-gray-600">Montant HT</span>
+            <span class="fw-semibold">€{{ number_format($total, 2) }}</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-gray-600">TVA (18%)</span>
+            <span class="fw-semibold">€{{ number_format($total * 0.18, 2) }}</span>
+          </div>
+          <div class="d-flex justify-content-between border-top pt-3">
+            <span class="fs-5 fw-semibold">Total TTC</span>
+            <span class="fs-5 fw-bold text-primary">€{{ number_format($total * 1.18, 2) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Livraison -->
+    <div class="col-lg-6 pt-5" data-aos="fade-up" data-aos-delay="200">
+      <div class="bg-white border border-gray-200 rounded-3 shadow-md p-6 h-100">
+        <h3 class="fs-5 fw-semibold text-dark mb-3">🚚 Livraison à domicile</h3>
+        <div class="mb-3">
+          <p class="small text-muted mb-1">
+            Livraison prévue le <span class="fw-medium text-success">22 octobre</span>
+          </p>
+          <p class="small text-secondary">
+            💡 Économisez jusqu’à 
+            <span class="fw-semibold text-warning">700 FCFA</span>  
+            en passant à un point relais à partir de 
+            <span class="fw-semibold text-dark">300 FCFA</span>.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <button class="btn btn-primary rounded-pill px-4 py-2">
+            Choisir un point relais
+          </button>
+        </div>
+      </div>
+    </div>
+
+   </div>
+
+  </div>
+
+            
+        </div>
+
+        
+        
+  
+
+
+  </div>
+        
+        
+   </section>
+
+    
+
+
+
+
 
     <!-- Newsletter -->
     <section class="py-12 bg-blue-600 text-white">
