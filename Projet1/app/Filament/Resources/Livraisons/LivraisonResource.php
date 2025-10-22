@@ -15,14 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-
+use UnitEnum;
 class LivraisonResource extends Resource
 {
     protected static ?string $model = Livraison::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static UnitEnum|string|null $navigationGroup = 'Gestion des livraisons';
 
-    protected static ?string $recordTitleAttribute = 'Livraison';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
     {
@@ -55,4 +55,11 @@ class LivraisonResource extends Resource
             'edit' => EditLivraison::route('/{record}/edit'),
         ];
     }
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
 }
