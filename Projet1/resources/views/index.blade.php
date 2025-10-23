@@ -7,6 +7,8 @@
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
+
   <!-- AOS -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -24,17 +26,21 @@
     .flyout-leave-active { transform: translateX(100%); transition: transform .22s ease-in;}
     /* simple badge */
     .badge-yellow { background: linear-gradient(90deg,#f6c84c,#f59e0b); }
+
+
+    
   </style>
 </head>
 <body class="font-sans bg-gray-50 text-gray-800">
 
   <!-- HEADER / NAV with SEARCH + CART -->
   <header class="bg-white shadow fixed w-full z-50">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class=" mx-10 px-4">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center gap-6">
-          <a href="{{ route('accueil') }}" class="flex items-center">
-            <span class="text-2xl font-semibold text-gray-700">Cartologue</span>
+          <a href="{{ route('accueil') }}" class="flex  items-center">
+               <img src="{{ asset('images/bnetd_logo.svg') }}" alt="Cartologue" class="h-8 m-5 w-auto">
+               <img src="{{ asset('images/bnetd_logo.svg') }}" alt="Cartologue" class="h-8 w-auto">
           </a>
 
           <!-- Main nav (desktop) -->
@@ -63,16 +69,50 @@
 
         <!-- Right actions -->
   
-          <!-- Cart button -->
-          <button id="cartToggle" aria-label="Ouvrir le panier" class="relative p-2 rounded-full hover:bg-gray-100">
-            <i data-feather="shopping-cart" class="w-5 h-5 text-gray-700"></i>
-            <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">0</span>
-          </button>
-
-      <div class="flex items-center gap-3">
+     <div class="flex items-center gap-3">
           <div class="hidden md:flex items-center gap-2">
-            <a href="{{ route('login') }}" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Connexion</a>
-            <a href="{{ route('register') }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a>
+
+@auth
+    <div class="relative group">
+        <button class="flex items-center space-x-2 px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
+            @if(Auth::user()->avatar)
+                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" 
+                     class="w-6 h-6 rounded-full" 
+                     alt="{{ Auth::user()->name }}">
+            @else
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
+                    {{ substr(Auth::user()->name, 0, 1) }}
+                </div>
+            @endif
+            <span>{{ Auth::user()->name ?? 'Client' }}</span>
+        </button>
+        
+        <!-- Menu déroulant -->
+        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Mon profil
+            </a>
+            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Tableau de bord
+            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t">
+                    Déconnexion
+                </button>
+            </form>
+        </div>
+    </div>
+@else
+    <a href="{{ route('login') }}" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
+        Connexion
+    </a>
+  <!-- <a href="{{ route('register') }}" class="px-3 py-1 bg-blue-500 text-white hover:bg-blue-600 rounded ml-2">
+        Inscription
+    </a> -->
+@endauth
+
+          <!--  <a href="{{ route('register') }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a> -->
           </div>
 
 
@@ -83,6 +123,15 @@
             </button>
           </div>
         </div>
+
+          <!-- Cart button -->
+          <button id="cartToggle" aria-label="Ouvrir le panier" class="relative p-2 rounded-full hover:bg-gray-100">
+            <i data-feather="shopping-cart" class="w-5 h-5 text-gray-700"></i>
+            <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">0</span>
+          </button>
+
+ 
+
       </div>
     </div>
 
@@ -124,7 +173,45 @@
   </aside>
 
   <!-- Page container -->
-  <main class="pt-24">
+  <main class="pt-10">
+
+
+<section class="container mx-auto ">
+  <div id="animation-carousel" class="relative w-full" data-carousel="static">
+    <div class="relative h-[500px] overflow-hidden md:h-[500px]">
+      <div class="hidden duration-200 ease-linear" data-carousel-item>
+        <img src="{{ asset('images/photo1.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 1">
+      </div>
+      <div class="hidden duration-200 ease-linear" data-carousel-item="active">
+        <img src="{{ asset('images/photo2.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 2">
+      </div>
+      <div class="hidden duration-200 ease-linear" data-carousel-item>
+        <img src="{{ asset('images/photo3.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 3">
+      </div>
+    </div>
+
+    <!-- Contrôles -->
+    <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+      <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 hover:bg-white/50">
+        <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+        </svg>
+        <span class="sr-only">Précédent</span>
+      </span>
+    </button>
+
+    <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+      <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 hover:bg-white/50">
+        <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+        <span class="sr-only">Suivant</span>
+      </span>
+    </button>
+  </div>
+</section>
+
+
 
     <!-- HERO (existing) -->
     <section class="hero-gradient text-white pt-12 pb-12">
@@ -207,7 +294,9 @@
             <div class="p-4">
               <h3 class="font-semibold">Cartes anciennes</h3>
               <p class="text-sm text-gray-500">Reproductions et éditions rares</p>
+              
             </div>
+            
           </a>
 
           <!-- Cat 2 -->
@@ -329,16 +418,16 @@
 
     <!-- TRUST LOGOS -->
     <section class="py-8 bg-white">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-6xl mx-auto px-4 lg:px-6">
         <div class="text-center mb-6">
-          <h3 class="text-xl font-semibold">Ils nous font confiance</h3>
-          <p class="text-gray-500 text-sm">Médias, partenaires et fournisseurs</p>
+          <h1 class="text-3xl font-semibold">Ils nous font confiance</h1>
+          <p class="text-gray-500 text-md">Médias, partenaires et fournisseurs</p>
         </div>
         <div class="flex items-center justify-center gap-8 flex-wrap">
-          <img src="http://static.photos/travel/120x60/12" alt="logo 1" class="h-10 grayscale opacity-80">
-          <img src="http://static.photos/travel/120x60/13" alt="logo 2" class="h-10 grayscale opacity-80">
-          <img src="http://static.photos/travel/120x60/14" alt="logo 3" class="h-10 grayscale opacity-80">
-          <img src="http://static.photos/travel/120x60/15" alt="logo 4" class="h-10 grayscale opacity-80">
+          <img src="http://static.photos/travel/120x60/12" alt="logo 1" class="h-100 w-100 rounded-xl opacity-100">
+          <img src="http://static.photos/travel/120x60/13" alt="logo 2" class="h-100 w-100 rounded-xl opacity-100">
+          <img src="http://static.photos/travel/120x60/14" alt="logo 3" class="h-100 w-100 rounded-xl opacity-100">
+          <img src="http://static.photos/travel/120x60/15" alt="logo 4" class="h-100 w-100 rounded-xl opacity-100">
         </div>
       </div>
     </section>

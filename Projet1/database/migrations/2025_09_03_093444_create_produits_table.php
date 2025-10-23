@@ -16,7 +16,7 @@ return new class extends Migration {
 
             // Colonnes existantes avec uniques
             $table->string('reference_produit', 100)->unique()->after('id');
-            $table->string('nom_produit', 255)->unique()->after('reference_produit');
+            $table->string('nom_produit', 255); //->unique()->after('reference_produit');
             $table->text('description')->nullable()->after('nom_produit');
             $table->integer('stock_minimum')->nullable()->after('description');
             $table->integer('stock_maximum')->nullable()->after('stock_minimum');
