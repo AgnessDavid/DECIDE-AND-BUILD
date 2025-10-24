@@ -75,6 +75,7 @@ class Produit extends Model
         'hauteur_cm' => 'decimal:2',
         'latitude_centre' => 'decimal:7',
         'longitude_centre' => 'decimal:7',
+        
     ];
 
     // ================== RELATIONS ==================

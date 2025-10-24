@@ -68,15 +68,14 @@ class ProduitForm
                             ->columnSpan(2),
 
                         FileUpload::make('photo')
-                            ->label('Photo principale')
-                            ->directory('produits') // utilise storage/app/public/produits
+                            ->label('Photos du produit')
+                            ->directory('produits')
                             ->disk('public')
                             ->image()
-                            ->multiple()
-                            ->maxFiles(10)
                             ->maxSize(10240)
                             ->reorderable()
                             ->columnSpanFull()
+                            ->storeFileNamesIn('photo_names'), // Stocke les noms dans une colonne séparée
                     ])
                     ->columns(4),
 

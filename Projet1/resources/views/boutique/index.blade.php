@@ -110,7 +110,7 @@
         <div class="p-4 border-t">
             <div class="flex items-center justify-between mb-3">
                 <span class="text-gray-600">Sous-total</span>
-                <span id="cartSubtotal" class="font-semibold">€0.00</span>
+                <span id="cartSubtotal" class="font-semibold"> FCFA  </span>
             </div>
             <div class="flex gap-2">
                 <a href="{{ route('panier') }}" class="flex-1 text-center py-2 border border-gray-200 rounded hover:bg-gray-50">Voir le panier</a>
@@ -227,7 +227,7 @@
             @foreach($produits as $produit)
       <div class="bg-white rounded-lg overflow-hidden shadow-md transition-all card-hover" data-aos="fade-up">
     <div class="relative">
-     <img src="{{ asset('storage/' . $produit->photo) }}"  class="h-8 w-auto alt="{{ $produit->nom_produit }}">
+     <img src="{{ asset('storage/' . $produit->photo) }}"  class="h-100 w-auto alt="{{ $produit->nom_produit }}">
 
 
         @if($produit->est_en_promotion && $produit->prix_promotion)
@@ -244,17 +244,53 @@
     <div class="p-4">
         <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ $produit->nom_produit }}</h3>
         <p class="text-sm text-gray-600 mb-2">{{ $produit->description }}</p>
+        
+        
+    @php
+    $stock = $produit->stock_actuel;
+    $stockMin = $produit->stock_minimum ?? 5; // valeur par défaut si non définie
+    @endphp
 
+    <p class="text-sm mb-2">
+    @if ($stock <= 0)
+        <span class="text-red-600 font-semibold">Rupture de stock</span>
+    @elseif ($stock <= $stockMin)
+        <span class="text-orange-500 font-semibold">Stock faible :  restant{{ $stock > 1 ? 's' : '' }}  {{ $stock }} </span>
+    @else
+        <span class="text-green-600 font-semibold"> Article{{ $stock > 1 ? 's' : '' }} disponible{{ $stock > 1 ? 's' : '' }} {{ $stock }}</span>
+    @endif
+    </p>
+       
+        <p class="text-sm mb-2">
+        @if ($produit->disponible)
+        <span class="text-green-600 font-semibold">Disponible</span>
+     @else
+        <span class="text-red-600 font-semibold">Indisponible</span>
+    @endif
+    </p>
+        
+    
+    
+        <p class="text-sm text-gray-600 mb-2"> Nombre de vue  {{ $produit->nombre_vues }}</p>
+        
+        
+        
+        <p class="text-sm text-gray-600 mb-2"> Nombre de vente {{ $produit->nombre_ventes }}</p>
+       
+       
+       
+       
         <div class="flex justify-between items-center">
+          
             <div>
                 @php
                     $prixAffiche = ($produit->est_en_promotion && $produit->prix_promotion) 
                                    ? $produit->prix_promotion 
                                    : $produit->prix_unitaire_ht;
                 @endphp
-                <span class="text-lg font-bold text-blue-600">€{{ $prixAffiche }}</span>
+                <span class="text-lg font-bold text-blue-600">{{ $prixAffiche }} FCFA </span>
                 @if($produit->est_en_promotion && $produit->prix_promotion)
-                    <span class="text-sm text-gray-500 line-through ml-2">€{{ $produit->prix_unitaire_ht }}</span>
+                    <span class="text-sm text-gray-500 line-through ml-2"> {{ $produit->prix_unitaire_ht }} FCFA </span>
                 @endif
             </div>
 
