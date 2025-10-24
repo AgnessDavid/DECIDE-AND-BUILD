@@ -29,8 +29,11 @@ require __DIR__ . '/auth.php'; // routes Filament / admin
 
 // Page d'accueil
 Route::get('/', function () {
-    return view('index');
+    return view('accueil');
 })->name('accueil');
+
+Route::get('/', [BoutiqueController::class, 'landing'])->name('accueil');
+
 
 // ------------------------
 // Boutique / Produits

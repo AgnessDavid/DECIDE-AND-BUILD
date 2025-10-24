@@ -831,4 +831,4 @@
   </script>
 </body>
 </html>
-<?php /**PATH /home/agnessdavid/workspace/LARAVEL/DECIDE AND BUILD/Projet1/resources/views/index.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/agnessdavid/workspace/LARAVEL/DECIDE AND BUILD/Projet1/resources/views/accueil.blade.php ENDPATH**/ ?>

@@ -29,6 +29,7 @@ class BoutiqueController extends Controller
             }
         }
 
+   
         // Pagination
         $produits = $query->paginate(12)->withQueryString();
 
@@ -36,6 +37,16 @@ class BoutiqueController extends Controller
     }
 
 
+
+/* Pour la landing page */ 
+
+    public function landing()
+    {
+        // Récupérer les 3 derniers produits
+        $produits = Produit::latest()->take(5)->get();
+
+        return view('accueil', compact('produits'));
+    }
 
 
 }
