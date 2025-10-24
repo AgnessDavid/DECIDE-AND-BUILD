@@ -35,8 +35,10 @@ Route::get('/', function () {
 // ------------------------
 // Boutique / Produits
 // ------------------------
+
 Route::get('/boutique', [ProduitController::class, 'index'])->name('boutique');
 Route::get('/boutique', [BoutiqueController::class, 'index'])->name('boutique');
+
 Route::get('/boutique/{slug}', [ProduitController::class, 'show'])->name('produit.show');
 Route::get('/recherche', [App\Http\Controllers\BoutiqueController::class, 'resultat'])->name('resultat');
 

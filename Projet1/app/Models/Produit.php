@@ -220,6 +220,55 @@ class Produit extends Model
         ]));
     }
 
+
+
+    // Dans Produit.php
+
+    // Stock coloré
+    public function getStockLabelAttribute(): string
+    {
+        if ($this->stock_actuel <= 0) {
+            return 'Rupture de stock';
+        } elseif ($this->stock_actuel <= ($this->stock_minimum ?? 5)) {
+            return "Stock faible : {$this->stock_actuel} restant(s)";
+        }
+        return "{$this->stock_actuel} article(s) disponible(s)";
+    }
+
+    public function getStockColorAttribute(): string
+    {
+        if ($this->stock_actuel <= 0) {
+            return 'text-red-600';
+        } elseif ($this->stock_actuel <= ($this->stock_minimum ?? 5)) {
+            return 'text-orange-500';
+        }
+        return 'text-green-600';
+    }
+
+    // Vues et ventes
+    public function getVuesLabelAttribute(): string
+    {
+        return "{$this->nombre_vues} vue(s)";
+    }
+
+    public function getVentesLabelAttribute(): string
+    {
+        return "{$this->nombre_ventes} vente(s)";
+    }
+
+    /*
+    // Dans Produit.php
+    public function getEtatConservationColorAttribute(): string
+    {
+        return match ($this->etat_conservation) {
+            1 => 'text-green-600',   // Bon état
+            2 => 'text-orange-500',  // État moyen
+            3 => 'text-red-600',     // Mauvais état
+            default => 'text-gray-500',
+        };
+    }
+
+*/
     // ================== MÉTHODES ==================
 
     public function incrementerVues(): void

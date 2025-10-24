@@ -53,4 +53,41 @@ class ProduitController extends Controller
 
         return back()->with('success', "{$produit->nom_produit} ajouté au panier.");
     }
+
+
+
+
+    public function show($id)
+    {
+        $produit = Produit::findOrFail($id);
+
+        // Empêche de compter plusieurs fois une même vue pendant la session
+        if (!session()->has('produit_vu_' . $id)) {
+            $produit->increment('nombre_vues');
+            session(['produit_vu_' . $id => true]);
+        }
+
+        return view('boutique.index', compact('produit'));
+    }
+
+    public function acheter($id, $quantite = 1)
+    {
+        $produit = Produit::findOrFail($id);
+
+        if ($produit->stock_actuel < $quantite) {
+            return redirect()->back()->with('error', 'Stock insuffisant pour ce produit.');
+        }
+
+        // Incrémente le nombre de ventes
+        $produit->increment('nombre_ventes', $quantite);
+
+        // Décrémente le stock
+        $produit->decrement('stock_actuel', $quantite);
+
+        return redirect()->back()->with('success', 'Merci pour votre achat !');
+    }
+
+
+
+
 }

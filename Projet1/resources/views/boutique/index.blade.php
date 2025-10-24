@@ -245,40 +245,41 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ $produit->nom_produit }}</h3>
         <p class="text-sm text-gray-600 mb-2">{{ $produit->description }}</p>
         
-        
-    @php
-    $stock = $produit->stock_actuel;
-    $stockMin = $produit->stock_minimum ?? 5; // valeur par défaut si non définie
-    @endphp
-
-    <p class="text-sm mb-2">
-    @if ($stock <= 0)
-        <span class="text-red-600 font-semibold">Rupture de stock</span>
-    @elseif ($stock <= $stockMin)
-        <span class="text-orange-500 font-semibold">Stock faible :  restant{{ $stock > 1 ? 's' : '' }}  {{ $stock }} </span>
-    @else
-        <span class="text-green-600 font-semibold"> Article{{ $stock > 1 ? 's' : '' }} disponible{{ $stock > 1 ? 's' : '' }} {{ $stock }}</span>
-    @endif
-    </p>
-       
+    <div class="container">
+        @php
+        $stock = $produit->stock_actuel;
+        $stockMin = $produit->stock_minimum ?? 5; // valeur par défaut si non définie
+        @endphp
+    
         <p class="text-sm mb-2">
-        @if ($produit->disponible)
-        <span class="text-green-600 font-semibold">Disponible</span>
-     @else
-        <span class="text-red-600 font-semibold">Indisponible</span>
-    @endif
-    </p>
+        @if ($stock <= 0)
+            <span class="text-red-600 font-semibold">Rupture de stock</span>
+        @elseif ($stock <= $stockMin)
+            <span class="text-orange-500 font-semibold">Stock faible :  restant{{ $stock > 1 ? 's' : '' }}  {{ $stock }} </span>
+        @else
+            <span class="text-green-600 font-semibold"> Article{{ $stock > 1 ? 's' : '' }} disponible{{ $stock > 1 ? 's' : '' }} {{ $stock }}</span>
+        @endif
+        </p>
         
+        
+            {{-- Vues --}}
+            <p class="text-sm text-gray-600 mb-2">
+                 <span class="font-semibold">{{ $produit->vues_label }}</span>
+            </p>
     
+            {{-- Ventes --}}
+            <p class="text-sm text-gray-600 mb-4">
+                 <span class="font-semibold">{{ $produit->ventes_label }}</span>
+            </p>
+           
     
-        <p class="text-sm text-gray-600 mb-2"> Nombre de vue  {{ $produit->nombre_vues }}</p>
-        
-        
-        
-        <p class="text-sm text-gray-600 mb-2"> Nombre de vente {{ $produit->nombre_ventes }}</p>
+            <p>État de conservation : {{ $produit->etat_conservation }}</p>
+    
+    </div>    
        
-       
-       
+
+
+
        
         <div class="flex justify-between items-center">
           
@@ -303,6 +304,8 @@
             </form>
         </div>
     </div>
+
+    
 </div>
 
             @endforeach

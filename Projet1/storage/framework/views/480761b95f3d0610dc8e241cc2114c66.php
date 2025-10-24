@@ -247,40 +247,41 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-1"><?php echo e($produit->nom_produit); ?></h3>
         <p class="text-sm text-gray-600 mb-2"><?php echo e($produit->description); ?></p>
         
-        
-    <?php
-    $stock = $produit->stock_actuel;
-    $stockMin = $produit->stock_minimum ?? 5; // valeur par défaut si non définie
-    ?>
-
-    <p class="text-sm mb-2">
-    <?php if($stock <= 0): ?>
-        <span class="text-red-600 font-semibold">Rupture de stock</span>
-    <?php elseif($stock <= $stockMin): ?>
-        <span class="text-orange-500 font-semibold">Stock faible :  restant<?php echo e($stock > 1 ? 's' : ''); ?>  <?php echo e($stock); ?> </span>
-    <?php else: ?>
-        <span class="text-green-600 font-semibold"> Article<?php echo e($stock > 1 ? 's' : ''); ?> disponible<?php echo e($stock > 1 ? 's' : ''); ?> <?php echo e($stock); ?></span>
-    <?php endif; ?>
-    </p>
-       
+    <div class="container">
+        <?php
+        $stock = $produit->stock_actuel;
+        $stockMin = $produit->stock_minimum ?? 5; // valeur par défaut si non définie
+        ?>
+    
         <p class="text-sm mb-2">
-        <?php if($produit->disponible): ?>
-        <span class="text-green-600 font-semibold">Disponible</span>
-     <?php else: ?>
-        <span class="text-red-600 font-semibold">Indisponible</span>
-    <?php endif; ?>
-    </p>
+        <?php if($stock <= 0): ?>
+            <span class="text-red-600 font-semibold">Rupture de stock</span>
+        <?php elseif($stock <= $stockMin): ?>
+            <span class="text-orange-500 font-semibold">Stock faible :  restant<?php echo e($stock > 1 ? 's' : ''); ?>  <?php echo e($stock); ?> </span>
+        <?php else: ?>
+            <span class="text-green-600 font-semibold"> Article<?php echo e($stock > 1 ? 's' : ''); ?> disponible<?php echo e($stock > 1 ? 's' : ''); ?> <?php echo e($stock); ?></span>
+        <?php endif; ?>
+        </p>
         
+        
+            
+            <p class="text-sm text-gray-600 mb-2">
+                 <span class="font-semibold"><?php echo e($produit->vues_label); ?></span>
+            </p>
     
+            
+            <p class="text-sm text-gray-600 mb-4">
+                 <span class="font-semibold"><?php echo e($produit->ventes_label); ?></span>
+            </p>
+           
     
-        <p class="text-sm text-gray-600 mb-2"> Nombre de vue  <?php echo e($produit->nombre_vues); ?></p>
-        
-        
-        
-        <p class="text-sm text-gray-600 mb-2"> Nombre de vente <?php echo e($produit->nombre_ventes); ?></p>
+            <p>État de conservation : <?php echo e($produit->etat_conservation); ?></p>
+    
+    </div>    
        
-       
-       
+
+
+
        
         <div class="flex justify-between items-center">
           
@@ -305,6 +306,8 @@
             </form>
         </div>
     </div>
+
+    
 </div>
 
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
