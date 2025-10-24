@@ -41,6 +41,7 @@ class Produit extends Model
         'orientation',
         'date_creation',
         'auteur',
+        'categorie',
         'editeur',
         'largeur_cm',
         'hauteur_cm',
@@ -266,4 +267,10 @@ class Produit extends Model
     {
         return $this->photo ? Storage::url($this->photo) : null;
     }
+
+
+
+
+
+    
 }

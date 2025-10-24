@@ -18,6 +18,7 @@ return new class extends Migration {
 
             // ✅ Nouvelle colonne produit_non_disponible
             $table->boolean('produit_non_disponible')->default(false)->after('disponible')->index();
+            $table->text('notes_conservation')->nullable()->after('etat_conservation');
 
             // --- Prix et taxes ---
             $table->decimal('prix_unitaire_ttc', 10, 2)->default(0)->after('produit_non_disponible')->index();

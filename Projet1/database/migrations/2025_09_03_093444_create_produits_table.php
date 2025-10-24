@@ -33,8 +33,8 @@ return new class extends Migration {
             $table->string('auteur', 255)->nullable();
             $table->string('symbole', 100)->nullable();
             $table->string('type_element', 50)->nullable()->index();
-            $table->decimal('latitude', 10, 7);
-            $table->decimal('longitude', 10, 7);
+            $table->decimal('latitude', 10, 7)->default(0)->change();
+            $table->decimal('longitude', 10, 7)->default(0)->change();
             $table->string('nom_zone', 255)->nullable()->index();
             $table->string('type_zone', 50)->nullable()->index();
 

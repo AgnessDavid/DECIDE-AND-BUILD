@@ -38,17 +38,17 @@
     <div class=" mx-10 px-4">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center gap-6">
-          <a href="{{ route('accueil') }}" class="flex  items-center">
-               <img src="{{ asset('images/bnetd_logo.svg') }}" alt="Cartologue" class="h-8 m-5 w-auto">
-               <img src="{{ asset('images/bnetd_logo.svg') }}" alt="Cartologue" class="h-8 w-auto">
+          <a href="<?php echo e(route('accueil')); ?>" class="flex  items-center">
+               <img src="<?php echo e(asset('images/bnetd_logo.svg')); ?>" alt="Cartologue" class="h-8 m-5 w-auto">
+               <img src="<?php echo e(asset('images/bnetd_logo.svg')); ?>" alt="Cartologue" class="h-8 w-auto">
           </a>
 
           <!-- Main nav (desktop) -->
           <nav class="hidden md:flex items-center gap-3">
-            <a href="{{ route('accueil') }}" class="py-2 px-3 text-blue-600 border-b-2 border-blue-600 font-semibold">Accueil</a>
-            <a href="{{ route('boutique') }}" class="py-2 px-3 hover:text-blue-600">Boutique</a>
-           <!-- <a href="{{ route('panier') }}" class="py-2 px-3 hover:text-blue-600">Panier</a> --> 
-            <a href="{{ route('contact') }}" class="py-2 px-3 hover:text-blue-600">Contact</a>
+            <a href="<?php echo e(route('accueil')); ?>" class="py-2 px-3 text-blue-600 border-b-2 border-blue-600 font-semibold">Accueil</a>
+            <a href="<?php echo e(route('boutique')); ?>" class="py-2 px-3 hover:text-blue-600">Boutique</a>
+           <!-- <a href="<?php echo e(route('panier')); ?>" class="py-2 px-3 hover:text-blue-600">Panier</a> --> 
+            <a href="<?php echo e(route('contact')); ?>" class="py-2 px-3 hover:text-blue-600">Contact</a>
           </nav>
         </div>
 
@@ -72,47 +72,48 @@
      <div class="flex items-center gap-3">
           <div class="hidden md:flex items-center gap-2">
 
-@auth
+<?php if(auth()->guard()->check()): ?>
     <div class="relative group">
         <button class="flex items-center space-x-2 px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
-            @if(Auth::user()->avatar)
-                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" 
+            <?php if(Auth::user()->avatar): ?>
+                <img src="<?php echo e(asset('storage/' . Auth::user()->avatar)); ?>" 
                      class="w-6 h-6 rounded-full" 
-                     alt="{{ Auth::user()->name }}">
-            @else
+                     alt="<?php echo e(Auth::user()->name); ?>">
+            <?php else: ?>
                 <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+                    <?php echo e(substr(Auth::user()->name, 0, 1)); ?>
+
                 </div>
-            @endif
-            <span>{{ Auth::user()->name ?? 'Client' }}</span>
+            <?php endif; ?>
+            <span><?php echo e(Auth::user()->name ?? 'Client'); ?></span>
         </button>
         
         <!-- Menu déroulant -->
         <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <a href="<?php echo e(route('profile.edit')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 Mon profil
             </a>
-            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 Tableau de bord
             </a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t">
                     Déconnexion
                 </button>
             </form>
         </div>
     </div>
-@else
-    <a href="{{ route('login') }}" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
+<?php else: ?>
+    <a href="<?php echo e(route('login')); ?>" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
         Connexion
     </a>
-  <!-- <a href="{{ route('register') }}" class="px-3 py-1 bg-blue-500 text-white hover:bg-blue-600 rounded ml-2">
+  <!-- <a href="<?php echo e(route('register')); ?>" class="px-3 py-1 bg-blue-500 text-white hover:bg-blue-600 rounded ml-2">
         Inscription
     </a> -->
-@endauth
+<?php endif; ?>
 
-          <!--  <a href="{{ route('register') }}" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a> -->
+          <!--  <a href="<?php echo e(route('register')); ?>" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a> -->
           </div>
 
 
@@ -138,10 +139,10 @@
     <!-- mobile menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
       <div class="px-4 py-3 flex flex-col gap-2">
-        <a href="{{ route('accueil') }}" class="py-2">Accueil</a>
-        <a href="{{ route('boutique') }}" class="py-2">Boutique</a>
-        <a href="{{ route('panier') }}" class="py-2">Panier</a>
-        <a href="{{ route('contact') }}" class="py-2">Contact</a>
+        <a href="<?php echo e(route('accueil')); ?>" class="py-2">Accueil</a>
+        <a href="<?php echo e(route('boutique')); ?>" class="py-2">Boutique</a>
+        <a href="<?php echo e(route('panier')); ?>" class="py-2">Panier</a>
+        <a href="<?php echo e(route('contact')); ?>" class="py-2">Contact</a>
       </div>
     </div>
   </header>
@@ -165,8 +166,8 @@
           <span id="cartSubtotal" class="font-semibold">€0.00</span>
         </div>
         <div class="flex gap-2">
-          <a href="{{ route('panier') }}" class="flex-1 text-center py-2 border border-gray-200 rounded hover:bg-gray-50">Voir le panier</a>
-          <a href="{{ route('panier') }}" class="flex-1 text-center py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Passer à la caisse</a>
+          <a href="<?php echo e(route('panier')); ?>" class="flex-1 text-center py-2 border border-gray-200 rounded hover:bg-gray-50">Voir le panier</a>
+          <a href="<?php echo e(route('panier')); ?>" class="flex-1 text-center py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Passer à la caisse</a>
         </div>
       </div>
     </div>
@@ -180,13 +181,13 @@
   <div id="animation-carousel" class="relative w-full" data-carousel="static">
     <div class="relative h-[500px] overflow-hidden md:h-[500px]">
       <div class="hidden duration-200 ease-linear" data-carousel-item>
-        <img src="{{ asset('images/photo1.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 1">
+        <img src="<?php echo e(asset('images/photo1.jpg')); ?>" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 1">
       </div>
       <div class="hidden duration-200 ease-linear" data-carousel-item="active">
-        <img src="{{ asset('images/photo2.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 2">
+        <img src="<?php echo e(asset('images/photo2.jpg')); ?>" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 2">
       </div>
       <div class="hidden duration-200 ease-linear" data-carousel-item>
-        <img src="{{ asset('images/photo3.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 3">
+        <img src="<?php echo e(asset('images/photo3.jpg')); ?>" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="Image 3">
       </div>
     </div>
 
@@ -221,8 +222,8 @@
             <h1 class="text-4xl md:text-5xl font-bold mb-4">Explorez le monde à travers nos cartes</h1>
             <p class="text-lg mb-6 text-gray-100">Collections anciennes, topographiques, modernes et personnalisées — chaque carte raconte une histoire.</p>
             <div class="flex gap-3">
-              <a href="{{ route('boutique') }}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">Vister la cartothèque</a>
-              <a href="{{ route('contact') }}" class="border-2 border-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-600">Nous contacter</a>
+              <a href="<?php echo e(route('boutique')); ?>" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">Vister la cartothèque</a>
+              <a href="<?php echo e(route('contact')); ?>" class="border-2 border-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-600">Nous contacter</a>
             </div>
           </div>
          <div id="default-carousel" class="relative w-full" data-carousel="slide">
@@ -230,15 +231,15 @@
     <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
         <!-- Item 1 -->
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="{{ asset('images/photo1.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            <img src="<?php echo e(asset('images/photo1.jpg')); ?>" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
         </div>
         <!-- Item 2 -->
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="{{ asset('images/photo1.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            <img src="<?php echo e(asset('images/photo1.jpg')); ?>" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
         </div>
         <!-- Item 3 -->
         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-            <img src="{{ asset('images/photo1.jpg') }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            <img src="<?php echo e(asset('images/photo1.jpg')); ?>" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
         </div>
     </div>
     <!-- Slider indicators -->
@@ -287,7 +288,7 @@
               <div>
                 <h3 class="text-xl font-bold">-30% sur la sélection vintage</h3>
                 <p class="mt-2">Sélection limitée — reproduction d'anciennes cartes.</p>
-                <a href="{{ route('boutique') }}" class="inline-block mt-4 px-4 py-2 bg-white text-blue-600 rounded">J'en profite</a>
+                <a href="<?php echo e(route('boutique')); ?>" class="inline-block mt-4 px-4 py-2 bg-white text-blue-600 rounded">J'en profite</a>
               </div>
               <img src="http://static.photos/travel/320x200/2" alt="Promo vintage" class="hidden md:block w-40 rounded">
             </div>
@@ -297,7 +298,7 @@
               <div>
                 <h3 class="text-xl font-bold text-indigo-700">Nouvelles cartes personnalisées</h3>
                 <p class="mt-2 text-gray-600">Créez une carte unique pour offrir ou décorer.</p>
-                <a href="{{ route('boutique') }}" class="inline-block mt-4 px-4 py-2 bg-indigo-700 text-white rounded">Créer ma carte</a>
+                <a href="<?php echo e(route('boutique')); ?>" class="inline-block mt-4 px-4 py-2 bg-indigo-700 text-white rounded">Créer ma carte</a>
               </div>
               <img src="http://static.photos/travel/320x200/3" alt="Custom" class="hidden md:block w-40 rounded">
             </div>
@@ -307,7 +308,7 @@
               <div>
                 <h3 class="text-xl font-bold text-yellow-700">Livraison express 24h</h3>
                 <p class="mt-2 text-gray-600">Pour la France métropolitaine — emballage premium inclus.</p>
-                <a href="{{ route('contact') }}" class="inline-block mt-4 px-4 py-2 bg-yellow-500 text-white rounded">Plus d'infos</a>
+                <a href="<?php echo e(route('contact')); ?>" class="inline-block mt-4 px-4 py-2 bg-yellow-500 text-white rounded">Plus d'infos</a>
               </div>
               <img src="http://static.photos/travel/320x200/4" alt="Delivery" class="hidden md:block w-40 rounded">
             </div>
@@ -326,7 +327,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Cat 1 -->
-          <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up">
+          <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up">
             <img src="http://static.photos/travel/640x360/8" alt="Anciennes" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Cartes Routières</h3>
@@ -339,7 +340,7 @@
           </a>
 
           <!-- Cat 2 -->
-          <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="100">
+          <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="100">
             <img src="http://static.photos/travel/640x360/9" alt="Topographiques" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Cartes Administratifs</h3>
@@ -351,7 +352,7 @@
           </a>
 
           <!-- Cat 3 -->
-          <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="200">
+          <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="200">
             <img src="http://static.photos/travel/640x360/10" alt="Modernes" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Cartes Agricoles</h3>
@@ -363,7 +364,7 @@
           </a>
 
           <!-- Cat 4 -->
-          <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="300">
+          <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="300">
             <img src="http://static.photos/travel/640x360/11" alt="Personnalisées" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Cartes Minières</h3>
@@ -374,7 +375,7 @@
             </div>
           </a>
 
-   <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up">
+   <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up">
             <img src="http://static.photos/travel/640x360/8" alt="Anciennes" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Cartes Touristiques</h3>
@@ -388,7 +389,7 @@
           </a>
 
           <!-- Cat 2 -->
-          <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="100">
+          <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="100">
             <img src="http://static.photos/travel/640x360/9" alt="Topographiques" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Cartes Urbaines</h3>
@@ -400,7 +401,7 @@
           </a>
 
           <!-- Cat 3 -->
-          <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="200">
+          <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="200">
             <img src="http://static.photos/travel/640x360/10" alt="Modernes" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Cartes Universitaires</h3>
@@ -412,7 +413,7 @@
           </a>
 
           <!-- Cat 4 -->
-          <a href="{{ route('boutique') }}" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="300">
+          <a href="<?php echo e(route('boutique')); ?>" class="block bg-white rounded-lg overflow-hidden card-hover transition-all" data-aos="fade-up" data-aos-delay="300">
             <img src="http://static.photos/travel/640x360/11" alt="Personnalisées" class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold">Carte Topographiques</h3>
@@ -435,7 +436,7 @@
         <!-- breadcrumb -->
         <nav class="text-sm text-gray-500 mb-4" aria-label="breadcrumb">
           <ol class="list-reset flex">
-            <li><a href="{{ route('accueil') }}" class="hover:underline">Accueil</a></li>
+            <li><a href="<?php echo e(route('accueil')); ?>" class="hover:underline">Accueil</a></li>
             <li><span class="mx-2">/</span></li>
             <li class="text-gray-700">Cartes populaires</li>
           </ol>
@@ -443,7 +444,7 @@
 
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-bold">Nos cartes populaires</h2>
-          <a href="{{ route('boutique') }}" class="text-blue-600 hover:underline">Voir tout</a>
+          <a href="<?php echo e(route('boutique')); ?>" class="text-blue-600 hover:underline">Voir tout</a>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -624,7 +625,7 @@
     <footer class="bg-gray-900 text-gray-300 py-12">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
-          <img src="{{ asset('images/bnetd_logo.svg') }}" alt="Cartologue" class="h-8 w-auto">
+          <img src="<?php echo e(asset('images/bnetd_logo.svg')); ?>" alt="Cartologue" class="h-8 w-auto">
           <p class="text-sm">Boutique en ligne de cartes anciennes, topographiques et personnalisées.</p>
           <div class="mt-4 flex gap-2">
             <img src="http://static.photos/travel/60x40/visa" alt="visa" class="h-20">
@@ -636,8 +637,8 @@
         <div>
           <h5 class="text-white font-semibold mb-2">Navigation</h5>
           <ul class="space-y-2 text-sm">
-            <li><a href="{{ route('boutique') }}" class="hover:underline">Boutique</a></li>
-            <li><a href="{{ route('contact') }}" class="hover:underline">Contact</a></li>
+            <li><a href="<?php echo e(route('boutique')); ?>" class="hover:underline">Boutique</a></li>
+            <li><a href="<?php echo e(route('contact')); ?>" class="hover:underline">Contact</a></li>
             <li><a href="#" class="hover:underline">FAQ</a></li>
             <li><a href="#" class="hover:underline">Blog</a></li>
           </ul>
@@ -844,3 +845,4 @@
   </script>
 </body>
 </html>
+<?php /**PATH /home/agnessdavid/workspace/LARAVEL/DECIDE AND BUILD/Projet1/resources/views/index.blade.php ENDPATH**/ ?>
