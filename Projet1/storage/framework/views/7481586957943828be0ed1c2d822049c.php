@@ -32,16 +32,16 @@
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-6">
-                    <a href="{{ route('accueil') }}" class="flex items-center">
+                    <a href="<?php echo e(route('accueil')); ?>" class="flex items-center">
                         <span class="text-2xl font-semibold text-gray-700">Cartologue</span>
                     </a>
 
                     <!-- Main nav (desktop) -->
                     <nav class="hidden md:flex items-center gap-3">
-                        <a href="{{ route('accueil') }}" class="py-2 px-3 text-blue-600 border-b-2 border-blue-600 font-semibold">Accueil</a>
-                        <a href="{{ route('boutique') }}" class="py-2 px-3 hover:text-blue-600">Boutique</a>
-                        <a href="{{ route('panier') }}" class="py-2 px-3 hover:text-blue-600">Panier</a>
-                        <a href="{{ route('contact') }}" class="py-2 px-3 hover:text-blue-600">Contact</a>
+                        <a href="<?php echo e(route('accueil')); ?>" class="py-2 px-3 text-blue-600 border-b-2 border-blue-600 font-semibold">Accueil</a>
+                        <a href="<?php echo e(route('boutique')); ?>" class="py-2 px-3 hover:text-blue-600">Boutique</a>
+                        <a href="<?php echo e(route('panier')); ?>" class="py-2 px-3 hover:text-blue-600">Panier</a>
+                        <a href="<?php echo e(route('contact')); ?>" class="py-2 px-3 hover:text-blue-600">Contact</a>
                     </nav>
                 </div>
 
@@ -58,39 +58,40 @@
                 <!-- Right actions -->
            
 
-@auth
+<?php if(auth()->guard()->check()): ?>
     <div class="relative group">
         <button class="flex items-center space-x-2 px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
-            @if(Auth::user()->avatar)
-                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" 
+            <?php if(Auth::user()->avatar): ?>
+                <img src="<?php echo e(asset('storage/' . Auth::user()->avatar)); ?>" 
                      class="w-6 h-6 rounded-full" 
-                     alt="{{ Auth::user()->name }}">
-            @else
+                     alt="<?php echo e(Auth::user()->name); ?>">
+            <?php else: ?>
                 <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+                    <?php echo e(substr(Auth::user()->name, 0, 1)); ?>
+
                 </div>
-            @endif
-            <span>{{ Auth::user()->name ?? 'Client' }}</span>
+            <?php endif; ?>
+            <span><?php echo e(Auth::user()->name ?? 'Client'); ?></span>
         </button>
         
         <!-- Menu déroulant -->
         <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <a href="<?php echo e(route('profile.edit')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 Mon profil
             </a>
-            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 Tableau de bord
             </a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t">
                     Déconnexion
                 </button>
             </form>
         </div>
     </div>
-@else
-@endauth
+<?php else: ?>
+<?php endif; ?>
 
 
 
@@ -113,10 +114,10 @@
         <!-- mobile menu -->
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
             <div class="px-4 py-3 flex flex-col gap-2">
-                <a href="{{ route('accueil') }}" class="py-2">Accueil</a>
-                <a href="{{ route('boutique') }}" class="py-2">Boutique</a>
-                <a href="{{ route('panier') }}" class="py-2">Panier</a>
-                <a href="{{ route('contact') }}" class="py-2">Contact</a>
+                <a href="<?php echo e(route('accueil')); ?>" class="py-2">Accueil</a>
+                <a href="<?php echo e(route('boutique')); ?>" class="py-2">Boutique</a>
+                <a href="<?php echo e(route('panier')); ?>" class="py-2">Panier</a>
+                <a href="<?php echo e(route('contact')); ?>" class="py-2">Contact</a>
             </div>
         </div>
     </header>
@@ -139,25 +140,26 @@
                     <span id="cartSubtotal" class="font-semibold">€0.00</span>
                 </div>
                 <div class="flex gap-2">
-                    <a href="{{ route('panier') }}" class="flex-1 text-center py-2 border border-gray-200 rounded hover:bg-gray-50">Voir le panier</a>
-                    <a href="{{ route('panier') }}" class="flex-1 text-center py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Passer à la caisse</a>
+                    <a href="<?php echo e(route('panier')); ?>" class="flex-1 text-center py-2 border border-gray-200 rounded hover:bg-gray-50">Voir le panier</a>
+                    <a href="<?php echo e(route('panier')); ?>" class="flex-1 text-center py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Passer à la caisse</a>
                 </div>
             </div>
         </div>
     </aside>
 
 
-@if(session('success') || session('error'))
-    @php
+<?php if(session('success') || session('error')): ?>
+    <?php
         $type = session('success') ? 'success' : 'error';
         $bg = $type === 'success' ? 'bg-green-500' : 'bg-red-500';
-    @endphp
-    <div id="flashMessage" class="fixed top-16 left-1/2 transform -translate-x-1/2 {{ $bg }} text-white px-6 py-3 rounded shadow-lg z-50">
-        <i data-feather="{{ $type === 'success' ? 'check-circle' : 'alert-circle' }}" class="inline w-5 h-5 mr-2"></i>
-        {{ session($type) }}
+    ?>
+    <div id="flashMessage" class="fixed top-16 left-1/2 transform -translate-x-1/2 <?php echo e($bg); ?> text-white px-6 py-3 rounded shadow-lg z-50">
+        <i data-feather="<?php echo e($type === 'success' ? 'check-circle' : 'alert-circle'); ?>" class="inline w-5 h-5 mr-2"></i>
+        <?php echo e(session($type)); ?>
+
         <button onclick="document.getElementById('flashMessage').remove()" class="ml-4 text-white hover:text-gray-200 font-bold">&times;</button>
     </div>
-@endif
+<?php endif; ?>
 
 
     <!-- Cart Header -->
@@ -188,45 +190,45 @@
                             </div>
                         </div>
 
-                        @php $total = 0; @endphp
-                        @foreach($commande->produits as $produit)
-                            @php
+                        <?php $total = 0; ?>
+                        <?php $__currentLoopData = $commande->produits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $produit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
                                 $ligne = $produit->pivot;
                                 $sousTotal = $ligne->quantite * $produit->prix_unitaire_ht;
                                 $total += $sousTotal;
-                            @endphp
+                            ?>
 
                             <div class="p-4 md:p-6 border-b border-gray-200">
                                 <div class="flex flex-col md:flex-row md:items-center">
                                     <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                                        <img src="{{ asset($produit->photo) }}" alt="{{ $produit->nom_produit }}" class="w-20 h-20 object-cover rounded">
+                                        <img src="<?php echo e(asset($produit->photo)); ?>" alt="<?php echo e($produit->nom_produit); ?>" class="w-20 h-20 object-cover rounded">
                                     </div>
                                     <div class="flex-grow md:grid md:grid-cols-12 md:gap-4">
                                         <div class="md:col-span-5 mb-2 md:mb-0">
-                                            <h3 class="font-semibold text-gray-800">{{ $produit->nom_produit }}</h3>
-                                            <p class="text-sm text-gray-600">{{ $produit->description }}</p>
+                                            <h3 class="font-semibold text-gray-800"><?php echo e($produit->nom_produit); ?></h3>
+                                            <p class="text-sm text-gray-600"><?php echo e($produit->description); ?></p>
                                         </div>
                                         <div class="md:col-span-2 flex items-center justify-center">
-                                            <span class="text-gray-700">€{{ number_format($produit->prix_unitaire_ht, 2) }}</span>
+                                            <span class="text-gray-700">€<?php echo e(number_format($produit->prix_unitaire_ht, 2)); ?></span>
                                         </div>
                                         <div class="md:col-span-2 flex items-center justify-center">
                                             <div class="flex items-center border border-gray-300 rounded">
-                                                <form action="{{ route('panier.reduire', ['produit' => $produit->id]) }}" method="POST">@csrf
+                                                <form action="<?php echo e(route('panier.reduire', ['produit' => $produit->id])); ?>" method="POST"><?php echo csrf_field(); ?>
                                                     <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100"><i data-feather="minus" class="w-4 h-4"></i></button>
                                                 </form>
-                                                <span class="px-3 py-1">{{ $ligne->quantite }}</span>
-                                                <form action="{{ route('panier.ajouter', ['produit' => $produit->id]) }}" method="POST">@csrf
+                                                <span class="px-3 py-1"><?php echo e($ligne->quantite); ?></span>
+                                                <form action="<?php echo e(route('panier.ajouter', ['produit' => $produit->id])); ?>" method="POST"><?php echo csrf_field(); ?>
                                                     <button type="submit" class="px-2 py-1 text-gray-600 hover:bg-gray-100"><i data-feather="plus" class="w-4 h-4"></i></button>
                                                 </form>
                                             </div>
                                         </div>
                                         <div class="md:col-span-2 flex items-center justify-end">
-                                            <span class="font-semibold text-gray-800">€{{ number_format($sousTotal, 2) }}</span>
+                                            <span class="font-semibold text-gray-800">€<?php echo e(number_format($sousTotal, 2)); ?></span>
                                         </div>
                                         <div class="md:col-span-1 flex items-center justify-end">
-                                            <form action="{{ route('panier.supprimer', ['produit' => $produit->id]) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
+                                            <form action="<?php echo e(route('panier.supprimer', ['produit' => $produit->id])); ?>" method="POST">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                                 <button type="submit" class="text-red-500 hover:text-red-700">
                                                     <i data-feather="trash-2" class="w-5 h-5"></i>
                                                 </button>
@@ -235,7 +237,7 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
 
 
@@ -245,13 +247,13 @@
       <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="100">
         <h2 class="text-xl font-semibold mb-4">Informations du client</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-          <p><span class="font-medium">Nom :</span> {{ auth()->user()->name ?? 'Non renseigné' }}</p>
-          <p><span class="font-medium">Email :</span> {{ auth()->user()->email ?? 'Non renseigné' }}</p>
+          <p><span class="font-medium">Nom :</span> <?php echo e(auth()->user()->name ?? 'Non renseigné'); ?></p>
+          <p><span class="font-medium">Email :</span> <?php echo e(auth()->user()->email ?? 'Non renseigné'); ?></p>
         </div>
       </div>
 
       <!-- Formulaire Livraison / Paiement -->
-      <form action="{{ route('panier.valider') }}" method="POST" class="space-y-6">@csrf
+      <form action="<?php echo e(route('panier.valider')); ?>" method="POST" class="space-y-6"><?php echo csrf_field(); ?>
         
         <!-- Livraison -->
         <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="200">
@@ -259,23 +261,23 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Adresse de livraison</label>
-              <textarea name="adresse_livraison" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Entrez votre adresse complète" required>{{ $livraison->adresse ?? '' }}</textarea>
+              <textarea name="adresse_livraison" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Entrez votre adresse complète" required><?php echo e($livraison->adresse ?? ''); ?></textarea>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
-              <input type="text" name="ville" value="{{ $livraison->ville ?? '' }}" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+              <input type="text" name="ville" value="<?php echo e($livraison->ville ?? ''); ?>" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-              <input type="text" name="numero_tel" value="{{ $livraison->numero_tel ?? '' }}" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+              <input type="text" name="numero_tel" value="<?php echo e($livraison->numero_tel ?? ''); ?>" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
-              <input type="text" name="code_postal" value="{{ $livraison->code_postal ?? '' }}" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
+              <input type="text" name="code_postal" value="<?php echo e($livraison->code_postal ?? ''); ?>" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
             </div>
             <div class="md:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Instructions (optionnel)</label>
-              <textarea name="instructions" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Ex : Laisser le colis à la loge...">{{ $livraison->instructions ?? '' }}</textarea>
+              <textarea name="instructions" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm" placeholder="Ex : Laisser le colis à la loge..."><?php echo e($livraison->instructions ?? ''); ?></textarea>
             </div>
           </div>
         </div>
@@ -284,7 +286,7 @@
         <div class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up" data-aos-delay="300">
           <h2 class="text-xl font-semibold mb-4">Mode de paiement</h2>
           <select name="mode_paiement" id="mode_paiement" required class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-sm">
-            @php
+            <?php
               $paiements = [
                   'Espèces' => [\App\Enums\MoyenPaiement::ESPECES],
                   'Mobile Money' => [
@@ -303,16 +305,17 @@
                       \App\Enums\MoyenPaiement::ETHEREUM,
                   ],
               ];
-            @endphp
-            @foreach($paiements as $categorie => $moyens)
-              <optgroup label="{{ $categorie }}">
-                @foreach($moyens as $moyen)
-                  <option value="{{ $moyen->value }}" {{ ($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : '' }}>
-                    {{ ucwords(str_replace('_', ' ', $moyen->value)) }}
+            ?>
+            <?php $__currentLoopData = $paiements; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $categorie => $moyens): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+              <optgroup label="<?php echo e($categorie); ?>">
+                <?php $__currentLoopData = $moyens; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $moyen): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                  <option value="<?php echo e($moyen->value); ?>" <?php echo e(($paiement->mode_paiement ?? '') === $moyen->value ? 'selected' : ''); ?>>
+                    <?php echo e(ucwords(str_replace('_', ' ', $moyen->value))); ?>
+
                   </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
               </optgroup>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
           </select>
 
           <div class="mt-8">
@@ -339,15 +342,15 @@
         <div class="space-y-4 mb-6">
           <div class="d-flex justify-content-between">
             <span class="text-gray-600">Montant HT</span>
-            <span class="fw-semibold">€{{ number_format($total, 2) }}</span>
+            <span class="fw-semibold">€<?php echo e(number_format($total, 2)); ?></span>
           </div>
           <div class="d-flex justify-content-between">
             <span class="text-gray-600">TVA (18%)</span>
-            <span class="fw-semibold">€{{ number_format($total * 0.18, 2) }}</span>
+            <span class="fw-semibold">€<?php echo e(number_format($total * 0.18, 2)); ?></span>
           </div>
           <div class="d-flex justify-content-between border-top pt-3">
             <span class="fs-5 fw-semibold">Total TTC</span>
-            <span class="fs-5 fw-bold text-primary">€{{ number_format($total * 1.18, 2) }}</span>
+            <span class="fs-5 fw-bold text-primary">€<?php echo e(number_format($total * 1.18, 2)); ?></span>
           </div>
         </div>
       </div>
@@ -488,7 +491,7 @@
 
     // Fonction pour mettre à jour le compteur du panier
     function updateCartCount() {
-        fetch("{{ route('panier.count') }}")
+        fetch("<?php echo e(route('panier.count')); ?>")
             .then(response => response.json())
             .then(data => {
                 const countElem = document.getElementById('cartCount');
@@ -509,7 +512,7 @@
 
             fetch(url, {
                 method: 'POST',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                headers: { 'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>' },
                 body: formData
             })
             .then(response => response.json())
@@ -529,3 +532,4 @@
 
 </body>
 </html>
+<?php /**PATH /home/agnessdavid/workspace/LARAVEL/DECIDE AND BUILD/Projet1/resources/views/panier.blade.php ENDPATH**/ ?>

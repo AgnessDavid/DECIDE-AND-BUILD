@@ -11,6 +11,8 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Feather icons -->
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <!-- Alpine.js (utilisé pour x-data / x-show dans le template) -->
+    <script defer src="https://unpkg.com/alpinejs@3.12.0/dist/cdn.min.js"></script>
 
     <style>
         .hero-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
@@ -50,21 +52,79 @@
             </div>
 
             <!-- Search -->
-            <div class="flex-1 max-w-xl px-4 hidden md:block">
-                <div class="relative">
-                    <input id="searchInput" type="search" placeholder="Rechercher une carte, lieu, époque..." class="w-full rounded-full border border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200" />
-                    <button id="searchBtn" class="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2">
-                        <i data-feather="search" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
+        <div class="flex-1 max-w-xl px-4 hidden md:block">
+    <div class="relative">
+        <input id="searchInput" type="search" placeholder="Rechercher une carte, lieu, époque..."
+               class="w-full rounded-full border border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200" />
 
-            <!-- Right actions -->
-            <div class="flex items-center gap-3">
-                <div class="hidden md:flex items-center gap-2">
-                    <a href="<?php echo e(route('login')); ?>" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Connexion</a>
-                    <a href="<?php echo e(route('register')); ?>" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a>
+        <button id="searchBtn" class="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2">
+            <i data-feather="search" class="w-4 h-4"></i>
+        </button>
+
+        
+        <div id="searchResults" class="absolute z-50 w-full bg-white border rounded mt-1 hidden max-h-64 overflow-auto shadow-lg"></div>
+    </div>
+</div>
+
+
+
+ <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-2">
+
+<?php if(auth()->guard()->check()): ?>
+    <div class="relative group">
+        <button class="flex items-center space-x-2 px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
+            <?php if(Auth::user()->avatar): ?>
+                <img src="<?php echo e(asset('storage/' . Auth::user()->avatar)); ?>" 
+                     class="w-6 h-6 rounded-full" 
+                     alt="<?php echo e(Auth::user()->name); ?>">
+            <?php else: ?>
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
+                    <?php echo e(substr(Auth::user()->name, 0, 1)); ?>
+
                 </div>
+            <?php endif; ?>
+            <span><?php echo e(Auth::user()->name ?? 'Client'); ?></span>
+        </button>
+        
+        <!-- Menu déroulant -->
+        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+            <a href="<?php echo e(route('profile.edit')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Mon profil
+            </a>
+            <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Tableau de bord
+            </a>
+            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t">
+                    Déconnexion
+                </button>
+            </form>
+        </div>
+    </div>
+<?php else: ?>
+
+    <a href="<?php echo e(route('login')); ?>" class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">
+        Connexion
+    </a>
+  <!-- <a href="<?php echo e(route('register')); ?>" class="px-3 py-1 bg-blue-500 text-white hover:bg-blue-600 rounded ml-2">
+        Inscription
+    </a> -->
+<?php endif; ?>
+
+          <!--  <a href="<?php echo e(route('register')); ?>" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Inscription</a> -->
+          </div>
+
+
+          <!-- Mobile menu -->
+          <div class="md:hidden">
+            <button id="mobileBtn" class="p-2 rounded hover:bg-gray-100">
+              <i data-feather="menu" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
 
                 <button id="cartToggle" aria-label="Ouvrir le panier" class="relative p-2 rounded-full hover:bg-gray-100">
     <i data-feather="shopping-cart" class="w-5 h-5 text-gray-700"></i>
@@ -81,6 +141,9 @@
                     </button>
                 </div>
             </div>
+
+
+            
         </div>
     </div>
 
@@ -96,31 +159,26 @@
 </header>
 
 <!-- FLYOUT CART -->
-<aside id="flyoutCart" class="fixed top-0 right-0 h-full w-full md:w-96 bg-whiteshadow-2xl z-60 transform translate-x-full transition-transform duration-300">
-    <div class="flex flex-col h-full">
-        <div class="flex items-center justify-between p-4 border-b">
-            <h3 class="text-lg font-semibold">Panier</h3>
-            <button id="closeCart" class="p-2 rounded hover:bg-gray-100"><i data-feather="x"></i></button>
+<!-- 🛒 ASIDE PANIER (en dehors de la section) -->
+<aside id="panier-aside"
+       class="fixed top-0 right-0 w-80 h-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+    <div class="p-4 flex flex-col h-full">
+        <div class="flex items-center justify-between border-b pb-3">
+            <h3 class="text-xl font-semibold">Mon panier</h3>
+            <button id="fermer-panier" class="p-2 rounded hover:bg-gray-200">
+                <i data-feather="x"></i>
+            </button>
         </div>
 
-        <div class="p-4 flex-1 overflow-auto" id="cartItemsContainer">
-            <p id="emptyMsg" class="text-center text-gray-500 mt-12">Votre panier est vide.</p>
+        <div id="contenu-panier" class="flex-1 mt-4 overflow-auto">
+            <p class="text-gray-500 text-center mt-12">Votre panier est vide.</p>
         </div>
 
-        <div class="p-4 border-t">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-gray-600">Sous-total</span>
-                <span id="cartSubtotal" class="font-semibold"> FCFA  </span>
-            </div>
-            <div class="flex gap-2">
-                <a href="<?php echo e(route('panier')); ?>" class="flex-1 text-center py-2 border border-gray-200 rounded hover:bg-gray-50">Voir le panier</a>
-                <a href="<?php echo e(route('panier')); ?>" class="flex-1 text-center py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Passer à la caisse</a>
-            </div>
+        <div class="border-t pt-4">
+            <a href="<?php echo e(route('panier')); ?>" class="block bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700 transition">Voir le panier</a>
         </div>
     </div>
 </aside>
-
-
 <?php if(session('success') || session('error')): ?>
     <?php
         $type = session('success') ? 'success' : 'error';
@@ -248,6 +306,7 @@
         <p class="text-sm text-gray-600 mb-2"><?php echo e($produit->description); ?></p>
         
     <div class="container">
+
         <?php
         $stock = $produit->stock_actuel;
         $stockMin = $produit->stock_minimum ?? 5; // valeur par défaut si non définie
@@ -257,9 +316,9 @@
         <?php if($stock <= 0): ?>
             <span class="text-red-600 font-semibold">Rupture de stock</span>
         <?php elseif($stock <= $stockMin): ?>
-            <span class="text-orange-500 font-semibold">Stock faible :  restant<?php echo e($stock > 1 ? 's' : ''); ?>  <?php echo e($stock); ?> </span>
+            <span class="text-orange-500 font-semibold">Articles restant<?php echo e($stock > 1 ? 's' : ''); ?> : <?php echo e($stock); ?> </span>
         <?php else: ?>
-            <span class="text-green-600 font-semibold"> Article<?php echo e($stock > 1 ? 's' : ''); ?> disponible<?php echo e($stock > 1 ? 's' : ''); ?> <?php echo e($stock); ?></span>
+            <span class="text-green-600 font-semibold"> Article<?php echo e($stock > 1 ? 's' : ''); ?> disponible<?php echo e($stock > 1 ? 's' : ''); ?> : <?php echo e($stock); ?></span>
         <?php endif; ?>
         </p>
         
@@ -274,7 +333,6 @@
                  <span class="font-semibold"><?php echo e($produit->ventes_label); ?></span>
             </p>
            
-    
             <p>État de conservation : <?php echo e($produit->etat_conservation); ?></p>
     
     </div>    
@@ -382,24 +440,56 @@
     </div>
 </footer>
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
-        feather.replace();
 
-        // Mobile menu toggle
-        const mobileBtn = document.getElementById('mobileBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    
+const cartToggle = document.getElementById('cartToggle');
+const flyoutCart = document.getElementById('flyoutCart');
+const closeCart = document.getElementById('closeCart');
+const cartItemsContainer = document.getElementById('cartItemsContainer');
+const cartSubtotal = document.getElementById('cartSubtotal');
 
-        // Flyout cart toggle
-        const cartToggle = document.getElementById('cartToggle');
-        const flyoutCart = document.getElementById('flyoutCart');
-        const closeCart = document.getElementById('closeCart');
+// Ouvrir / fermer le flyout
+cartToggle.addEventListener('click', () => flyoutCart.classList.remove('translate-x-full'));
+closeCart.addEventListener('click', () => flyoutCart.classList.add('translate-x-full'));
 
-        cartToggle.addEventListener('click', () => flyoutCart.classList.remove('translate-x-full'));
-        closeCart.addEventListener('click', () => flyoutCart.classList.add('translate-x-full'));
-    });
+// Fonction pour afficher les articles
+function renderCart(panier){
+    let html = '';
+    let total = 0;
+
+    if(Object.keys(panier).length === 0){
+        html = '<p id="emptyMsg" class="text-center text-gray-500 mt-12">Votre panier est vide.</p>';
+    } else {
+        for(const id in panier){
+            const item = panier[id];
+            total += item.prix * item.quantite;
+            html += `
+            <div class="flex items-center gap-4 border-b py-2">
+                <img src="${item.photo}" alt="${item.nom}" class="w-16 h-16 object-cover rounded">
+                <div class="flex-1">
+                    <h4 class="font-semibold">${item.nom}</h4>
+                    <p class="text-gray-600 text-sm">${item.quantite} x ${item.prix} FCFA</p>
+                </div>
+            </div>`;
+        }
+    }
+
+    cartItemsContainer.innerHTML = html;
+    cartSubtotal.textContent = total.toLocaleString() + ' FCFA';
+}
+
+// Charger le panier depuis la session au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/panier/json')
+        .then(res => res.json())
+        .then(data => renderCart(data.panier || {}));
+});
+
 
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -439,6 +529,68 @@
         });
     });
 });
+
+
+
+$(document).ready(function(){
+    $('#searchInput').on('keyup', function(){
+        let query = $(this).val();
+
+        if(query.length >= 2){
+            $.ajax({
+                url: "<?php echo e(route('produits.recherche')); ?>",
+                type: "GET",
+                data: { q: query },
+                success: function(data){
+                    let html = '';
+                    if(data.length > 0){
+                        data.forEach(function(produit){
+                            html += `
+                                <a href="/produits/${produit.id}" class="block px-4 py-2 hover:bg-gray-100 border-b">
+                                    ${produit.nom_produit}
+                                </a>
+                            `;
+                        });
+                    } else {
+                        html = '<p class="px-4 py-2 text-gray-500">Aucun produit trouvé</p>';
+                    }
+                    $('#searchResults').html(html).removeClass('hidden');
+                }
+            });
+        } else {
+            $('#searchResults').html('').addClass('hidden');
+        }
+    });
+
+    // Cacher les résultats si on clique en dehors
+    $(document).click(function(e) {
+        if(!$(e.target).closest('#searchInput, #searchResults').length) {
+            $('#searchResults').addClass('hidden');
+        }
+    });
+
+    // Optional: click sur le bouton pour forcer la recherche
+    $('#searchBtn').on('click', function(){
+        $('#searchInput').trigger('keyup');
+    });
+});
+
+
+</script>
+
+<script>
+    // Initialisation des bibliothèques front-end
+    document.addEventListener('DOMContentLoaded', function() {
+        // AOS (animations au scroll)
+        if (window.AOS && typeof AOS.init === 'function') {
+            AOS.init({ once: true });
+        }
+
+        // Feather icons
+        if (window.feather && typeof feather.replace === 'function') {
+            feather.replace();
+        }
+    });
 </script>
 
 </body>

@@ -53,29 +53,55 @@ class PanierController extends Controller
             'quantite' => 'required|integer|min:1',
         ]);
 
+        $produitId = $request->produit_id;
+        $quantite = $request->quantite;
         $userId = Auth::id();
-        $produit = Produit::findOrFail($request->produit_id);
 
-        $panier = PanierOnline::where('online_id', $userId)
-            ->where('produit_id', $produit->id)
-            ->where('statut', 'actif')
-            ->first();
+        // Récupération du produit
+        $produit = Produit::findOrFail($produitId);
 
-        if ($panier) {
-            $panier->update([
-                'quantite' => $panier->quantite + $request->quantite,
-            ]);
-        } else {
-            PanierOnline::create([
-                'online_id' => $userId,
-                'produit_id' => $produit->id,
-                'quantite' => $request->quantite,
-                'prix_unitaire_ht' => $produit->prix,
-                'statut' => 'actif'
-            ]);
+        // --- Enregistrement dans la base pour utilisateurs connectés ---
+        if ($userId) {
+            $panierOnline = PanierOnline::where('online_id', $userId)
+                ->where('produit_id', $produitId)
+                ->where('statut', 'actif')
+                ->first();
+
+            if ($panierOnline) {
+                $panierOnline->increment('quantite', $quantite);
+            } else {
+                PanierOnline::create([
+                    'online_id' => $userId,
+                    'produit_id' => $produitId,
+                    'quantite' => $quantite,
+                    'prix_unitaire_ht' => $produit->prix,
+                    'statut' => 'actif',
+                ]);
+            }
         }
 
-        return redirect()->route('panier')->with('success', 'Produit ajouté au panier.');
+        // --- Stockage dans la session pour affichage AJAX ---
+        $panier = session()->get('panier', []);
+
+        if (isset($panier[$produitId])) {
+            $panier[$produitId]['quantite'] += $quantite;
+        } else {
+            $panier[$produitId] = [
+                'nom' => $produit->nom_produit,
+                'prix' => $produit->prix,
+                'photo' => asset('storage/' . $produit->photo),
+                'quantite' => $quantite,
+            ];
+        }
+
+        session()->put('panier', $panier);
+
+        // Retour JSON pour AJAX
+        return response()->json([
+            'success' => true,
+            'panier' => $panier,
+            'message' => 'Produit ajouté au panier.'
+        ]);
     }
 
     /**
@@ -143,6 +169,8 @@ class PanierController extends Controller
 
 
     }
+
+ 
 
 
 }

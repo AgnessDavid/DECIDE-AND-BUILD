@@ -230,7 +230,7 @@ class Produit extends Model
         if ($this->stock_actuel <= 0) {
             return 'Rupture de stock';
         } elseif ($this->stock_actuel <= ($this->stock_minimum ?? 5)) {
-            return "Stock faible : {$this->stock_actuel} restant(s)";
+            return "Article : {$this->stock_actuel} restant(s)";
         }
         return "{$this->stock_actuel} article(s) disponible(s)";
     }

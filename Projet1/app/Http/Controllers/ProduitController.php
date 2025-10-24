@@ -6,7 +6,7 @@ use App\Models\Produit;
 use App\Models\PanierOnline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Session;
 class ProduitController extends Controller
 {
     /**
@@ -87,7 +87,34 @@ class ProduitController extends Controller
         return redirect()->back()->with('success', 'Merci pour votre achat !');
     }
 
+    // ProduitController.php
+
+    public function recherche(Request $request)
+    {
+        $query = $request->get('q', '');
+
+        $produits = Produit::where('nom_produit', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->limit(10)
+            ->get();
+
+        // Retourne les résultats JSON
+        return response()->json($produits);
+    }
 
 
+
+
+ 
+
+
+/*
+    public function afficher()
+    {
+        $panier = Session::get('panier', []);
+        return view('boutique.index', compact('panier'));
+    }
+
+*/
 
 }

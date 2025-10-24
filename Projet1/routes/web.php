@@ -40,7 +40,10 @@ Route::get('/boutique', [ProduitController::class, 'index'])->name('boutique');
 Route::get('/boutique', [BoutiqueController::class, 'index'])->name('boutique');
 
 Route::get('/boutique/{slug}', [ProduitController::class, 'show'])->name('produit.show');
-Route::get('/recherche', [App\Http\Controllers\BoutiqueController::class, 'resultat'])->name('resultat');
+
+
+Route::get('/recherche-produits', [ProduitController::class, 'recherche'])->name('produits.recherche');
+
 
 // Routes protégées pour gérer les produits (admin)
 Route::middleware('auth')->group(function () {
@@ -73,6 +76,9 @@ Route::middleware('auth:online')->group(function () {
     
     Route::post('/panier/valider', [CommandeController::class, 'validerCommande'])->name('panier.valider');
     Route::get('/panier/count', [PanierController::class, 'count'])->name('panier.count');
+    Route::get('/panier/json', function () {
+        return response()->json(['panier' => session()->get('panier', [])]);
+    });
 
 
     // Dashboard client
